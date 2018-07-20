@@ -104,7 +104,7 @@
                     </div>
                     <label class="col-sm-2 control-label">Card Account Number</label>
                     <div class="col-sm-2">
-                        <input id="txt_card_account_number" type="text" class="form-control input-rounded" name="account_number" value="{{ account_number }}"/>
+                        <input id="txt_card_account_number" type="number" maxlength="4" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control input-rounded" name="card_account_number" value="{{ card_account_number }}"/>
                     </div>
                     <label class="col-sm-2 control-label">Status</label>
                     <div class="col-sm-2">
