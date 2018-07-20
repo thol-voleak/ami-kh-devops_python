@@ -136,7 +136,7 @@ class CommissionAndPaymentView(TemplateView, GetCommandNameAndServiceNameMixin, 
 
     def _filter_add_specific_user_name(self, data):
         for bal in data:
-            if bal.get('actor_type') == 'Specific ID':
+            if bal.get('actor_type') == 'Specific ID' or bal.get('actor_type') == 'Specific ID\'s Beneficiary'  :
                 self.logger.info('Start to get actor name of specific ID [{}]'.format(bal.get('specific_actor_id')))
                 res_agent = agent_info.get_agent_detail(self.request, bal.get('specific_actor_id'))
 
