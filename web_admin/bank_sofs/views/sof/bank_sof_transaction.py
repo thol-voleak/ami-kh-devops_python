@@ -58,11 +58,12 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         modified_to_time = request.POST.get('modified_to_time')
         order_detail_id = request.POST.get('order_detail_id')
         bank_name = request.POST.get('bank_name')
+        bank_account_name = request.POST.get('bank_account_name')
 
         body = self.createSearchBody(created_from_date, order_id, short_order_id, sof_id, status,
                                      created_to_date, type, user_id, user_type_id, created_from_time,
                                      created_to_time, modified_from_date, modified_from_time, modified_to_date ,
-                                     modified_to_time, order_detail_id, bank_name)
+                                     modified_to_time, order_detail_id, bank_name, bank_account_name)
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
 
@@ -90,7 +91,8 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
                  'modified_to_time': modified_to_time,
                  'user_type_id': user_type_id,
                  'order_detail_id': order_detail_id,
-                 'bank_name': bank_name
+                 'bank_name': bank_name,
+                 'bank_account_name': bank_account_name
                  }
             )
         else:
@@ -110,7 +112,8 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
                  'modified_to_time': modified_to_time,
                  'user_type_id': user_type_id,
                  'order_detail_id': order_detail_id,
-                 'bank_name': bank_name
+                 'bank_name': bank_name,
+                 'bank_account_name': bank_account_name
                  }
             )
 
@@ -119,7 +122,8 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
     def createSearchBody(self, created_from_date, order_id, short_order_id, sof_id, status, created_to_date,
                          type, user_id, user_type_id, created_from_time, created_to_time, modified_from_date,
-                         modified_from_time, modified_to_date, modified_to_time, order_detail_id, bank_name):
+                         modified_from_time, modified_to_date, modified_to_time, order_detail_id, bank_name,
+                         bank_account_name):
         body = {}
         if sof_id is not '' and sof_id is not None:
             body['sof_id'] = int(sof_id)
@@ -147,6 +151,8 @@ class BankSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['order_detail_id'] = order_detail_id
         if bank_name is not ''and bank_name is not None:
             body['bank_name'] = bank_name
+        if bank_account_name is not ''and bank_account_name is not None:
+            body['bank_account_name'] = bank_account_name
         return body
 
     def _get_sof_bank_transaction(self, body):
