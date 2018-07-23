@@ -443,9 +443,9 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         #     if not data.get(key, ''):
         #         del data[key]
 
-        for key, value in data.items():
-            if not value:
-                data[key] = ''
+        # for key, value in data.items():
+        #     if not value:
+        #         data[key] = ''
 
         data, success = self._put_method(api_path=api_settings.AGENT_UPDATE_PATH.format(agent_id=agent_id),
                                          func_description="Agent",
