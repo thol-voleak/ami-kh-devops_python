@@ -320,8 +320,8 @@
                                 {% if permissions.CAN_UNHOLD_VOUCHER_ACTION %}
                                     <li><a onclick="unHold()">Unhold</a></li>
                                 {% endif %}
-                                <li><a onclick="showCancelDialog()">Cancel</a></li>
                                 {% if request|has_any_permission:"CAN_CANCEL_VOUCHER" %}
+                                    <li><a onclick="showCancelDialog()">Cancel</a></li>
                                 {% endif %}
                                 {% if request|has_any_permission:"CAN_UPLOAD_VOUCHERS" %}
                                     <li id="upload_vouchers"><a>Upload Vouchers</a></li>
