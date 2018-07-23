@@ -1,4 +1,6 @@
+from authentications.apps import InvalidAccessToken
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from payments.views.api import _get_services_list
 from web_admin import setup_logger, api_settings
 from web_admin.restful_client import RestFulClient
 from django.views.generic.base import TemplateView
@@ -51,6 +53,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'voucher_type_list': self._get_voucher_type_list(),
             'distributed_status_list': self._get_distributed_status_list(),
             'delete_status_list': self._get_delete_status_list(),
+            'sof_types': self._get_sof_types(),
         }
         self.logger.info('========== Finish render Vouchers List page==========')
         return render(request, self.template_name, context)
@@ -148,7 +151,6 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         permissions['CAN_HOLD_VOUCHER_ACTION'] = self.check_membership(['CAN_HOLD_VOUCHER_ACTION'])
         permissions['CAN_UNHOLD_VOUCHER_ACTION'] = self.check_membership(['CAN_UNHOLD_VOUCHER_ACTION'])
-
         page = data['page']
         context = {
             'data': data['vouchers'],
@@ -182,6 +184,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'voucher_group': voucher_group,
             'delete_status_list': self._get_delete_status_list(),
             'delete_status': delete_status,
+            'services': _get_services_list(self),
+            'sof_types': self._get_sof_types()
         }
         return render(request, self.template_name, context)
 
@@ -254,3 +258,10 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             {"name": "Deleted", "value": "True"},
             {"name": "None", "value": "False"}
         ]
+
+
+    def _get_sof_types(self):
+        success, status_code, data  = RestFulClient.get(url=api_settings.SOF_TYPES_URL, loggers=self.logger, headers=self._get_headers())
+        return data
+
+

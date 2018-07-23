@@ -1,3 +1,4 @@
+from agents.views import AgentDetailService
 from agents.views.agent_link_shop import AgentLinkShop
 from agents.views.management_shop import AgentManagementShop
 from .views.list import ListView
@@ -62,4 +63,5 @@ urlpatterns = [
     url(r'^(?P<agent_id>[0-9A-Za-z]+)/shop/(?P<shop_id>[0-9A-Za-z]+)/unlink',
         login_required(UnLinkAgentToShop.as_view(), login_url='authentications:login'), name="unlink_agent_shop"),
     url(r'^mm-card-level', login_required(get_mm_card_level, login_url='authentications:login'), name="get_mm_card_level"),
+    url(r'^details/json/$', login_required(AgentDetailService.as_view(), login_url='authentications:login'), name="agent_details_json"),
 ]

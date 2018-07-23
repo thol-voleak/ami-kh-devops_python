@@ -3,174 +3,180 @@
 {% load permissions_filter %}
 {% block content %}
 
-<style>
-    .modal-dialog {
-        top: 30% !important;
-    }
-    #btn_add_new_voucher {
-        background-color: #337ab7;
-        border-color: #337ab7;
-        font-size: 14px;
-        border-radius: 3px;
-        position: relative;
-        top: 15px;
-        right: -20px;
-        hover: red !important;
-    }
-    .layout-fixed-header {
-         background-color: white;
-    }
+    <style>
+        .modal-dialog {
+            top: 30% !important;
+        }
 
-    .main-panel {
-        background-color: white;
-    }
+        #btn_add_new_voucher {
+            background-color: #337ab7;
+            border-color: #337ab7;
+            font-size: 14px;
+            border-radius: 3px;
+            position: relative;
+            top: 15px;
+            right: -20px;
+            hover: red !important;
+        }
 
-    #btn_add_new_voucher strong {
-        font-weight: bold !important;
-        font-size: 20px;
-    }
+        .layout-fixed-header {
+            background-color: white;
+        }
 
-    #btn_add_new_voucher span {
-        position: relative;
-        top: -1px;
-    }
+        .main-panel {
+            background-color: white;
+        }
 
-</style>
+        #btn_add_new_voucher strong {
+            font-weight: bold !important;
+            font-size: 20px;
+        }
+
+        #btn_add_new_voucher span {
+            position: relative;
+            top: -1px;
+        }
+
+    </style>
     <div class="col-md-12">
-    <div class="panel mb25">
-        <div class="panel-heading border mb15">
-           <div>
-               <div class="pull-left"><h3>Voucher List</h3></div>
-               {% if permissions.CAN_CREATE_VOUCHER_ACTION %}
-               <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
-                    <a href="{% url 'voucher:create_new_voucher' %}">
-                        <button id="btn_add_new_voucher" class="btn btn-primary btn-block btn-md mb15"><strong>+</strong> <span>Add New Voucher</span></button>
-                    </a>
-               </div>
-               {%endif%}
-               <div class="clearfix"></div>
-           </div>
-        </div>
-        {% for message in messages %}
-        <div class="col-xs-12">
-            <div class='alert
+        <div class="panel mb25">
+            <div class="panel-heading border mb15">
+                <div>
+                    <div class="pull-left"><h3>Voucher List</h3></div>
+                    {% if permissions.CAN_CREATE_VOUCHER_ACTION %}
+                        <div class="pull-right" style="margin-top: 15px;margin-right: 15px;">
+                            <a href="{% url 'voucher:create_new_voucher' %}">
+                                <button id="btn_add_new_voucher" class="btn btn-primary btn-block btn-md mb15">
+                                    <strong>+</strong> <span>Add New Voucher</span></button>
+                            </a>
+                        </div>
+                    {% endif %}
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            {% for message in messages %}
+                <div class="col-xs-12">
+                    <div class='alert
                         alert-success
                         alert-dismissable' id="msg-add-service">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                <strong>{{ message|capfirst }}</strong>
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ message|capfirst }}</strong>
+                    </div>
+                </div>
+            {% endfor %}
+            {% if msg is not None %}
+                <div class="col-xs-12 mb5">
+                    <div class="alert alert-success alert-dismissable" id="msg-update-client">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ msg }}</strong>
+                    </div>
+                </div>
+            {% endif %}
+            {% if add_client_msg is not None %}
+                <div class="col-xs-12 mb5">
+                    <div class="alert alert-success alert-dismissable" id="msg-add-client">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        <strong>{{ add_client_msg }}</strong>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="col-xs-12 mb5">
+                <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-client">
+                    <button type="button" class="close" onclick="$('.alert').hide()">×</button>
+                    <strong id="alert-msg"></strong>
+                </div>
             </div>
-        </div>
-        {% endfor %}
-        {% if msg is not None %}
-        <div class="col-xs-12 mb5">
-            <div class="alert alert-success alert-dismissable" id="msg-update-client">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                <strong>{{ msg }}</strong>
-            </div>
-        </div>
-        {% endif %}
-        {% if add_client_msg is not None %}
-        <div class="col-xs-12 mb5">
-            <div class="alert alert-success alert-dismissable" id="msg-add-client">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                <strong>{{ add_client_msg }}</strong>
-            </div>
-        </div>
-        {% endif %}
-        <div class="col-xs-12 mb5">
-            <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-client">
-                <button type="button" class="close" onclick="$('.alert').hide()">×</button>
-                <strong id="alert-msg"></strong>
-            </div>
-        </div>
-        <div class="col-xs-12 mb5">
-                <div class="alert alert-success alert-dismissable" style="display: none;" id="alert-client-hold-success">
+            <div class="col-xs-12 mb5">
+                <div class="alert alert-success alert-dismissable" style="display: none;"
+                     id="alert-client-hold-success">
                     <button type="button" class="close" onclick="$('.alert').hide()">×</button>
                     <strong id="alert-msg-hold-success"></strong>
                 </div>
             </div>
-        <div class="col-xs-12 mb5">
+            <div class="col-xs-12 mb5">
                 <div class="alert alert-danger alert-dismissable" style="display: none;" id="alert-client-hold-failed">
                     <button type="button" class="close" onclick="$('.alert').hide()">×</button>
                     <strong id="alert-msg-hold-failed"></strong>
                 </div>
             </div>
 
-        <div class="panel-body">
-            <form id="submit-form" class="form-horizontal" role="form" method="post" action="{% url 'voucher:voucher' %}">
-            {% csrf_token %}
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">Voucher ID</label>
-                    <div class="col-sm-2">
-                        <input type="text" class="form-control input-rounded" name="voucher_id" id="txt_voucher_id" value="{{ voucher_id }}">
+            <div class="panel-body">
+                <form id="submit-form" class="form-horizontal" role="form" method="post"
+                      action="{% url 'voucher:voucher' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Voucher ID</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control input-rounded" name="voucher_id" id="txt_voucher_id"
+                                   value="{{ voucher_id }}">
+                        </div>
+                        <label class="col-sm-3 control-label">Claim Status</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_claim_status" name="claim_status">
+                                {% for item in claim_status_list %}
+                                    {% if item.value == selected_status %}
+                                        <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                    {% else %}
+                                        <option value="{{ item.value }}">{{ item.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
-                    <label class="col-sm-3 control-label">Claim Status</label>
-                    <div class="col-sm-2">
-                        <select class="form-control" id="ddl_claim_status" name="claim_status" >
-                            {% for item in claim_status_list %}
-                                {%if item.value == selected_status%}
-                                <option value="{{ item.value }}" selected>{{ item.name }}</option>
-                                {% else %}
-                                <option value="{{ item.value }}">{{ item.name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                 <div class="form-group">
-                    <label class="col-sm-3 control-label">Cash In User Type</label>
-                    <div class="col-sm-2">
-                        <select class="form-control" id="ddl_user_type_cash_in" name="user_type_cash_in" >
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Cash In User Type</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_user_type_cash_in" name="user_type_cash_in">
                                 {% for item in cash_in_user_type_list %}
-                                {%if item.value == cash_in_user_type%}
-                                <option value="{{ item.value }}" selected>{{ item.name }}</option>
-                                {% else %}
-                                <option value="{{ item.value }}">{{ item.name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
+                                    {% if item.value == cash_in_user_type %}
+                                        <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                    {% else %}
+                                        <option value="{{ item.value }}">{{ item.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <label class="col-sm-3 control-label">Cash In ID</label>
+                        <div class="col-xs-2">
+                            <input type="number" class="form-control input-rounded"
+                                   name="cash_in_id"
+                                   value="{{ cash_in_id|default_if_none:'' }}"
+                                   id="txt_cash_in_id">
+                        </div>
                     </div>
-                    <label class="col-sm-3 control-label">Cash In ID</label>
-                    <div class="col-xs-2">
-                        <input type="number" class="form-control input-rounded"
-                               name="cash_in_id"
-                               value="{{ cash_in_id|default_if_none:'' }}"
-                               id="txt_cash_in_id">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Cash Out User Type</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control input-rounded"
+                                   name="user_type_cash_out"
+                                   value="Agent" readonly
+                                   id="txt_user_type_cash_out">
+                        </div>
+                        <label class="col-sm-3 control-label">Cash Out ID</label>
+                        <div class="col-xs-2">
+                            <input type="number" class="form-control input-rounded"
+                                   name="cash_out_id"
+                                   value="{{ cash_out_id|default_if_none:'' }}"
+                                   id="txt_cash_out_id">
+                        </div>
                     </div>
-                </div>
-                 <div class="form-group">
-                    <label class="col-sm-3 control-label">Cash Out User Type</label>
-                    <div class="col-sm-2">
-                        <input type="text" class="form-control input-rounded"
-                               name="user_type_cash_out"
-                               value="Agent" readonly
-                               id="txt_user_type_cash_out">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Create Date From</label>
+                        <div class="col-sm-2">
+                            <input type="date" class="form-control input-rounded"
+                                   name="create_date_from"
+                                   value="{{ create_date_from|default_if_none:'' }}"
+                                   id="dtp_create_date_from">
+                        </div>
+                        <label class="col-sm-3 control-label">To</label>
+                        <div class="col-xs-2">
+                            <input type="date" class="form-control input-rounded"
+                                   name="create_date_to"
+                                   value="{{ create_date_to|default_if_none:'' }}"
+                                   id="dtp_create_date_to">
+                        </div>
                     </div>
-                    <label class="col-sm-3 control-label">Cash Out ID</label>
-                    <div class="col-xs-2">
-                        <input type="number" class="form-control input-rounded"
-                               name="cash_out_id"
-                               value="{{ cash_out_id|default_if_none:'' }}"
-                               id="txt_cash_out_id">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">Create Date From</label>
-                    <div class="col-sm-2">
-                        <input type="date" class="form-control input-rounded"
-                               name="create_date_from"
-                               value="{{ create_date_from|default_if_none:'' }}"
-                               id="dtp_create_date_from">
-                    </div>
-                    <label class="col-sm-3 control-label">To</label>
-                    <div class="col-xs-2">
-                        <input type="date" class="form-control input-rounded"
-                               name="create_date_to"
-                               value="{{ create_date_to|default_if_none:'' }}"
-                               id="dtp_create_date_to">
-                    </div>
-                </div>
-                 <div class="form-group">
+                    <div class="form-group">
                         <label class="col-sm-3 control-label">Expiration Date From</label>
                         <div class="col-sm-2">
                             <input type="date" class="form-control input-rounded"
@@ -185,258 +191,272 @@
                                    value="{{ expiration_date_to|default_if_none:'' }}"
                                    id="dtp_expiration_date_to">
                         </div>
-                 </div>
-                 <div class="form-group">
-                    <label class="col-sm-3 control-label">Cash In Order ID</label>
-                    <div class="col-sm-2">
-                        <input type="text" class="form-control input-rounded"
-                               name="cash_in_order_id"
-                               value="{{ cash_in_order_id|default_if_none:'' }}"
-                               id="txt_cash_in_order_id">
                     </div>
-                    <label class="col-sm-3 control-label">Cash Out Order ID</label>
-                    <div class="col-xs-2">
-                        <input type="text" class="form-control input-rounded"
-                               name="cash_out_order_id"
-                               value="{{ cash_out_order_id|default_if_none:'' }}"
-                               id="txt_cash_out_order_id">
-                    </div>
-                 </div>
-                 <div class="form-group">
-                    <label class="col-sm-3 control-label">Issuer User ID</label>
-                    <div class="col-sm-2">
-                        <input type="number" class="form-control input-rounded"
-                               name="issuer_user_id"
-                               id="txt_issuer_user_id"
-                               value="{{ issuer_user_id }}">
-                    </div>
-                    <label class="col-sm-3 control-label">Cancel Status</label>
-                    <div class="col-sm-2">
-                        <select class="form-control" id="ddl_cancel_status" name="cancel_status" >
-                            {% for item in cancel_status_list %}
-                                {%if item.value == cancel_status%}
-                                <option value="{{ item.value }}" selected>{{ item.name }}</option>
-                                {% else %}
-                                <option value="{{ item.value }}">{{ item.name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
-                 </div>
-
-                 <div class="form-group">
-                        <label class="col-sm-3 control-label">Distributed User ID</label>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Cash In Order ID</label>
                         <div class="col-sm-2">
-                        <input type="number" class="form-control input-rounded"
-                               name="distributed_user_id"
-                               id="txt_distributed_user_id"
-                               value="{{ distributed_user_id }}">
+                            <input type="text" class="form-control input-rounded"
+                                   name="cash_in_order_id"
+                                   value="{{ cash_in_order_id|default_if_none:'' }}"
+                                   id="txt_cash_in_order_id">
                         </div>
-                        <label class="col-sm-3 control-label">Hold Status</label>
+                        <label class="col-sm-3 control-label">Cash Out Order ID</label>
+                        <div class="col-xs-2">
+                            <input type="text" class="form-control input-rounded"
+                                   name="cash_out_order_id"
+                                   value="{{ cash_out_order_id|default_if_none:'' }}"
+                                   id="txt_cash_out_order_id">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Issuer User ID</label>
                         <div class="col-sm-2">
-                            <select class="form-control" id="ddl_hold_status" name="hold_status" >
-                                {% for item in hold_status_list %}
-                                    {%if item.value == hold_status%}
-                                    <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                            <input type="number" class="form-control input-rounded"
+                                   name="issuer_user_id"
+                                   id="txt_issuer_user_id"
+                                   value="{{ issuer_user_id }}">
+                        </div>
+                        <label class="col-sm-3 control-label">Cancel Status</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_cancel_status" name="cancel_status">
+                                {% for item in cancel_status_list %}
+                                    {% if item.value == cancel_status %}
+                                        <option value="{{ item.value }}" selected>{{ item.name }}</option>
                                     {% else %}
-                                    <option value="{{ item.value }}">{{ item.name }}</option>
+                                        <option value="{{ item.value }}">{{ item.name }}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
                         </div>
-                 </div>
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">Distributed Status</label>
-                    <div class="col-sm-2">
-                        <select class="form-control" id="ddl_distributed_status" name="distributed_status">
-                            {% for item in distributed_status_list %}
-                                {% if item.value == distributed_status %}
-                                    <option value="{{ item.value }}" selected>{{ item.name }}</option>
-                                {% else %}
-                                    <option value="{{ item.value }}">{{ item.name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
                     </div>
-                    <label class="col-sm-3 control-label">Voucher Type</label>
-                    <div class="col-sm-2">
-                        <select class="form-control" id="ddl_voucher_type" name="voucher_type">
-                            {% for item in voucher_type_list %}
-                                {% if item.value == voucher_type %}
-                                    <option value="{{ item.value }}" selected>{{ item.name }}</option>
-                                {% else %}
-                                    <option value="{{ item.value }}">{{ item.name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">Voucher Group</label>
-                    <div class="col-sm-2">
-                        <input type="text" class="form-control input-rounded"
-                               name="voucher_group"
-                               value="{{ voucher_group|default_if_none:'' }}"
-                               id="txt_voucher_group">
-                    </div>
-                    <label class="col-sm-3 control-label">Delete Status</label>
-                    <div class="col-sm-2">
-                        <select class="form-control" id="ddl_delete_status" name="delete_status" >
-                            {% for item in delete_status_list %}
-                                {%if item.value == delete_status%}
-                                <option value="{{ item.value }}" selected>{{ item.name }}</option>
-                                {% else %}
-                                <option value="{{ item.value }}">{{ item.name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                 <div class="form-group pull-right " style="margin-top: 15px;margin-right: 15px;">
-                            <input id="current_page_index" name="current_page_index" style="display:none" value="1">
-                            <input id="btn_search" class="btn btn-success btn-block" type="button" name="search_shown"
-                                   onclick="searchVouchers()" value="Search">
-                 </div>
-            </form>
-            {% include "uploadFile.html" with modelHeader="Upload 3rd Party Voucher" acceptedFileTypes=".csv"%}
-            {% include "voucher/refund_dialog.html" %}
-            {% include "voucher/cancel_dialog.html" %}
 
-            <div class="no-more-tables" style="position: absolute;">
-                {% if permissions.CAN_HOLD_VOUCHER_ACTION or permissions.CAN_UNHOLD_VOUCHER_ACTION or request|has_any_permission:"CAN_UPLOAD_VOUCHERS"%}
-                <div class="dropdown " id="ddl_select_action" style="margin-top: +50px;">
-                    <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Select Action <span class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                        {% if permissions.CAN_HOLD_VOUCHER_ACTION %}
-                        <li><a onclick="hold()">Hold</a></li>
-                        {%endif%}
-                        {% if permissions.CAN_UNHOLD_VOUCHER_ACTION %}
-                        <li><a onclick="unHold()">Unhold</a></li>
-                        {%endif%}
-                        {% if request|has_any_permission:"CAN_CANCEL_VOUCHER" %}
-                        <li><a onclick="showCancelDialog()">Cancel</a></li>
-                        {%endif%}
-                        {% if request|has_any_permission:"CAN_UPLOAD_VOUCHERS" %}
-                        <li id="upload_vouchers"><a>Upload Vouchers</a></li>
-                        {%endif%}
-                    </ul>
-                </div>
-                <div style="margin-right: +20px; margin-top: -15px;">
-                    <label class="pull-right" id="lbl_total">{{ search_count }}</label>
-                    <label class="pull-right">Total Orders found:&nbsp;</label>
-                </div>
-                {%endif%}
-                <table id='tbl_voucher' class="table table-bordered table-striped mb0">
-                    <thead>
-                    <tr>
-                        <th><input type="checkbox" name="select-all" id="select-all" /></th>
-                        <th id="ddl_voucher_id">Voucher ID</th>
-                        <th id="ddl_issuer_user_id">Issuer User ID</th>
-                        <th id="ddl_voucher_type">Voucher Type</th>
-                        <th id="ddl_voucher_group">Voucher Group</th>
-                        <th id="ddl_voucher_amount">Voucher Amount</th>
-                        <th id="ddl_distributed_status">Distributed Status</th>
-                        <th id="ddl_voucher_fee">Voucher Fee</th>
-                        <th id="ddl_status">Claim Status</th>
-                        <th id="ddl_hold_status">Hold Status</th>
-                        <th id="ddl_cancel_status">Cancel Status</th>
-                        <th id="ddl_delete_status">Delete Status</th>
-                        <th id="ddl_create_date">Create Date</th>
-                        <th id="ddl_update_date">Update Date</th>
-                        <th id="ddl_expiration_date">Expiration Date</th>
-                        <th id="ddl_currency">Currency</th>
-                        <th id="ddl_action">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for i in data %}
-                        <!-- <div > -->
-                        <tr class="checkboxlist" id="voucher-{{ i.id|default_if_none:'' }}">
-                            <td><input type="checkbox" name="voucher_checkbox" class="{{ i.is_on_hold|yesno:"IsHold,IsUnhold,''"  }}" id="chk_voucher_{{ i.id|default_if_none:'' }}" value="{{ i.id|default_if_none:'' }}" title=""/></td>
-                            <td>{{ i.voucher_id|default_if_none:'' }}</td>
-                            <td id="voucher_issuer">
-                                {% if i.issuer_user_id %}
-                                    {% if "agent" == i.issuer_user_type %}
-                                        <a style="color: blue;text-decoration: underline;" href="{% url 'agents:agent-list'%}?agent_id={{  i.issuer_user_id }}">{{ i.issuer_user_id }}</a>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Distributed User ID</label>
+                        <div class="col-sm-2">
+                            <input type="number" class="form-control input-rounded"
+                                   name="distributed_user_id"
+                                   id="txt_distributed_user_id"
+                                   value="{{ distributed_user_id }}">
+                        </div>
+                        <label class="col-sm-3 control-label">Hold Status</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_hold_status" name="hold_status">
+                                {% for item in hold_status_list %}
+                                    {% if item.value == hold_status %}
+                                        <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                    {% else %}
+                                        <option value="{{ item.value }}">{{ item.name }}</option>
                                     {% endif %}
-                                {% endif %}
-                            </td>
-                            <td id="voucher-type" >{{ i.voucher_type|default_if_none:'' }}</td>
-                            <td>{{ i.voucher_group|default_if_none:'' }}</td>
-                            <td>{{ i.amount|default_if_none:'' }}</td>
-                            <td>{{ i.distributed_status|yesno:"Yes,No,''" }}</td>
-                            <td>{{ i.fee|default_if_none:'' }}</td>
-                            <td id="claim-status">{{ i.is_used|yesno:"Used,Unused,''"  }}</td>
-                            <td id="hold-status">{{ i.is_on_hold|yesno:"Hold,Unhold,''"  }}</td>
-                            <td id="cancel-status">{{ i.is_cancelled|yesno:"Yes,No,''"  }}</td>
-                            <td>{{ i.is_deleted|yesno:"Deleted,None,''" }}</td>
-                            <td>{{ i.created_timestamp|default_if_none:'' }}</td>
-                            <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
-                            <td>{{ i.expire_date_timestamp|default_if_none:'' }}</td>
-                            <td id="voucher_currency">{{ i.currency|default_if_none:'' }}</td>
-                            <td>
-                            {% if request|has_any_permission:"CAN_REFUND_VOUCHER" %}
-                                {% if i.voucher_type != "3rd Party Vouchers" %}
-                                    <button id="btn_refund" onclick="showRefundDialog('{{ i.voucher_id|default_if_none:'' }}')" class="btn btn-outline mb5 btn-xs btn-info">Refund</button>
-                                {% endif %}
-                            {% endif %}
-                            {% if permissions.CAN_VIEW_VOUCHER_DETAILS %}
-                                <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'voucher:voucher_detail' i.voucher_id %}'">Detail</button>
-                                {% endif %}
-                            </td>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Distributed Status</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_distributed_status" name="distributed_status">
+                                {% for item in distributed_status_list %}
+                                    {% if item.value == distributed_status %}
+                                        <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                    {% else %}
+                                        <option value="{{ item.value }}">{{ item.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <label class="col-sm-3 control-label">Voucher Type</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_voucher_type" name="voucher_type">
+                                {% for item in voucher_type_list %}
+                                    {% if item.value == voucher_type %}
+                                        <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                    {% else %}
+                                        <option value="{{ item.value }}">{{ item.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Voucher Group</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control input-rounded"
+                                   name="voucher_group"
+                                   value="{{ voucher_group|default_if_none:'' }}"
+                                   id="txt_voucher_group">
+                        </div>
+                        <label class="col-sm-3 control-label">Delete Status</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_delete_status" name="delete_status">
+                                {% for item in delete_status_list %}
+                                    {% if item.value == delete_status %}
+                                        <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                    {% else %}
+                                        <option value="{{ item.value }}">{{ item.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group pull-right " style="margin-top: 15px;margin-right: 15px;">
+                        <input id="current_page_index" name="current_page_index" style="display:none" value="1">
+                        <input id="btn_search" class="btn btn-success btn-block" type="button" name="search_shown"
+                               onclick="searchVouchers()" value="Search">
+                    </div>
+                </form>
+                {% include "uploadFile.html" with modelHeader="Upload 3rd Party Voucher" acceptedFileTypes=".csv" %}
+                {% include "voucher/refund_dialog.html" %}
+                {% include "voucher/cancel_dialog.html" %}
 
+                <div class="no-more-tables" style="position: absolute;">
+                    {% if permissions.CAN_HOLD_VOUCHER_ACTION or permissions.CAN_UNHOLD_VOUCHER_ACTION or request|has_any_permission:"CAN_UPLOAD_VOUCHERS" %}
+                        <div class="dropdown " id="ddl_select_action" style="margin-top: +50px;">
+                            <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Select
+                                Action <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                {% if permissions.CAN_HOLD_VOUCHER_ACTION %}
+                                    <li><a onclick="hold()">Hold</a></li>
+                                {% endif %}
+                                {% if permissions.CAN_UNHOLD_VOUCHER_ACTION %}
+                                    <li><a onclick="unHold()">Unhold</a></li>
+                                {% endif %}
+                                <li><a onclick="showCancelDialog()">Cancel</a></li>
+                                {% if request|has_any_permission:"CAN_CANCEL_VOUCHER" %}
+                                {% endif %}
+                                {% if request|has_any_permission:"CAN_UPLOAD_VOUCHERS" %}
+                                    <li id="upload_vouchers"><a>Upload Vouchers</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div style="margin-right: +20px; margin-top: -15px;">
+                            <label class="pull-right" id="lbl_total">{{ search_count }}</label>
+                            <label class="pull-right">Total Orders found:&nbsp;</label>
+                        </div>
+                    {% endif %}
+                    <table id='tbl_voucher' class="table table-bordered table-striped mb0">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" name="select-all" id="select-all"/></th>
+                            <th id="ddl_voucher_id">Voucher ID</th>
+                            <th id="ddl_issuer_user_id">Issuer User ID</th>
+                            <th id="ddl_voucher_type">Voucher Type</th>
+                            <th id="ddl_voucher_group">Voucher Group</th>
+                            <th id="ddl_voucher_amount">Voucher Amount</th>
+                            <th id="ddl_distributed_status">Distributed Status</th>
+                            <th id="ddl_voucher_fee">Voucher Fee</th>
+                            <th id="ddl_status">Claim Status</th>
+                            <th id="ddl_hold_status">Hold Status</th>
+                            <th id="ddl_cancel_status">Cancel Status</th>
+                            <th id="ddl_delete_status">Delete Status</th>
+                            <th id="ddl_create_date">Create Date</th>
+                            <th id="ddl_update_date">Update Date</th>
+                            <th id="ddl_expiration_date">Expiration Date</th>
+                            <th id="ddl_currency">Currency</th>
+                            <th id="ddl_action">Action</th>
                         </tr>
-                    <!-- </div> -->
-                    {% endfor %}
-                    </tbody>
-                </table>
-            {% include "pagination.html" %}
+                        </thead>
+                        <tbody>
+                        {% for i in data %}
+                            <!-- <div > -->
+                            <tr class="checkboxlist" id="voucher-{{ i.id|default_if_none:'' }}">
+                                <td><input type="checkbox" name="voucher_checkbox"
+                                           class="{{ i.is_on_hold|yesno:"IsHold,IsUnhold,''" }}"
+                                           id="chk_voucher_{{ i.id|default_if_none:'' }}"
+                                           value="{{ i.id|default_if_none:'' }}" title=""/></td>
+                                <td id="voucher_id">{{ i.voucher_id|default_if_none:'' }}</td>
+                                <td id="voucher_issuer">
+                                    {% if i.issuer_user_id %}
+                                        {% if "agent" == i.issuer_user_type %}
+                                            <a style="color: blue;text-decoration: underline;"
+                                               href="{% url 'agents:agent-list' %}?agent_id={{ i.issuer_user_id }}">{{ i.issuer_user_id }}</a>
+                                        {% endif %}
+                                    {% endif %}
+                                    <input type="number" id="hidden_issuer_user_id" style="display: none"
+                                           value="{{ i.issuer_user_id|default_if_none:'' }}" disabled/>
+                                    <input type="text" id="hidden_issuer_user_type" style="display: none"
+                                           value="{{ i.issuer_user_type|default_if_none:'' }}" disabled/>
+                                    <input type="number" id="hidden_issuer_sof_id" style="display: none"
+                                           value="{{ i.issuer_sof_id|default_if_none:'' }}" disabled/>
+                                    <input type="number" id="hidden_issuer_sof_type_id" style="display: none"
+                                           value="{{ i.issuer_sof_type_id|default_if_none:'' }}" disabled/>
+                                </td>
+                                <td id="voucher-type">{{ i.voucher_type|default_if_none:'' }}</td>
+                                <td>{{ i.voucher_group|default_if_none:'' }}</td>
+                                <td id="voucher_amount">{{ i.amount|default_if_none:'' }}</td>
+                                <td>{{ i.distributed_status|yesno:"Yes,No,''" }}</td>
+                                <td>{{ i.fee|default_if_none:'' }}</td>
+                                <td id="claim-status">{{ i.is_used|yesno:"Used,Unused,''" }}</td>
+                                <td id="hold-status">{{ i.is_on_hold|yesno:"Hold,Unhold,''" }}</td>
+                                <td id="cancel-status">{{ i.is_cancelled|yesno:"Yes,No,''" }}</td>
+                                <td>{{ i.is_deleted|yesno:"Deleted,None,''" }}</td>
+                                <td>{{ i.created_timestamp|default_if_none:'' }}</td>
+                                <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
+                                <td>{{ i.expire_date_timestamp|default_if_none:'' }}</td>
+                                <td id="voucher_currency">{{ i.currency|default_if_none:'' }}</td>
+                                <td>
+                                    {% if request|has_any_permission:"CAN_REFUND_VOUCHER" %}
+                                        {% if i.voucher_type != "3rd Party Vouchers" %}
+                                    <button id="btn_refund" onclick="showRefundDialog('{{ i.voucher_id|default_if_none:'' }}')" class="btn btn-outline mb5 btn-xs btn-info">Refund</button>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if permissions.CAN_VIEW_VOUCHER_DETAILS %}
+                                <button id="btn_detail" class="btn btn-outline mb5 btn-xs btn-info" onclick="location.href='{% url 'voucher:voucher_detail' i.voucher_id %}'">Detail</button>
+                                    {% endif %}
+                                </td>
+
+                            </tr>
+                            <!-- </div> -->
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% include "pagination.html" %}
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
 {% block body_js %}
-{{ block.super }}
-<script src="{% static 'js/services/UploadFilePopup.js' %}"></script>
+    {{ block.super }}
+    <script src="{% static 'vendor/bignumber.js-master/bignumber.min.js' %}"></script>
+    <script src="{% static 'js/services/UploadFilePopup.js' %}"></script>
 
-<script>
-    var searchVouchers = function(){
-        var from_date = $('#dtp_create_date_from').val();
-        var to_date = $('#dtp_create_date_to').val();
-        if(from_date != '' && to_date != '') {
-            var date_from = new Date(from_date);
-            var date_to = new Date(to_date);
-            if(date_from > date_to) {
-                $('#alert-client').css('display', 'block');
-                $('#alert-client #alert-msg').text('Create Date To cannot be less than Create Date From');
-                return;
+    <script>
+        var searchVouchers = function () {
+            var from_date = $('#dtp_create_date_from').val();
+            var to_date = $('#dtp_create_date_to').val();
+            if (from_date != '' && to_date != '') {
+                var date_from = new Date(from_date);
+                var date_to = new Date(to_date);
+                if (date_from > date_to) {
+                    $('#alert-client').css('display', 'block');
+                    $('#alert-client #alert-msg').text('Create Date To cannot be less than Create Date From');
+                    return;
+                }
             }
-        }
-        var expire_from_date = $('#dtp_expiration_date_from').val();
-        var expire_to_date = $('#dtp_expiration_date_to').val();
-        if(expire_from_date != '' && expire_to_date != '') {
-            var expire_date_from = new Date(expire_from_date);
-            var expire_date_to = new Date(expire_to_date);
-            if(expire_date_from > expire_date_to) {
-                $('#alert-client').css('display', 'block');
-                $('#alert-client #alert-msg').text('Expiration Date To cannot be less than Expiration Date From');
-                return;
+            var expire_from_date = $('#dtp_expiration_date_from').val();
+            var expire_to_date = $('#dtp_expiration_date_to').val();
+            if (expire_from_date != '' && expire_to_date != '') {
+                var expire_date_from = new Date(expire_from_date);
+                var expire_date_to = new Date(expire_to_date);
+                if (expire_date_from > expire_date_to) {
+                    $('#alert-client').css('display', 'block');
+                    $('#alert-client #alert-msg').text('Expiration Date To cannot be less than Expiration Date From');
+                    return;
+                }
             }
-        }
-        document.getElementById("submit-form").submit();
-    };
+            document.getElementById("submit-form").submit();
+        };
 
 
-    $('#select-all').on('change', function() {
-        $('.checkboxlist input[type="checkbox"]').prop('checked', this.checked);
-    });
-    $('.checkboxlist input[type="checkbox"]').on('change', function () {
-        var allChecked = $('.checkboxlist input:checked').length === $('.checkboxlist input').length;
-        $('#select-all').prop('checked', allChecked);
-    });
+        $('#select-all').on('change', function () {
+            $('.checkboxlist input[type="checkbox"]').prop('checked', this.checked);
+        });
+        $('.checkboxlist input[type="checkbox"]').on('change', function () {
+            var allChecked = $('.checkboxlist input:checked').length === $('.checkboxlist input').length;
+            $('#select-all').prop('checked', allChecked);
+        });
 
-    var validateVouchersType = function () {
+        var validateVouchersType = function () {
             var isOk = true;
             var voucherType = "";
 
@@ -455,560 +475,601 @@
                 }
             });
             return isOk;
-    };
+        };
 
-    var validateCurrencies = function () {
-        var firstCurrency = "";
-        var currentCurrency = "";
-        var isOk = true;
+        var validateCurrencies = function () {
+            var firstCurrency = "";
+            var currentCurrency = "";
+            var isOk = true;
 
-        var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
-        firstCurrency = checkedInput.length > 0 ? $(checkedInput.get(0)).parent().parent().find("#voucher_currency").text() : "";
-        $(checkedInput).each(function (index, value) {
-            currentCurrency = $(value).parent().parent().find("#voucher_currency").text();
-            if (firstCurrency != currentCurrency) {
-                swal({
-                    title: 'Batch cancellation must be the same currency',
-                    type: "error",
-                    confirmButtonColor: "#2ECC71",
-                    confirmButtonText: "Close",
-                    closeOnConfirm: true
-                });
-                isOk = false;
-            }
-        });
-        return isOk;
-    };
-
-    var validateIssuers = function () {
-        var firstIssuer = "";
-        var currentIssuer = "";
-        var isOk = true;
-
-        var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
-        firstIssuer = checkedInput.length > 0 ? $(checkedInput.get(0)).parent().parent().find("#voucher_issuer").text() : "";
-        $(checkedInput).each(function (index, value) {
-            currentIssuer = $(value).parent().parent().find("#voucher_issuer").text();
-            if (firstIssuer != currentIssuer) {
-                swal({
-                    title: 'Batch cancellation must be the same issuer',
-                    type: "error",
-                    confirmButtonColor: "#2ECC71",
-                    confirmButtonText: "Close",
-                    closeOnConfirm: true
-                });
-                isOk = false;
-            }
-        });
-        return isOk;
-    };
-
-    var validateClaimStatus = function () {
-        var claimStatus = false;
-        var isOk = true;
-
-        var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
-        $(checkedInput).each(function (index, value) {
-            claimStatus = $(value).parent().parent().find("#claim-status").text();
-            if (claimStatus == "Used") {
-                swal({
-                    title: 'Cannot cancel already claimed vouchers',
-                    type: "error",
-                    confirmButtonColor: "#2ECC71",
-                    confirmButtonText: "Close",
-                    closeOnConfirm: true
-                });
-                isOk = false;
-            }
-        });
-        return isOk;
-    };
-
-    function hold(){
-        if (!validateVouchersType()) return false;
-        $("#msg-add-client").hide();
-        $("#msg-update-client").hide();
-        $("#msg-add-service").hide();
-        $("#alert-client").hide();
-        $("#alert-client-hold-success").hide();
-        $("#alert-client-hold-failed").hide();
-        var arr = [];
-        var url = '/admin-portal/voucher/hold';
-        $('input.IsUnhold:checkbox:checked').each(function () {
-            arr.push($(this).val());
-        }); 
-        if(arr.length == 0) {
-            return;
-        }
-        $.ajax({
-            url : url,
-            type : "POST",
-            data: {"ids":arr},
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-            },
-            success: function (response) {
-                if(response.invalid_access_token){
-                    var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";
-                    window.location.replace(url);
-                    location.reload();
+            var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
+            firstCurrency = checkedInput.length > 0 ? $(checkedInput.get(0)).parent().parent().find("#voucher_currency").text() : "";
+            $(checkedInput).each(function (index, value) {
+                currentCurrency = $(value).parent().parent().find("#voucher_currency").text();
+                if (firstCurrency != currentCurrency) {
+                    swal({
+                        title: 'Batch cancellation must be the same currency',
+                        type: "error",
+                        confirmButtonColor: "#2ECC71",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true
+                    });
+                    isOk = false;
                 }
-                else {
-                    for(var i = 0; i < response.success_ids.length; i++){
-                        key=response.success_ids[i];
-                        $("#voucher-"+key).find('#hold-status').text('Hold');
-                        $("#chk_voucher_"+key).removeClass('IsUnhold');
-                        $("#chk_voucher_"+key).addClass('IsHold');
-                    }
-                        if (response.success_count > 0){
-                            showHoldSucessMessage(response.success_count + " of records successfully updated to Hold");
-                        }
-                        if (response.failed_count > 0){
-                            showHoldFailedMessage(response.failed_count + " of records failed update to Hold");
-                        }
+            });
+            return isOk;
+        };
+
+        var validateIssuers = function () {
+            var firstIssuer = "";
+            var currentIssuer = "";
+            var isOk = true;
+
+            var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
+            firstIssuer = checkedInput.length > 0 ? $(checkedInput.get(0)).parent().parent().find("#voucher_issuer").text() : "";
+            $(checkedInput).each(function (index, value) {
+                currentIssuer = $(value).parent().parent().find("#voucher_issuer").text();
+                if (firstIssuer != currentIssuer) {
+                    swal({
+                        title: 'Batch cancellation must be the same issuer',
+                        type: "error",
+                        confirmButtonColor: "#2ECC71",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true
+                    });
+                    isOk = false;
                 }
+            });
+            return isOk;
+        };
+
+        var validateClaimStatus = function () {
+            var claimStatus = false;
+            var isOk = true;
+
+            var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
+            $(checkedInput).each(function (index, value) {
+                claimStatus = $(value).parent().parent().find("#claim-status").text();
+                if (claimStatus == "Used") {
+                    swal({
+                        title: 'Cannot cancel already claimed vouchers',
+                        type: "error",
+                        confirmButtonColor: "#2ECC71",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true
+                    });
+                    isOk = false;
+                }
+            });
+            return isOk;
+        };
+
+        function hold() {
+            if (!validateVouchersType()) return false;
+            $("#msg-add-client").hide();
+            $("#msg-update-client").hide();
+            $("#msg-add-service").hide();
+            $("#alert-client").hide();
+            $("#alert-client-hold-success").hide();
+            $("#alert-client-hold-failed").hide();
+            var arr = [];
+            var url = '/admin-portal/voucher/hold';
+            $('input.IsUnhold:checkbox:checked').each(function () {
+                arr.push($(this).val());
+            });
+            if (arr.length == 0) {
+                return;
             }
-        });
-    }
-    function unHold(){
-        if (!validateVouchersType()) return false;
-        $("#msg-add-client").hide();
-        $("#msg-update-client").hide();
-        $("#msg-add-service").hide();
-        $("#alert-client").hide();
-        $("#alert-client-hold-success").hide();
-        $("#alert-client-hold-failed").hide();
-        var arr = [];
-        var url = '/admin-portal/voucher/unhold';
-        $('input.IsHold:checkbox:checked').each(function () {
-            arr.push($(this).val());
-        });
-         if(arr.length == 0) {
-            return;
-        }
-        $.ajax({
-            url : url,
-            type : "POST",
-            data: {"ids":arr},
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-            },
-            success: function (response) {
-                if(response.invalid_access_token){
-                    var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";
-                    window.location.replace(url);
-                    location.reload();
-                }
-                else {
-                for(i=0;i<response.success_ids.length; i++){
-                    key=response.success_ids[i];
-                    $("#voucher-"+key).find('#hold-status').text('Unhold');
-                    $("#chk_voucher_"+key).removeClass('IsHold');
-                    $("#chk_voucher_"+key).addClass('IsUnhold');
-                }
-                    if (response.success_count > 0){
-                        showHoldSucessMessage(response.success_count + " of records successfully updated to Unhold");
-                    }
-                    if (response.failed_count > 0){
-                        showHoldFailedMessage(response.failed_count + " of records failed update to Unhold");
-                    }
-                }
-            }
-        });
-    }
-
-    function showErrorMessage(msg) {
-        $("#alert-msg").text(msg);
-        $('#alert-client').removeClass("alert-success");
-        $('#alert-client').addClass("alert-danger");
-        $("#msg-add-client").prop("hidden", true);
-        $("#msg-update-client").prop("hidden", true);
-        $("#msg-add-service").prop("hidden", true);
-        $("#alert-client").show();
-        $("html, body").animate({scrollTop: 0}, "slow");
-    }
-
-    function showSuccessMessage(msg) {
-        $("#alert-msg").text(msg);
-        $('#alert-client').removeClass("alert-danger");
-        $('#alert-client').addClass("alert-success");
-        $("#msg-add-client").prop("hidden", true);
-        $("#msg-update-client").prop("hidden", true);
-        $("#msg-add-service").prop("hidden", true);
-        $("#alert-client").show();
-        $("html, body").animate({scrollTop: 0}, "slow");
-    }
-    function showHoldSucessMessage(msg){
-            $("#alert-msg-hold-success").text(msg);
-            $("#alert-client-hold-success").show();
-            $("html, body").animate({scrollTop: 0}, "slow");
-    }
-    function showHoldFailedMessage(msg){
-            $("#alert-msg-hold-failed").text(msg);
-            $("#alert-client-hold-failed").show();
-            $("html, body").animate({scrollTop: 0}, "slow");
-    }
-
-    var showRefundDialog = function(voucher_id) {
-        $("#refundModal #confirm_voucher_id").val("");
-        $("#refundModal #confirm_prod_ref3").val("");
-        $("#refundModal #confirm_prod_ref4").val("");
-        $("#refundModal #confirm_prod_ref5").val("");
-        $("#refundModal #confirm_fee").val("");
-        $("#refundModal #confirm_amount").val("");
-        $("#refundModal #id").val("");
-        $("#refundModal #currency").val("");
-        $("#refundModal #txt_prod_ref2").val("");
-        $("#refundModal #txt_prod_ref3").val("");
-        $("#refundModal #txt_prod_ref4").val("");
-        $("#refundModal #txt_prod_ref5").val("");
-        $("#refundModal #txt_reason_for_refund").val("");
-
-        var url = '{% url 'voucher:refund' %}';
-        $.ajax({
-            url : url,
-            type : "POST",
-            data: {"voucher_id": voucher_id},
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-            },
-            success: function (response) {
-                if(response.invalid_access_token){
-                    var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";
-                    window.location.replace(url);
-                    location.reload();
-                } else {
-                    var data = response.data;
-                    if (data[0]['is_deleted'] != null && data[0]['is_deleted']) {
-                        swal({
-                            title: 'Cannot refund deleted voucher',
-                            type: "error",
-                            confirmButtonColor: "#2ECC71",
-                            confirmButtonText: "Close",
-                            closeOnConfirm: true
-                        });
-                    } else if (data[0]['is_cancelled'] != null && data[0]['is_cancelled']) {
-                        swal({
-                            title: 'Cannot refund cancelled voucher',
-                            type: "error",
-                            confirmButtonColor: "#2ECC71",
-                            confirmButtonText: "Close",
-                            closeOnConfirm: true
-                        });
-                    } else if (data[0]['is_used'] != null && data[0]['is_used']) {
-                        swal({
-                            title: 'Cannot refund claimed voucher',
-                            type: "error",
-                            confirmButtonColor: "#2ECC71",
-                            confirmButtonText: "Close",
-                            closeOnConfirm: true
-                        });
-                    }  else if (data[0]['voucher_type'] == null || data[0]['voucher_type'] != "REMITTANCE") {
-                        swal({
-                            title: 'This voucher type cannot be refunded',
-                            type: "error",
-                            confirmButtonColor: "#2ECC71",
-                            confirmButtonText: "Close",
-                            closeOnConfirm: true
-                        });
-                    } else {
-                        $("#refundModal #confirm_voucher_id").val(data[0].voucher_id);
-                        $("#refundModal #confirm_prod_ref3").val(data[0].product.product_ref3);
-                        $("#refundModal #confirm_prod_ref4").val(data[0].product.product_ref4);
-                        $("#refundModal #confirm_prod_ref5").val(data[0].product.product_ref5);
-                        $("#refundModal #confirm_fee").val(data[0].fee);
-                        $("#refundModal #confirm_amount").val(data[0].amount);
-                        $("#refundModal #id").val(data[0].id);
-                        $("#refundModal #currency").val(data[0].currency);
-                        $("#refundModal").modal("show");
-                    }
-                }
-            }
-        });
-    }
-
-     //var dialog = $("#cancelModal");
-    //dialog.modal("show");
-
-    var showCancelDialog = function() {
-        if (!validateCurrencies() || !validateIssuers() || !validateClaimStatus()) return false;
-
-        var dialog = $("#cancelModal");
-        dialog.modal("show");
-{#        dialog.find("#confirm_selected_vouchers").val("");#}
-{#        dialog.find("#confirm_total_amount").val("");#}
-{#        dialog.find("#confirm_initiator_name").val("");#}
-{#        dialog.find("#confirm_issuer_user_id").val("");#}
-{#        dialog.find("#confirm_issuer_user_name").val("");#}
-{#        dialog.find("#confirm_issuer_sof_type").val("");#}
-{#        dialog.find("#confirm_issuer_sof_id").val("");#}
-{##}
-{#        dialog.find("#txt_service_name").val("");#}
-{#        dialog.find("#txt_service_id").val("");#}
-{#        dialog.find("#txt_prod_ref1").val("");#}
-{#        dialog.find("#txt_prod_ref2").val("");#}
-{#        dialog.find("#txt_prod_ref3").val("");#}
-{#        dialog.find("#txt_prod_ref4").val("");#}
-{#        dialog.find("#txt_prod_ref5").val("");#}
-{#        dialog.find("#txt_reason_for_cancel").val("");#}
-{#        dialog.find("#txt_payee_user_id").val("");#}
-{#        dialog.find("#txt_payee_user_name").val("");#}
-{##}
-{#        var url = '{% url 'voucher:refund' %}';#}
-{#        $.ajax({#}
-{#            url : url,#}
-{#            type : "POST",#}
-{#            data: {"voucher_id": voucher_id},#}
-{#            beforeSend: function (xhr) {#}
-{#                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');#}
-{#            },#}
-{#            success: function (response) {#}
-{#                if(response.invalid_access_token){#}
-{#                    var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";#}
-{#                    window.location.replace(url);#}
-{#                    location.reload();#}
-{#                } else {#}
-{#                    var data = response.data;#}
-{#                    if (data[0]['is_deleted'] != null && data[0]['is_deleted']) {#}
-{#                        swal({#}
-{#                            title: 'Cannot refund deleted voucher',#}
-{#                            type: "error",#}
-{#                            confirmButtonColor: "#2ECC71",#}
-{#                            confirmButtonText: "Close",#}
-{#                            closeOnConfirm: true#}
-{#                        });#}
-{#                    } else if (data[0]['is_cancelled'] != null && data[0]['is_cancelled']) {#}
-{#                        swal({#}
-{#                            title: 'Cannot refund cancelled voucher',#}
-{#                            type: "error",#}
-{#                            confirmButtonColor: "#2ECC71",#}
-{#                            confirmButtonText: "Close",#}
-{#                            closeOnConfirm: true#}
-{#                        });#}
-{#                    } else if (data[0]['is_used'] != null && data[0]['is_used']) {#}
-{#                        swal({#}
-{#                            title: 'Cannot refund claimed voucher',#}
-{#                            type: "error",#}
-{#                            confirmButtonColor: "#2ECC71",#}
-{#                            confirmButtonText: "Close",#}
-{#                            closeOnConfirm: true#}
-{#                        });#}
-{#                    }  else if (data[0]['voucher_type'] == null || data[0]['voucher_type'] != "REMITTANCE") {#}
-{#                        swal({#}
-{#                            title: 'This voucher type cannot be refunded',#}
-{#                            type: "error",#}
-{#                            confirmButtonColor: "#2ECC71",#}
-{#                            confirmButtonText: "Close",#}
-{#                            closeOnConfirm: true#}
-{#                        });#}
-{#                    } else {#}
-{#                        dialog.find("#confirm_selected_vouchers").val(data[0].voucher_id);#}
-{#                        dialog.find("#confirm_total_amount").val(data[0].product.product_ref3);#}
-{#                        dialog.find("#confirm_initiator_name").val(data[0].product.product_ref4);#}
-{#                        dialog.find("#confirm_issuer_user_id").val(data[0].product.product_ref5);#}
-{#                        dialog.find("#confirm_issuer_user_name").val(data[0].fee);#}
-{#                        dialog.find("#confirm_issuer_sof_type").val(data[0].amount);#}
-{#                        dialog.find("#confirm_issuer_sof_id").val(data[0].id);#}
-{#                        dialog.modal("show");#}
-{#                    }#}
-{#                }#}
-{#            }#}
-{#        });#}
-    }
-
-    bindApproveRefundVoucher = function () {
-        var refundRequestPopup = $("#refundRequestModal");
-        $(refundRequestPopup).find("#btn_dialog_approve_voucher_refund").click(function (event) {
-            var refundRequestId = $(refundRequestPopup).find("#refund_request_id_value").val();
-            var refundRequestIds = [];
-            refundRequestIds.push(refundRequestId);
-            var url = "{% url 'voucher:approve_voucher_refunds'%}";
-            var data = {
-                "refundRequestIds": JSON.stringify(refundRequestIds),
-            }
-            // Request to server
             $.ajax({
                 url: url,
                 type: "POST",
-                data: data,
-                dataType: "json",
+                data: {"ids": arr},
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
                 },
                 success: function (response) {
-                    if (response.is_success) {
+                    if (response.invalid_access_token) {
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";
+                        window.location.replace(url);
+                        location.reload();
+                    }
+                    else {
+                        for (var i = 0; i < response.success_ids.length; i++) {
+                            key = response.success_ids[i];
+                            $("#voucher-" + key).find('#hold-status').text('Hold');
+                            $("#chk_voucher_" + key).removeClass('IsUnhold');
+                            $("#chk_voucher_" + key).addClass('IsHold');
+                        }
+                        if (response.success_count > 0) {
+                            showHoldSucessMessage(response.success_count + " of records successfully updated to Hold");
+                        }
+                        if (response.failed_count > 0) {
+                            showHoldFailedMessage(response.failed_count + " of records failed update to Hold");
+                        }
+                    }
+                }
+            });
+        }
+        function unHold() {
+            if (!validateVouchersType()) return false;
+            $("#msg-add-client").hide();
+            $("#msg-update-client").hide();
+            $("#msg-add-service").hide();
+            $("#alert-client").hide();
+            $("#alert-client-hold-success").hide();
+            $("#alert-client-hold-failed").hide();
+            var arr = [];
+            var url = '/admin-portal/voucher/unhold';
+            $('input.IsHold:checkbox:checked').each(function () {
+                arr.push($(this).val());
+            });
+            if (arr.length == 0) {
+                return;
+            }
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {"ids": arr},
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function (response) {
+                    if (response.invalid_access_token) {
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";
+                        window.location.replace(url);
+                        location.reload();
+                    }
+                    else {
+                        for (i = 0; i < response.success_ids.length; i++) {
+                            key = response.success_ids[i];
+                            $("#voucher-" + key).find('#hold-status').text('Unhold');
+                            $("#chk_voucher_" + key).removeClass('IsHold');
+                            $("#chk_voucher_" + key).addClass('IsUnhold');
+                        }
+                        if (response.success_count > 0) {
+                            showHoldSucessMessage(response.success_count + " of records successfully updated to Unhold");
+                        }
+                        if (response.failed_count > 0) {
+                            showHoldFailedMessage(response.failed_count + " of records failed update to Unhold");
+                        }
+                    }
+                }
+            });
+        }
+
+        function showErrorMessage(msg) {
+            $("#alert-msg").text(msg);
+            $('#alert-client').removeClass("alert-success");
+            $('#alert-client').addClass("alert-danger");
+            $("#msg-add-client").prop("hidden", true);
+            $("#msg-update-client").prop("hidden", true);
+            $("#msg-add-service").prop("hidden", true);
+            $("#alert-client").show();
+            $("html, body").animate({scrollTop: 0}, "slow");
+        }
+
+        function showSuccessMessage(msg) {
+            $("#alert-msg").text(msg);
+            $('#alert-client').removeClass("alert-danger");
+            $('#alert-client').addClass("alert-success");
+            $("#msg-add-client").prop("hidden", true);
+            $("#msg-update-client").prop("hidden", true);
+            $("#msg-add-service").prop("hidden", true);
+            $("#alert-client").show();
+            $("html, body").animate({scrollTop: 0}, "slow");
+        }
+        function showHoldSucessMessage(msg) {
+            $("#alert-msg-hold-success").text(msg);
+            $("#alert-client-hold-success").show();
+            $("html, body").animate({scrollTop: 0}, "slow");
+        }
+        function showHoldFailedMessage(msg) {
+            $("#alert-msg-hold-failed").text(msg);
+            $("#alert-client-hold-failed").show();
+            $("html, body").animate({scrollTop: 0}, "slow");
+        }
+
+        var showRefundDialog = function (voucher_id) {
+            $("#refundModal #confirm_voucher_id").val("");
+            $("#refundModal #confirm_prod_ref3").val("");
+            $("#refundModal #confirm_prod_ref4").val("");
+            $("#refundModal #confirm_prod_ref5").val("");
+            $("#refundModal #confirm_fee").val("");
+            $("#refundModal #confirm_amount").val("");
+            $("#refundModal #id").val("");
+            $("#refundModal #currency").val("");
+            $("#refundModal #txt_prod_ref2").val("");
+            $("#refundModal #txt_prod_ref3").val("");
+            $("#refundModal #txt_prod_ref4").val("");
+            $("#refundModal #txt_prod_ref5").val("");
+            $("#refundModal #txt_reason_for_refund").val("");
+
+            var url = '{% url 'voucher:refund' %}';
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {"voucher_id": voucher_id},
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function (response) {
+                    if (response.invalid_access_token) {
+                        var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";
+                        window.location.replace(url);
                         location.reload();
                     } else {
-                        //process fail case of approve voucher refund
+                        var data = response.data;
+                        if (data[0]['is_deleted'] != null && data[0]['is_deleted']) {
+                            swal({
+                                title: 'Cannot refund deleted voucher',
+                                type: "error",
+                                confirmButtonColor: "#2ECC71",
+                                confirmButtonText: "Close",
+                                closeOnConfirm: true
+                            });
+                        } else if (data[0]['is_cancelled'] != null && data[0]['is_cancelled']) {
+                            swal({
+                                title: 'Cannot refund cancelled voucher',
+                                type: "error",
+                                confirmButtonColor: "#2ECC71",
+                                confirmButtonText: "Close",
+                                closeOnConfirm: true
+                            });
+                        } else if (data[0]['is_used'] != null && data[0]['is_used']) {
+                            swal({
+                                title: 'Cannot refund claimed voucher',
+                                type: "error",
+                                confirmButtonColor: "#2ECC71",
+                                confirmButtonText: "Close",
+                                closeOnConfirm: true
+                            });
+                        } else if (data[0]['voucher_type'] == null || data[0]['voucher_type'] != "REMITTANCE") {
+                            swal({
+                                title: 'This voucher type cannot be refunded',
+                                type: "error",
+                                confirmButtonColor: "#2ECC71",
+                                confirmButtonText: "Close",
+                                closeOnConfirm: true
+                            });
+                        } else {
+                            $("#refundModal #confirm_voucher_id").val(data[0].voucher_id);
+                            $("#refundModal #confirm_prod_ref3").val(data[0].product.product_ref3);
+                            $("#refundModal #confirm_prod_ref4").val(data[0].product.product_ref4);
+                            $("#refundModal #confirm_prod_ref5").val(data[0].product.product_ref5);
+                            $("#refundModal #confirm_fee").val(data[0].fee);
+                            $("#refundModal #confirm_amount").val(data[0].amount);
+                            $("#refundModal #id").val(data[0].id);
+                            $("#refundModal #currency").val(data[0].currency);
+                            $("#refundModal").modal("show");
+                        }
                     }
-                    $("#refundRequestModal").modal('hide');
-                },
-                error: function (err) {
-                    var json = JSON.stringify(err);
-                    showErrorMessage("approve error!");
                 }
             });
-        })
-    }
-
-    validateUploadFileSize = function (popupContainer) {
-        var uploadFileInput = $(popupContainer).find("input[name='file_data']");
-        //8MB = 1024 * 1024 * 8 = 8388608
-        if ($(uploadFileInput)[0].files[0].size > 8388608) {
-            swal({
-                title: 'Upload exceeded max 8MB file size limit',
-                type: "error",
-                confirmButtonColor: "#2ECC71",
-                confirmButtonText: "Close",
-                closeOnConfirm: true
-            });
-            return false;
-        }
-        return true;
-    }
-
-    validateUploadFileType = function (popupContainer) {
-        //Validate csv file type
-        if (!validateFileType(popupContainer, ['csv'])) {
-            swal({
-                title: 'Upload must be in csv format',
-                type: "error",
-                confirmButtonColor: "#2ECC71",
-                confirmButtonText: "Close",
-                closeOnConfirm: true
-            });
-            return false;
-        }
-        return true;
-    }
-
-    uploadDelegateFunction = function (popupContainer) {
-        if (!validateRequireInputFile(popupContainer)) {
-            return false;
-        }
-        //Validate csv file type
-        if (!validateUploadFileType(popupContainer)) {
-            return false;
         }
 
-        if (!commonUploadValidation(popupContainer)) {
-            return false;
+        function resetCancelVoucherDialog(dialog) {
+            dialog.find("#confirm_selected_vouchers").val("");
+            dialog.find("#confirm_total_amount").val("");
+            dialog.find("#confirm_issuer_user_id").val("").change();
+            dialog.find("#confirm_issuer_user_name").val("");
+            dialog.find("#confirm_issuer_sof_type").val("");
+            dialog.find("#confirm_issuer_sof_id").val("");
+
+            dialog.find("#ddl_services").val("");
+            dialog.find("#txt_service_name").val("");
+            dialog.find("#txt_initiator_user_id").val("").change();
+            dialog.find("#txt_initiator_user_name").val("");
+            dialog.find("ddl_initiator_sof_id").val("");
+            dialog.find("#txt_prod_ref1").val("");
+            dialog.find("#txt_prod_ref2").val("");
+            dialog.find("#txt_prod_ref3").val("");
+            dialog.find("#txt_prod_ref4").val("");
+            dialog.find("#txt_prod_ref5").val("");
+            dialog.find("#txt_reason_for_cancel").val("");
+            dialog.find("#txt_payee_user_id").val("").change();
+            dialog.find("#txt_payee_user_name").val("");
+            dialog.find("#ddl_payee_sof_id").val("");
         }
 
-        if (!validateUploadFileSize(popupContainer)) {
-            return false;
-        }
-        upload(popupContainer);
-    }
-
-    function gen_uuid(functionId) {
-        var uuid = functionId;
-        for (var i = 0; i < 32; i++) {
-            uuid += Math.floor(Math.random() * 16).toString(16);
-        }
-        return uuid
-    }
-
-    upload = function(popupContainer) {
-        var uuid = gen_uuid(2); // id for this upload so we can fetch progress info.
-        var file = $(popupContainer).find('input[name="file_data"]').get(0).files[0];
-        var formData = new FormData();
-        formData.append('file_data', file);
-        var url = "{% url 'voucher:upload'%}"
-        var freq = 100; // freqency of update in ms
-        var progress_url = '{% url 'voucher:upload_progress' %}';
-        var progressContainer = $(popupContainer).find($('#progress_container'))
-        // Update progress bar
-        function update_progress_info() {
-            $.getJSON(progress_url, {'X-Progress-ID': uuid}, function (data, status) {
-                if (data) {
-                    var progress = parseInt(data.uploaded) / parseInt(data.length);
-                    progress = progress > 1 ? 1 : progress;
-                    var width = $(popupContainer).find('input[name="file_data_mask"]').width()
-                    var progress_width = width * progress;
-                    progressContainer.find('#progress').width(progress_width);
-                    var uploadPercent = parseInt(progress * 100);
-                    progressContainer.find('#progress_info').text('Uploading ' + uploadPercent + '%');
-                    window.setTimeout(update_progress_info, freq);
-                } else {
-                    progressContainer.find('#progress').width($(popupContainer).find('input[name="file_data_mask"]').width());
-                    progressContainer.find('#progress_info').text("Upload successfully")
-                    progressContainer.find('#dlg_icon_ok').show()
+        getDecimalAmount = function () {
+            var decimalAmount = 0;
+            $('#tbl_voucher tr.checkboxlist').each(function (index, tr) {
+                var checkbox = $(tr).find('input[type="checkbox"]');
+                if ($(checkbox).prop("checked")) {
+                    var amountstr = $(tr).find("td#voucher_amount").text();
+                    var arr = amountstr.split('.');
+                    var fractionPart = arr[1];
+                    if (fractionPart != undefined) {
+                        decimalAmount = fractionPart.trim().length;
+                    }
+                    //break each loop
+                    return false;
                 }
             });
-        };
-        window.setTimeout(update_progress_info, 300);
-        $.ajax({
-            type: "POST",
-            url: url + "?X-Progress-ID=" + uuid,
-            data: formData,
-            contentType: false,
-            processData: false,
-            cache: false,
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-                xhr.setRequestHeader("X-Progress-ID", uuid);
-                progressContainer.show();
-            },
-            success: function (data) {
-                var uploadData = JSON.parse(data);
-                if (null != uploadData &&  uploadData.id >=0) {
-                    popupContainer.find($('#download_link')).text("File uploaded successfully #" + uploadData.id)
-                    popupContainer.find($('#download_link')).attr("href", "{% url 'upload_management:list' %}?file_id=" + uploadData.id)
-                    popupContainer.find($('#progress_info')).hide();
-                    popupContainer.find($('#download_link')).show();
-                    popupContainer.find($('#btn_dialog_done')).show();
-                    popupContainer.find($('#btn_dialog_cancel')).hide();
-                } else if (uploadData.id == -1 && "file_exceeded_max_size" == uploadData.code) {
-                    popupContainer.find($('#progress_container')).hide();
-                    swal({
-                        title: 'Upload exceeded max 8MB file size limit',
-                        type: "error",
-                        confirmButtonColor: "#2ECC71",
-                        confirmButtonText: "Close",
-                        closeOnConfirm: true
-                    });
-                }else if (uploadData.id == -1 && "Upload must be in csv format" == uploadData.code) {
-                    popupContainer.find($('#progress_container')).hide();
-                    swal({
-                        title: 'Upload must be in csv format',
-                        type: "error",
-                        confirmButtonColor: "#2ECC71",
-                        confirmButtonText: "Close",
-                        closeOnConfirm: true
-                    });
-                } else if (uploadData.id == -1 && "permission_denied" == uploadData.code) {
-                    popupContainer.find($('#progress_container')).hide();
-                    swal({
-                        title: 'permission denied',
-                        type: "error",
-                        confirmButtonColor: "#2ECC71",
-                        confirmButtonText: "Close",
-                        closeOnConfirm: true
-                    });
+            return decimalAmount;
+        }
+
+        calculateTotalAmount = function () {
+            var totalAmount = new BigNumber(0);
+            $('#tbl_voucher tr.checkboxlist').each(function (index, tr) {
+                var checkbox = $(tr).find('input[type="checkbox"]');
+                if ($(checkbox).prop("checked")) {
+                    var amount = $(tr).find("td#voucher_amount").text();
+                    var amountAsNumberFormat = amount.replace(/,/g, '');
+                    totalAmount = totalAmount.plus(new BigNumber(amountAsNumberFormat));
+                }
+            });
+            return totalAmount;
+        }
+
+        getSelectedCurrency = function () {
+            var selectedCurrencies = [];
+            $('#tbl_voucher tr.checkboxlist').each(function (index, tr) {
+                var checkbox = $(tr).find('input[type="checkbox"]');
+                if ($(checkbox).prop("checked")) {
+                    var currency = $(tr).find("td#voucher_currency").text();
+                    selectedCurrencies.push(currency);
+                }
+            });
+
+            if (selectedCurrencies.length == 0) {
+                return null;
+            }
+
+            var selectedCurrency = selectedCurrencies[0];
+            //does not have the currency for created fail
+            if (selectedCurrency == null || selectedCurrency == '') {
+                return null;
+            }
+
+            $.each(selectedCurrencies, function (index, currency) {
+                if (currency != selectedCurrency) {
+                    //handle the currency is not the same error later
+                    selectedCurrency = null;
+                    return false;
+                }
+            })
+            return selectedCurrency;
+        }
+
+        function getSofType(selectedIssuerSofTypeId) {
+            var selectedIssuerSofType = "";
+            var sofTypes = "{{ sof_types }}".replace(new RegExp("&#39;", 'g'), "\"");
+            sofTypesJson = JSON.parse("{\"sof_types\":" + sofTypes + "}").sof_types;
+            for (idx in sofTypesJson) {
+                if (sofTypesJson[idx].sof_type_id == selectedIssuerSofTypeId) {
+                    selectedIssuerSofType = sofTypesJson[idx].sof_type;
+                    selectedIssuerSofType = selectedIssuerSofType.replace(selectedIssuerSofType[0], selectedIssuerSofType[0].toUpperCase());
+                    break;
                 }
             }
-        });
-    }
+            return selectedIssuerSofType;
+        }
 
-    bindSelectUploadAction = function (popupContainer) {
-        $("#ddl_select_action").find("#upload_vouchers").click(function (e) {
-            popupContainer.find("#progress_container").hide();
-            popupContainer.modal('show');
-            popupContainer.find("#progress_container").find("#progress").width(0);
-            popupContainer.find("#progress_container").find("#progress_info").width("0%");
-        });
-    }
+        var showCancelDialog = function () {
+            if (!validateCurrencies() || !validateIssuers() || !validateClaimStatus()) return false;
+            var selectedCurrency = getSelectedCurrency();
+            var dialog = $("#cancelModal");
+            dialog.modal("show");
+            resetCancelVoucherDialog(dialog);
+            var decimalAmount = null;
+            var totalAmount = null;
+            if (selectedCurrency != null) {
+                decimalAmount = getDecimalAmount();
+                totalAmount = calculateTotalAmount();
+            }
 
-    initUploadPopup = function () {
-        var popupContainer = $("#uploadFileModal");
-        initUploadFilePopup(popupContainer, undefined, uploadDelegateFunction);
-        bindSelectUploadAction(popupContainer);
-    }
+            if (totalAmount != null) {
+                dialog.find("#confirm_total_amount").val(totalAmount.toFormat(decimalAmount));
+            }
+            var selectedNumber = $('#tbl_voucher tr.checkboxlist  input:checked').length;
+            var row1 = $('#tbl_voucher tr.checkboxlist  input:checked').first().parent().parent();
+            var selectedCurrency = row1.find('#voucher_currency').text().trim();
+            var selectedIssuerUserId = row1.find('#hidden_issuer_user_id').val();
+            var selectedIssuerSofId = row1.find('#hidden_issuer_sof_id').val();
+            var selectedIssuerSofTypeId = row1.find('#hidden_issuer_sof_type_id').val();
+            var selectedIssuerSofType = getSofType(selectedIssuerSofTypeId);
+            dialog.find("#confirm_selected_vouchers").val(selectedNumber);
+            dialog.find("#confirm_currency").val(selectedCurrency);
+            dialog.find("#confirm_issuer_user_id").val(selectedIssuerUserId).change();
+            dialog.find("#confirm_issuer_sof_id").val(selectedIssuerSofId);
+            dialog.find("#confirm_issuer_sof_type").val(selectedIssuerSofType);
+        }
 
-    $(document).ready(function () {
-        bindApproveRefundVoucher();
-        initUploadPopup();
-    })
-</script>
+        bindApproveRefundVoucher = function () {
+            var refundRequestPopup = $("#refundRequestModal");
+            $(refundRequestPopup).find("#btn_dialog_approve_voucher_refund").click(function (event) {
+                var refundRequestId = $(refundRequestPopup).find("#refund_request_id_value").val();
+                var refundRequestIds = [];
+                refundRequestIds.push(refundRequestId);
+                var url = "{% url 'voucher:approve_voucher_refunds'%}";
+                var data = {
+                    "refundRequestIds": JSON.stringify(refundRequestIds),
+                }
+                // Request to server
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: data,
+                    dataType: "json",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    },
+                    success: function (response) {
+                        if (response.is_success) {
+                            location.reload();
+                        } else {
+                            //process fail case of approve voucher refund
+                        }
+                        $("#refundRequestModal").modal('hide');
+                    },
+                    error: function (err) {
+                        var json = JSON.stringify(err);
+                        showErrorMessage("approve error!");
+                    }
+                });
+            })
+        }
+
+        validateUploadFileSize = function (popupContainer) {
+            var uploadFileInput = $(popupContainer).find("input[name='file_data']");
+            //8MB = 1024 * 1024 * 8 = 8388608
+            if ($(uploadFileInput)[0].files[0].size > 8388608) {
+                swal({
+                    title: 'Upload exceeded max 8MB file size limit',
+                    type: "error",
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true
+                });
+                return false;
+            }
+            return true;
+        }
+
+        validateUploadFileType = function (popupContainer) {
+            //Validate csv file type
+            if (!validateFileType(popupContainer, ['csv'])) {
+                swal({
+                    title: 'Upload must be in csv format',
+                    type: "error",
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true
+                });
+                return false;
+            }
+            return true;
+        }
+
+        uploadDelegateFunction = function (popupContainer) {
+            if (!validateRequireInputFile(popupContainer)) {
+                return false;
+            }
+            //Validate csv file type
+            if (!validateUploadFileType(popupContainer)) {
+                return false;
+            }
+
+            if (!commonUploadValidation(popupContainer)) {
+                return false;
+            }
+
+            if (!validateUploadFileSize(popupContainer)) {
+                return false;
+            }
+            upload(popupContainer);
+        }
+
+        function gen_uuid(functionId) {
+            var uuid = functionId;
+            for (var i = 0; i < 32; i++) {
+                uuid += Math.floor(Math.random() * 16).toString(16);
+            }
+            return uuid
+        }
+
+        upload = function (popupContainer) {
+            var uuid = gen_uuid(2); // id for this upload so we can fetch progress info.
+            var file = $(popupContainer).find('input[name="file_data"]').get(0).files[0];
+            var formData = new FormData();
+            formData.append('file_data', file);
+            var url = "{% url 'voucher:upload'%}"
+            var freq = 100; // freqency of update in ms
+            var progress_url = '{% url 'voucher:upload_progress' %}';
+            var progressContainer = $(popupContainer).find($('#progress_container'))
+            // Update progress bar
+            function update_progress_info() {
+                $.getJSON(progress_url, {'X-Progress-ID': uuid}, function (data, status) {
+                    if (data) {
+                        var progress = parseInt(data.uploaded) / parseInt(data.length);
+                        progress = progress > 1 ? 1 : progress;
+                        var width = $(popupContainer).find('input[name="file_data_mask"]').width()
+                        var progress_width = width * progress;
+                        progressContainer.find('#progress').width(progress_width);
+                        var uploadPercent = parseInt(progress * 100);
+                        progressContainer.find('#progress_info').text('Uploading ' + uploadPercent + '%');
+                        window.setTimeout(update_progress_info, freq);
+                    } else {
+                        progressContainer.find('#progress').width($(popupContainer).find('input[name="file_data_mask"]').width());
+                        progressContainer.find('#progress_info').text("Upload successfully")
+                        progressContainer.find('#dlg_icon_ok').show()
+                    }
+                });
+            };
+            window.setTimeout(update_progress_info, 300);
+            $.ajax({
+                type: "POST",
+                url: url + "?X-Progress-ID=" + uuid,
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    xhr.setRequestHeader("X-Progress-ID", uuid);
+                    progressContainer.show();
+                },
+                success: function (data) {
+                    var uploadData = JSON.parse(data);
+                    if (null != uploadData && uploadData.id >= 0) {
+                        popupContainer.find($('#download_link')).text("File uploaded successfully #" + uploadData.id)
+                        popupContainer.find($('#download_link')).attr("href", "{% url 'upload_management:list' %}?file_id=" + uploadData.id)
+                        popupContainer.find($('#progress_info')).hide();
+                        popupContainer.find($('#download_link')).show();
+                        popupContainer.find($('#btn_dialog_done')).show();
+                        popupContainer.find($('#btn_dialog_cancel')).hide();
+                    } else if (uploadData.id == -1 && "file_exceeded_max_size" == uploadData.code) {
+                        popupContainer.find($('#progress_container')).hide();
+                        swal({
+                            title: 'Upload exceeded max 8MB file size limit',
+                            type: "error",
+                            confirmButtonColor: "#2ECC71",
+                            confirmButtonText: "Close",
+                            closeOnConfirm: true
+                        });
+                    } else if (uploadData.id == -1 && "Upload must be in csv format" == uploadData.code) {
+                        popupContainer.find($('#progress_container')).hide();
+                        swal({
+                            title: 'Upload must be in csv format',
+                            type: "error",
+                            confirmButtonColor: "#2ECC71",
+                            confirmButtonText: "Close",
+                            closeOnConfirm: true
+                        });
+                    } else if (uploadData.id == -1 && "permission_denied" == uploadData.code) {
+                        popupContainer.find($('#progress_container')).hide();
+                        swal({
+                            title: 'permission denied',
+                            type: "error",
+                            confirmButtonColor: "#2ECC71",
+                            confirmButtonText: "Close",
+                            closeOnConfirm: true
+                        });
+                    }
+                }
+            });
+        }
+
+        bindSelectUploadAction = function (popupContainer) {
+            $("#ddl_select_action").find("#upload_vouchers").click(function (e) {
+                popupContainer.find("#progress_container").hide();
+                popupContainer.modal('show');
+                popupContainer.find("#progress_container").find("#progress").width(0);
+                popupContainer.find("#progress_container").find("#progress_info").width("0%");
+            });
+        }
+
+        initUploadPopup = function () {
+            var popupContainer = $("#uploadFileModal");
+            initUploadFilePopup(popupContainer, undefined, uploadDelegateFunction);
+            bindSelectUploadAction(popupContainer);
+        }
+
+        $(document).ready(function () {
+            bindApproveRefundVoucher();
+            initUploadPopup();
+            initCancelDialog()
+        })
+    </script>
 {% endblock %}
