@@ -108,7 +108,7 @@
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="status"
                                                id="txt_status"
-                                               value="{{ agent.is_suspended|yesno:'Suspended,Active' }}" disabled/>
+                                               value="{{ agent.is_suspended|yesno:'Suspended,Active'|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-12">
@@ -940,10 +940,18 @@
                                 <div class="form-group col-md-12">
                                     <label class="col-sm-3 control-label">Bank Account Status</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded" name="bank_account_status"
+                                         {% if agent.bank.account_status is None %}
+                                               <input type="text" class="form-control input-rounded" name="bank_account_status"
+                                               id="txt_bank_account_status"
+                                               value=""
+                                               disabled/>
+                                        {% else %}
+                                              <input type="text" class="form-control input-rounded" name="bank_account_status"
                                                id="txt_bank_account_status"
                                                value="{{ agent.bank.account_status|yesno:'Active,Inactive' }}"
                                                disabled/>
+                                        {% endif %}
+
                                     </div>
                                 </div>
                             </div>
@@ -1014,9 +1022,16 @@
                                 <div class="form-group col-md-12">
                                     <label class="col-sm-3 control-label">Verify Status</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded" name="bank_is_verified"
+                                         {% if agent.bank.is_verified is None %}
+                                              <input type="text" class="form-control input-rounded" name="bank_is_verified"
                                                id="bank_is_verified"
-                                               value="{{ agent.bank.is_verified|yesno:'Active,Inactive' }}" disabled/>
+                                               value="" disabled/>
+                                        {% else %}
+                                              <input type="text" class="form-control input-rounded" name="bank_is_verified"
+                                               id="bank_is_verified"
+                                               value="{{ agent.bank.is_verified|yesno:'Yes,No' }}" disabled/>
+                                        {% endif %}
+
                                     </div>
                                 </div>
                                 <div class="form-group col-md-12">
@@ -1214,11 +1229,19 @@
                                 <div class="form-group col-md-12">
                                     <label class="col-sm-3 control-label">Status</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded"
+                                        {% if agent.accreditation.primary_identity.status is None %}
+                                            <input type="text" class="form-control input-rounded"
                                                name="primary_identity_status"
                                                id="txt_primary_identity_status"
-                                               value="{{ agent.accreditation.primary_identity.status|yesno:'Active,Inactive'|default_if_none:'' }}"
+                                               value=""
                                                disabled/>
+                                        {% else %}
+                                             <input type="text" class="form-control input-rounded"
+                                               name="primary_identity_status"
+                                               id="txt_primary_identity_status"
+                                               value="{{ agent.accreditation.primary_identity.status|default_if_none:''|yesno:'Active,Inactive'}}"
+                                               disabled/>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -1318,11 +1341,20 @@
                                 <div class="form-group col-md-12">
                                     <label class="col-sm-3 control-label">Status</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded"
+                                        {% if agent.accreditation.secondary_identity.status is None %}
+                                            <input type="text" class="form-control input-rounded"
                                                name="secondary_identity_status"
                                                id="txt_secondary_identity_status"
-                                               value="{{ agent.accreditation.secondary_identity.status|yesno:'Active,Inactive'|default_if_none:'' }}"
+                                               value=""
                                                disabled/>
+                                        {% else %}
+                                            <input type="text" class="form-control input-rounded"
+                                               name="secondary_identity_status"
+                                               id="txt_secondary_identity_status"
+                                               value="{{ agent.accreditation.secondary_identity.status|yesno:'Active,Inactive' }}"
+                                               disabled/>
+                                        {% endif %}
+
                                     </div>
                                 </div>
                             </div>
