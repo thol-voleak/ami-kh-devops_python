@@ -748,27 +748,7 @@
         }
 
         function resetCancelVoucherDialog(dialog) {
-            dialog.find("#confirm_selected_vouchers").val("");
-            dialog.find("#confirm_total_amount").val("");
-            dialog.find("#confirm_issuer_user_id").val("").change();
-            dialog.find("#confirm_issuer_user_name").val("");
-            dialog.find("#confirm_issuer_sof_type").val("");
-            dialog.find("#confirm_issuer_sof_id").val("");
-
-            dialog.find("#ddl_services").val("");
-            dialog.find("#txt_service_name").val("");
-            dialog.find("#txt_initiator_user_id").val("").change();
-            dialog.find("#txt_initiator_user_name").val("");
-            dialog.find("ddl_initiator_sof_id").val("");
-            dialog.find("#txt_prod_ref1").val("");
-            dialog.find("#txt_prod_ref2").val("");
-            dialog.find("#txt_prod_ref3").val("");
-            dialog.find("#txt_prod_ref4").val("");
-            dialog.find("#txt_prod_ref5").val("");
-            dialog.find("#txt_reason_for_cancel").val("");
-            dialog.find("#txt_payee_user_id").val("").change();
-            dialog.find("#txt_payee_user_name").val("");
-            dialog.find("#ddl_payee_sof_id").val("");
+            dialog.find("#mForm")[0].reset();
         }
 
         getDecimalAmount = function () {
@@ -850,8 +830,8 @@
             if (!validateCurrencies() || !validateIssuers() || !validateClaimStatus()) return false;
             var selectedCurrency = getSelectedCurrency();
             var dialog = $("#cancelModal");
-            dialog.modal("show");
             resetCancelVoucherDialog(dialog);
+            dialog.modal("show");
             var decimalAmount = null;
             var totalAmount = null;
             if (selectedCurrency != null) {
