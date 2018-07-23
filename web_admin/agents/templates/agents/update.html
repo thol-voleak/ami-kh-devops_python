@@ -401,6 +401,7 @@
                                 <label class="col-sm-3 control-label">Ethnicity</label>
                                 <div class="col-sm-7">
                                     <select class="form-control" id="ddl_ethnicity" name="ethnicity">
+                                        <option value="" {% if not agent_profile.ethnicity%}selected{% endif %}>-</option>
                                         <option value="White" {% if agent_profile.ethnicity == "White" %} selected{% endif %}>White</option>
                                         <option value="Hispanic/Latino" {% if agent_profile.ethnicity == "Hispanic/Latino" %} selected{% endif %}>Hispanic/Latino</option>
                                         <option value="Black or African American" {% if agent_profile.ethnicity == "Black or African American" %} selected{% endif %}>Black or African American</option>
@@ -1135,6 +1136,11 @@
                                 <div class="col-sm-7">
                                     <select class="form-control" id="ddl_accreditation_status"
                                             name="accreditation_status">
+                                        {% if not agent_profile.accreditation.status_id %}
+                                            <option value="" selected>-</option>
+                                        {% else %}
+                                            <option value="">-</option>
+                                        {% endif %}
                                         {% for accreditation_status in accreditation_status_list %}
                                             {% if agent_profile.accreditation.status_id == accreditation_status.id %}
                                                 <option value="{{ accreditation_status.id }}" selected>{{ accreditation_status.status }}</option>
