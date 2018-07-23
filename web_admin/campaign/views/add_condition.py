@@ -227,20 +227,10 @@ class AddCondition(TemplateView, GetHeaderMixin):
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
                 # consecutive key detail
-                consecutive_key_value_type = request.POST.get('consecutive_key_value_type_' + suffix)
-                consecutive_detail_name = request.POST.get('consecutive_detail_name_' + suffix)
-                consecutive_operator = request.POST.get('consecutive_operator_' + suffix)
-                consecutive_key_value = request.POST.get('consecutive_key_value_' + suffix)
                 condition_reset_event = request.POST.get('condition_reset_event_' + suffix)
-                consecutive_operator_value = self._operator_map[consecutive_operator]
-                params = {
-                    'key_name': consecutive_detail_name,
-                    'key_value_type': self._kv_type_map[consecutive_key_value_type],
-                    'operator': consecutive_operator_value,
-                    'is_consecutive_key': True
-                }
-                if not self._is_blank_operator(request, 'consecutive_operator_' + suffix):
-                    params["key_value"] = consecutive_key_value
+                params = self._build_create_filter_params(request, 'consecutive_detail_name_' + suffix, 'consecutive_key_value_type_' + suffix,
+                                                          'consecutive_operator_' + suffix, 'consecutive_key_value_' + suffix)
+                params["is_consecutive_key"] = True
                 success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
