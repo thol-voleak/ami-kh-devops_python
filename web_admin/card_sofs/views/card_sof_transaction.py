@@ -35,6 +35,10 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
     def get(self, request, *args, **kwargs):
         context = {"search_count": 0}
         self.init_search_datetime(context)
+        currencies = self.get_currencies_list()
+        context.update({
+            'currencies': currencies
+        })
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -62,6 +66,7 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
         modified_to_date = request.POST.get('modified_to_date')
         modified_from_time = request.POST.get('modified_from_time')
         modified_to_time = request.POST.get('modified_to_time')
+        currency = request.POST.get('currency')
 
         opening_page_index = request.POST.get('current_page_index')
 
@@ -69,13 +74,14 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
                                      action_id, user_id, user_type_id, provider_name,
                                      card_design_number, card_design_name, card_account_name, card_account_number,
                                      created_from_date, created_from_time, created_to_date, created_to_time,
-                                     modified_from_date, modified_from_time, modified_to_date, modified_to_time)
+                                     modified_from_date, modified_from_time, modified_to_date, modified_to_time, currency)
         body['paging'] = True
         body['page_index'] = int(opening_page_index)
 
         context = {}
         data, success, status_message = self._get_card_sof_transaction(body=body)
 
+        currencies = self.get_currencies_list()
         context.update({
             'sof_id': sof_id,
             'order_id': order_id,
@@ -97,7 +103,9 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'modified_from_date': modified_from_date,
             'modified_to_date': modified_to_date,
             'modified_from_time': modified_from_time,
-            'modified_to_time': modified_to_time
+            'modified_to_time': modified_to_time,
+            'currencies': currencies,
+            'currency': currency
         })
 
         if success:
@@ -123,7 +131,7 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
                          sof_id, status, action_id, user_id, user_type_id, provider_name,
                          card_design_number, card_design_name, card_account_name, card_account_number,
                          created_from_date, created_from_time, created_to_date, created_to_time, modified_from_date,
-                         modified_from_time, modified_to_date, modified_to_time):
+                         modified_from_time, modified_to_date, modified_to_time, currency):
         body = {}
         if sof_id is not '' and sof_id is not None:
             body['sof_id'] = int(sof_id)
@@ -159,7 +167,8 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
             body['from_last_updated_timestamp'] = convert_string_to_date_time(modified_from_date, modified_from_time)
         if modified_to_date:
             body['to_last_updated_timestamp'] = convert_string_to_date_time(modified_to_date, modified_to_time)
-
+        if currency is not '' and currency is not None:
+            body['currency'] = currency
         return body
 
     def _get_card_sof_transaction(self, body):
@@ -172,6 +181,17 @@ class CardSOFTransaction(GroupRequiredMixin, TemplateView, RESTfulMethods):
                                 status_code=status_code, is_getting_list=True)
 
         return data, success, status_message
+
+    def get_currencies_list(self):
+        data, success = self._get_method(api_path=api_settings.GET_ALL_CURRENCY_URL,
+                                         func_description="get currency list",
+                                         is_getting_list=True)
+        if success:
+            value = data.get('value', None)
+            if value is not None:
+                currencies = [i.split('|')[0] for i in value.split(',')]
+                return currencies
+        return []
 
     @staticmethod
     def init_search_datetime(context):
