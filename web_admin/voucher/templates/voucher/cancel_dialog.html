@@ -81,6 +81,9 @@
                             <input type="text" class="form-control input-rounded sub-input"
                                    id="confirm_issuer_user_id"
                                    readonly>
+                            <input type="text" class="form-control input-rounded sub-input"
+                                   id="confirm_issuer_user_type"
+                                   readonly hidden>
                         </div>
                         <div style="clear:both;">
                             <label class="sub-label">Issuer User Name</label>
@@ -262,6 +265,11 @@
                 } else {
                     var jsonResponse = JSON.parse(response);
                     sofs = jsonResponse.data;
+                    destinationControl
+                        .find('option')
+                        .remove()
+                        .end()
+                        .append('<option value="" selected>-</option>');
                     for (index in sofs) {
                         destinationControl.append("<option value='" + sofs[index] + "'>" + sofs[index] + "" + "</option>");
                     }

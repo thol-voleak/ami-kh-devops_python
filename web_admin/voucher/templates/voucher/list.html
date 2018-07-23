@@ -846,12 +846,14 @@
             var row1 = $('#tbl_voucher tr.checkboxlist  input:checked').first().parent().parent();
             var selectedCurrency = row1.find('#voucher_currency').text().trim();
             var selectedIssuerUserId = row1.find('#hidden_issuer_user_id').val();
+            var selectedIssuerUserType = row1.find('#hidden_issuer_user_type').val();
             var selectedIssuerSofId = row1.find('#hidden_issuer_sof_id').val();
             var selectedIssuerSofTypeId = row1.find('#hidden_issuer_sof_type_id').val();
             var selectedIssuerSofType = getSofType(selectedIssuerSofTypeId);
             dialog.find("#confirm_selected_vouchers").val(selectedNumber);
             dialog.find("#confirm_currency").val(selectedCurrency);
             dialog.find("#confirm_issuer_user_id").val(selectedIssuerUserId).change();
+            dialog.find("#confirm_issuer_user_type").val(selectedIssuerUserType).change();
             dialog.find("#confirm_issuer_sof_id").val(selectedIssuerSofId);
             dialog.find("#confirm_issuer_sof_type").val(selectedIssuerSofType);
         }
