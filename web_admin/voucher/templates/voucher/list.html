@@ -388,7 +388,11 @@
                                 <td id="claim-status">{{ i.is_used|yesno:"Used,Unused,''" }}</td>
                                 <td id="hold-status">{{ i.is_on_hold|yesno:"Hold,Unhold,''" }}</td>
                                 <td id="cancel-status">{{ i.is_cancelled|yesno:"Yes,No,''" }}</td>
-                                <td>{{ i.is_deleted|yesno:"Deleted,None,''" }}</td>
+                                <td>
+                                    {{ i.is_deleted|yesno:"Deleted,None,''" }}
+                                    <input type="hidden" value="{{i.is_deleted}}" id="voucher_delete_status"/>
+                                </td>
+
                                 <td>{{ i.created_timestamp|default_if_none:'' }}</td>
                                 <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
                                 <td>{{ i.expire_date_timestamp|default_if_none:'' }}</td>
@@ -826,7 +830,35 @@
             return selectedIssuerSofType;
         }
 
+        var validateDeleteStatus = function () {
+            var deleteStatus = false;
+            var isValid = true;
+
+            var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
+            $(checkedInput).each(function (index, value) {
+                deleteStatus = $(value).parent().parent().find("#voucher_delete_status").val();
+                if (deleteStatus == 'True') {
+                    isValid = false;
+                    return false;
+                }
+            });
+
+            if (!isValid) {
+                swal({
+                    title: 'Cannot cancel already deleted vouchers',
+                    type: "error",
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true
+                });
+            }
+            return isValid;
+        };
+
         var showCancelDialog = function () {
+            if (!validateDeleteStatus()) {
+                return false;
+            }
             if (!validateCurrencies() || !validateIssuers() || !validateClaimStatus()) return false;
             var selectedCurrency = getSelectedCurrency();
             var dialog = $("#cancelModal");
