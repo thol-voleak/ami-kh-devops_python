@@ -387,7 +387,10 @@
                                 <td>{{ i.fee|default_if_none:'' }}</td>
                                 <td id="claim-status">{{ i.is_used|yesno:"Used,Unused,''" }}</td>
                                 <td id="hold-status">{{ i.is_on_hold|yesno:"Hold,Unhold,''" }}</td>
-                                <td id="cancel-status">{{ i.is_cancelled|yesno:"Yes,No,''" }}</td>
+                                <td id="cancel-status">
+                                    {{ i.is_cancelled|yesno:"Yes,No,''" }}
+                                    <input type="hidden" value="{{i.is_cancelled}}" id="voucher_cancel_status"/>
+                                </td>
                                 <td>
                                     {{ i.is_deleted|yesno:"Deleted,None,''" }}
                                     <input type="hidden" value="{{i.is_deleted}}" id="voucher_delete_status"/>
@@ -855,8 +858,33 @@
             return isValid;
         };
 
+        var validateCancelStatus = function () {
+            var cancelStatus = false;
+            var isValid = true;
+
+            var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
+            $(checkedInput).each(function (index, value) {
+                cancelStatus = $(value).parent().parent().find("#voucher_cancel_status").val();
+                if (cancelStatus == 'True') {
+                    isValid = false;
+                    return false;
+                }
+            });
+
+            if (!isValid) {
+                swal({
+                    title: 'Cannot cancel already cancelled vouchers',
+                    type: "error",
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true
+                });
+            }
+            return isValid;
+        };
+
         var showCancelDialog = function () {
-            if (!validateDeleteStatus()) {
+            if (!validateDeleteStatus() || !validateCancelStatus()) {
                 return false;
             }
             if (!validateCurrencies() || !validateIssuers() || !validateClaimStatus()) return false;
