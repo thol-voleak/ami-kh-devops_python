@@ -387,14 +387,8 @@
                                 <td>{{ i.fee|default_if_none:'' }}</td>
                                 <td id="claim-status">{{ i.is_used|yesno:"Used,Unused,''" }}</td>
                                 <td id="hold-status">{{ i.is_on_hold|yesno:"Hold,Unhold,''" }}</td>
-                                <td id="cancel-status">
-                                    {{ i.is_cancelled|yesno:"Yes,No,''" }}
-                                    <input type="hidden" value="{{i.is_cancelled}}" id="voucher_cancel_status"/>
-                                </td>
-                                <td>
-                                    {{ i.is_deleted|yesno:"Deleted,None,''" }}
-                                    <input type="hidden" value="{{i.is_deleted}}" id="voucher_delete_status"/>
-                                </td>
+                                <td id="cancel-status" cancel-status-value="{{i.is_cancelled}}">{{ i.is_cancelled|yesno:"Yes,No,''" }}</td>
+                                <td id="delete-status" delete-status-value="{{i.is_deleted}}">{{ i.is_deleted|yesno:"Deleted,None,''" }}</td>
 
                                 <td>{{ i.created_timestamp|default_if_none:'' }}</td>
                                 <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
@@ -839,7 +833,7 @@
 
             var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
             $(checkedInput).each(function (index, value) {
-                deleteStatus = $(value).parent().parent().find("#voucher_delete_status").val();
+                deleteStatus = $(value).parent().parent().find("#delete-status").attr('delete-status-value');
                 if (deleteStatus == 'True') {
                     isValid = false;
                     return false;
@@ -864,7 +858,7 @@
 
             var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
             $(checkedInput).each(function (index, value) {
-                cancelStatus = $(value).parent().parent().find("#voucher_cancel_status").val();
+                cancelStatus = $(value).parent().parent().find("#cancel-status").attr('cancel-status-value');
                 if (cancelStatus == 'True') {
                     isValid = false;
                     return false;
