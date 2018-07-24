@@ -26,12 +26,53 @@
 
     <input id="data-no-permission-url"  data-no-permission-url="{% url 'web:permission_denied' %}" style="display:none;"/>
     <form id="submit-form" name="search_form" class="form-horizontal" role="form" method="get">
-         <div class="form-group">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Ticket ID</label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control input-rounded" name="ticket_id" value="{{ticket_id}}"/>
+            </div>
+            <label class="col-sm-2 control-label">Card ID</label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control input-rounded" name="card_id" value="{{card_id}}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Created Date: From</label>
+            <div class="col-sm-2">
+                <input id="dtp_from_created_date" class="form-control input-rounded" name="from_created_date" type="date">
+            </div>
+            <label class="col-sm-2 control-label">To</label>
+            <div class="col-sm-2">
+                <input id="dtp_to_created_date" class="form-control input-rounded" name="to_created_date" type="date">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Activated Date: From</label>
+            <div class="col-sm-2">
+                <input id="dtp_from_activated_date" class="form-control input-rounded" name="from_activated_date" type="date">
+            </div>
+            <label class="col-sm-2 control-label">To</label>
+            <div class="col-sm-2">
+                <input id="dtp_to_activated_date" class="form-control input-rounded" name="to_activated_date" type="date">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Is Deleted</label>
+            <div class="col-sm-2">
+                <select class="form-control" id="ddl_status" name="is_deleted">
+                    <option value='all' {%if is_deleted == 'all' %} selected="selected"{%endif%}>ALL</option>
+                    <option value='1' {%if is_deleted == '1' %}selected="selected"{%endif%}>True</option>
+                    <option value='0' {%if is_deleted == '0' %}selected="selected"{%endif%}>False</option>
+                </select>
+            </div>
+            <label class="col-sm-2 control-label"></label>
+            <div class="col-sm-2">
                 <input id="current_page_index" name="current_page_index" style="display:none" value="1">
-             <div class="col-sm-1 pull-right">
+                <div class="col-sm-8 pull-right" style="right: -10px;">
                     <input id="btn_search" class="btn btn-success btn-block" type="submit" value="Search">
                 </div>
-         </div>
+            </div>
+        </div>
         <label class="pull-right" id="lbl_total">{{ paginator.total_elements }}</label>
         <label class="pull-right">Total found: &nbsp;</label>
     </form>
