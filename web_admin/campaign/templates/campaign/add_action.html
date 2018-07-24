@@ -127,8 +127,9 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Limitation Type *</label>
                         <div class="col-xs-3">
-                            <select class="form-control" id="ddl_limitation_type" name="limitation_type" required>
+                            <select class="form-control" id="ddl_limitation_type" name="limitation_type" onchange="limitTo(this.options[this.selectedIndex].label)" required>
                                 <option value= "count">Count per recipient</option>
+                                <option value= "count">Count per timebox</option>
                             </select>
                         </div>
                     </div>
@@ -136,7 +137,14 @@
                         <label class="col-sm-3 control-label">Limit to *</label>
                         <div class="col-xs-3">
                             <input min='0' id="txt_limit_to" class="form-control input-rounded" style="width: 200px; display: inline-block" name="limit_to" type="number" required>
-                            <span class="recipient-mechanic" style="position: relative; top: 0px;">/recipient/mechanic</span>
+                            <span id="per_recipient" class="recipient-mechanic" style="position: relative; top: 0px;">/recipient/mechanic</span>
+                        </div>
+                    </div>
+                    <div id="timebox_area" class="form-group" style="display: none">
+                        <label class="col-sm-3 control-label">Timebox *</label>
+                        <div class="col-xs-3">
+                            <input min='0' id="txt_timebox" class="form-control input-rounded" style="width: 200px; display: inline-block" name="timebox" type="number" required>
+                            <span class="recipient-mechanic" style="position: relative; top: 0px;"> minutes</span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -172,6 +180,21 @@
         </form>
     </div>
     <script>
+        function limitTo(limitType) {
+            if(limitType == "Count per timebox") {
+                document.getElementById("per_recipient").innerHTML="/recipient/mechanic/timebox"
+                document.getElementById("timebox_area").style.display = ''
+                {#document.getElementById("timebox_area").style.visibility = 'visible'#}
+                {#showElement(timebox_area)#}
+            } else {
+                document.getElementById("per_recipient").innerHTML="/recipient/mechanic"
+                document.getElementById("timebox_area").style.display = 'none'
+                {#document.getElementById("timebox_area").style.visibility = 'hidden'#}
+                {#hideElement(timebox_area)#}
+                document.getElementById("timebox_area").required = false
+            }
+
+        }
         function rewardRecipientShouldBe() {
             try {
                 var e = document.getElementById("ddl_reward_recipient");
