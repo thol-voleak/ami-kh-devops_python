@@ -1,7 +1,8 @@
 from authentications.apps import InvalidAccessToken
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
-from payments.views.api import _get_services_list
+from web_admin import settings
 from web_admin import setup_logger, api_settings
+from web_admin.api_settings import SEARCH_SERVICE
 from web_admin.restful_client import RestFulClient
 from django.views.generic.base import TemplateView
 from web_admin.get_header_mixins import GetHeaderMixin
@@ -184,7 +185,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'voucher_group': voucher_group,
             'delete_status_list': self._get_delete_status_list(),
             'delete_status': delete_status,
-            'services': _get_services_list(self),
+            'services': self._get_services_list(),
             'sof_types': self._get_sof_types()
         }
         return render(request, self.template_name, context)
@@ -264,4 +265,22 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         success, status_code, data  = RestFulClient.get(url=api_settings.SOF_TYPES_URL, loggers=self.logger, headers=self._get_headers())
         return data
 
+    def _get_services_list(self):
+        self.logger.info('========== Start Getting services list ==========')
+        url = api_settings.SEARCH_SERVICE
+        success, status_code, status_message, data = RestFulClient.post(url=url, headers=self._get_headers(),
+                                                          loggers=self.logger,
+                                                           params={"paging":False},
+                                                           timeout=settings.GLOBAL_TIMEOUT)
+        if success:
+            self.logger.info("Response_content_count:{}".format(len(data)))
+            data = data.get("services",None)
+        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                    status_code == 'invalid_access_token'):
+            self.logger.info("{}".format(data))
+            raise InvalidAccessToken(data)
+        self.logger.info('========== Finish Get services list ==========')
+        self.logger.info(data)
+
+        return data
 
