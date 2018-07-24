@@ -878,10 +878,13 @@
         };
 
         var showCancelDialog = function () {
-            if (!validateDeleteStatus() || !validateCancelStatus()) {
+            if (!validateCurrencies() ||
+                !validateDeleteStatus() ||
+                !validateCancelStatus() ||
+                !validateIssuers() ||
+                !validateClaimStatus()) {
                 return false;
             }
-            if (!validateCurrencies() || !validateIssuers() || !validateClaimStatus()) return false;
             var selectedCurrency = getSelectedCurrency();
             var dialog = $("#cancelModal");
             resetCancelVoucherDialog(dialog);
