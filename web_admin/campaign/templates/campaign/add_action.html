@@ -143,7 +143,7 @@
                     <div id="timebox_area" class="form-group" style="display: none">
                         <label class="col-sm-3 control-label">Timebox *</label>
                         <div class="col-xs-3">
-                            <input min='0' id="txt_timebox" class="form-control input-rounded" style="width: 200px; display: inline-block" name="timebox" type="number" required>
+                            <input min='0' id="txt_timebox" class="form-control input-rounded" style="width: 200px; display: inline-block" name="timebox" type="number">
                             <span class="recipient-mechanic" style="position: relative; top: 0px;"> minutes</span>
                         </div>
                     </div>
@@ -184,13 +184,10 @@
             if(limitType == "Count per timebox") {
                 document.getElementById("per_recipient").innerHTML="/recipient/mechanic/timebox"
                 document.getElementById("timebox_area").style.display = ''
-                {#document.getElementById("timebox_area").style.visibility = 'visible'#}
-                {#showElement(timebox_area)#}
+                document.getElementById("timebox_area").required = true
             } else {
                 document.getElementById("per_recipient").innerHTML="/recipient/mechanic"
                 document.getElementById("timebox_area").style.display = 'none'
-                {#document.getElementById("timebox_area").style.visibility = 'hidden'#}
-                {#hideElement(timebox_area)#}
                 document.getElementById("timebox_area").required = false
             }
 
