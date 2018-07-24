@@ -74,7 +74,7 @@
                         <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded"
                                           id="txt_image_url" name="image_url" value="{{ service_info.image_url | default_if_none:'' }}" 
-                                          readonly>
+                                          readonly />
                         </div>
                     </div>
                     <div class="form-group">
@@ -84,6 +84,13 @@
                         </div>
                     </div>
 
+                        <label class="col-sm-2 control-label">Service Display Name (English):</label>
+                        <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                          id="txt_display_name" name="display_name"
+                                          readonly value="{{ service_info.display_name | default_if_none:'' }}">
+                        </div>
+                    </div>
                     <div class="pull-right">
                         <a href="{% url 'services:services_list' %}">
                             <input id="btn_cancel" class="btn" type="button" value="Cancel"/>
