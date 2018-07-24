@@ -37,7 +37,6 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         currencies, status1 = self._get_currency_choices()
         service_groups, status2 = self._get_service_group_choices()
         service_detail, status3 = self._get_service_detail(service_id)
-
         if status1 and status2 and status3:
             context = {
                 'currencies': currencies,
@@ -58,12 +57,14 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         currency = request.POST.get('currency')
         description = request.POST.get('description')
         status = request.POST.get('status')
+        image_url = request.POST.get('image_url')
 
         body = {
             'service_group_id': service_group_id,
             'service_name': service_name,
             'currency': currency,
             'description': description,
+            'image_url': image_url,
             'status': status
         }
 
