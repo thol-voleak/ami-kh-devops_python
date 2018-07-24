@@ -1182,9 +1182,9 @@
                                     <select class="form-control" id="ddl_risk_level"
                                             name="accreditation_risk_level">
                                         <option value="" {% if agent_profile.accreditation.risk_level is None %} selected{% endif %}>-</option>
-                                        <option value="Low" {% if agent_profile.accreditation.risk_level == "low" %} selected{% endif %}>Low</option>
-                                        <option value="Medium" {% if agent_profile.accreditation.risk_level == "medium" %} selected{% endif %}>Medium</option>
-                                        <option value="High" {% if agent_profile.accreditation.risk_level == "high" %} selected{% endif %}>High</option>
+                                        <option value="Low" {% if agent_profile.accreditation.risk_level == "Low" %} selected{% endif %}>Low</option>
+                                        <option value="Medium" {% if agent_profile.accreditation.risk_level == "Medium" %} selected{% endif %}>Medium</option>
+                                        <option value="High" {% if agent_profile.accreditation.risk_level == "High" %} selected{% endif %}>High</option>
                                     </select>
                                 </div>
                             </div>
