@@ -16,16 +16,19 @@ import logging
 def login_user(request):
     next_request = None
     logger = logging.getLogger(__name__)
-    logger = setup_logger(request, logger, request.user)
     if request.POST:
-        logger.info("========== Start login from web page ==========")
+        logger = setup_logger(request, logger, "")
         username = request.POST['username']
         password = request.POST['password']
-
+        logger.info("[{}] ========== Start login from web page ==========".format(username))
         user = authenticate(request=request, username=username, password=password)
         if user is not None:
+            if 'correlation_id' in request.session:
+                correlation_id = request.session['correlation_id']
+            logger_new = logging.getLogger(__name__)
+            logger_new = setup_logger(request, logger_new, correlation_id)
             login(request, user)
-            permissions = get_permission_from_backend(user, logger)
+            permissions = get_permission_from_backend(user, logger_new)
 
             if permissions is not None:
                 authens = Authentications.objects.get(user=user)
@@ -50,42 +53,42 @@ def get_permission_from_backend(username, logger):
     if is_success:
         if data is None or data == "":
             return None
-        logger.info("Permissions is [{}]".format(len(data)))
+        logger.info("[{}] Permissions is [{}]".format(username, len(data)))
         return data
 
 
 def logout_user(request):
     logger = logging.getLogger(__name__)
     logger = setup_logger(request, logger, request.user)
-    logger.info('========== Start to logout ==========')
-    url = settings.DOMAIN_NAMES + api_settings.LOGOUT_URL
     username = request.user.username
-    logger.info("username {} sends logout request URL: {}".format(username, url))
+    logger.info("[{}]========== Start to logout ==========".format(username))
+    url = settings.DOMAIN_NAMES + api_settings.LOGOUT_URL
+    logger.info("[{}] sends logout request URL: {}".format(username, url))
 
     try:
         headers = get_auth_header(request.user)
     except Exception as e:
         logger.error(e)
         logout(request)
-        logger.info('========== Finished to logout ==========')
+        logger.info("[{}] ========== Finished to logout ==========".format(username))
         return redirect('authentications:login')
 
     start_time = time.time()
     response = requests.post(url, headers=headers, verify=settings.CERT)
     end_time = time.time()
 
-    logger.info("username {} got logout response Code: {}".format(username, response.status_code))
-    logger.info("username {} got logout response: {}".format(username, response.text))
-    logger.info("username {} got logout response time: {} sec.".format(username, end_time - start_time))
+    logger.info("[{}] Got logout response Code: {}".format(username, response.status_code))
+    logger.info("[{}] Got logout response: {}".format(username, response.text))
+    logger.info("[{}] Got logout response time: {} sec.".format(username, end_time - start_time))
 
     if request.user.is_authenticated:
         auth = Authentications.objects.get(user=request.user)
         if auth is not None:
-            logger.info('username {} deleting current session info'.format(username))
+            logger.info('[{}] Deleting current session info'.format(username))
             auth.delete()
     logout(request)
-    logger.info("username {} was logged out".format(username, request.user))
-    logger.info('========== Finished to logout ==========')
+    logger.info("[{}] Was logged out".format(username, request.user))
+    logger.info("[{}] ========== Finished to logout ==========".format(username))
 
     if request.GET:
         next_request = request.GET['next']
