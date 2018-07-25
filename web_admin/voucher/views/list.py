@@ -37,7 +37,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start render Vouchers List page==========')
-        status_list = self._get_status_list()
+        # status_list = self._get_status_list()
         permissions = {}
         permissions['CAN_CREATE_VOUCHER_ACTION'] = self.check_membership(['CAN_CREATE_VOUCHER_ACTION'])
 
@@ -46,14 +46,14 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         context = {
             'permissions': permissions,
-            'claim_status_list': status_list,
-            'hold_status_list': self._get_hold_status_list(),
+            # 'claim_status_list': status_list,
+            # 'hold_status_list': self._get_hold_status_list(),
             'cash_in_user_type_list': self._get_user_type_cash_in_list(),
             'cash_in_user_type' : '',
-            'cancel_status_list': self._get_cancel_status_list(),
+            # 'cancel_status_list': self._get_cancel_status_list(),
             'voucher_type_list': self._get_voucher_type_list(),
-            'distributed_status_list': self._get_distributed_status_list(),
-            'delete_status_list': self._get_delete_status_list(),
+            # 'distributed_status_list': self._get_distributed_status_list(),
+            # 'delete_status_list': self._get_delete_status_list(),
             'sof_types': self._get_sof_types(),
         }
         self.logger.info('========== Finish render Vouchers List page==========')
@@ -61,14 +61,14 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
     def post(self, request, *args, **kwargs):
         voucher_id = request.POST.get('voucher_id')
-        claim_status = request.POST.get('claim_status')
+        # claim_status = request.POST.get('claim_status')
         cash_in_id = request.POST.get('cash_in_id')
         cash_out_id = request.POST.get('cash_out_id')
         from_date = request.POST.get('create_date_from')
         to_date = request.POST.get('create_date_to')
         expire_from_date = request.POST.get('expiration_date_from')
         expire_to_date = request.POST.get('expiration_date_to')
-        hold_status = request.POST.get('hold_status')
+        # hold_status = request.POST.get('hold_status')
         cash_in_user_type = request.POST.get('user_type_cash_in')
 
         opening_page_index = request.POST.get('current_page_index')
@@ -77,11 +77,11 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         cash_out_order_id = request.POST.get('cash_out_order_id')
         issuer_user_id = request.POST.get('issuer_user_id')
         distributed_user_id = request.POST.get('distributed_user_id')
-        cancel_status = request.POST.get('cancel_status')
+        # cancel_status = request.POST.get('cancel_status')
         voucher_type = request.POST.get('voucher_type')
-        distributed_status = request.POST.get('distributed_status')
+        # distributed_status = request.POST.get('distributed_status')
         voucher_group = request.POST.get('voucher_group')
-        delete_status = request.POST.get('delete_status')
+        # delete_status = request.POST.get('delete_status')
 
         body = {}
         body['page_index'] = int(opening_page_index)
@@ -93,12 +93,12 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['cash_out_user_id'] = int(cash_out_id)
         if voucher_id:
             body['voucher_id'] = voucher_id
-        if claim_status == 'True':
-            body['is_used'] = True
-        if claim_status == 'False':
-            body['is_used'] = False
-        if hold_status != '':
-            body['is_on_hold'] = True if hold_status == 'True' else False
+        # if claim_status == 'True':
+        #     body['is_used'] = True
+        # if claim_status == 'False':
+        #     body['is_used'] = False
+        # if hold_status != '':
+        #     body['is_on_hold'] = True if hold_status == 'True' else False
         if cash_in_order_id:
             body['cash_in_order_id'] = int(cash_in_order_id)
         if cash_out_order_id:
@@ -107,8 +107,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['issuer_user_id'] = int(issuer_user_id)
         if distributed_user_id:
             body['distributed_user_id'] = int(distributed_user_id)
-        if cancel_status != '':
-            body['is_cancelled'] = True if cancel_status == 'True' else False
+        # if cancel_status != '':
+        #     body['is_cancelled'] = True if cancel_status == 'True' else False
 
         if from_date:
             new_from_created_timestamp = datetime.strptime(from_date, "%Y-%m-%d")
@@ -134,12 +134,12 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         if voucher_type != '':
             body['voucher_type'] = voucher_type
-        if distributed_status != '':
-            body['distributed_status'] = True if distributed_status == 'True' else False
+        # if distributed_status != '':
+        #     body['distributed_status'] = True if distributed_status == 'True' else False
         if voucher_group != '':
             body['voucher_group'] = voucher_group
-        if delete_status != '':
-            body['is_deleted'] = True if delete_status == 'True' else False
+        # if delete_status != '':
+        #     body['is_deleted'] = True if delete_status == 'True' else False
 
         self.logger.info('========== Start searching Vouchers ==========')
         data = self._search_for_vouchers(body)
@@ -159,8 +159,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 			'search_count': page['total_elements'],
 			'page_range': calculate_page_range_from_page_info(page),
             'voucher_id': voucher_id,
-            'claim_status_list': self._get_status_list(),
-            'selected_status': claim_status,
+            # 'claim_status_list': self._get_status_list(),
+            # 'selected_status': claim_status,
             'cash_in_id': cash_in_id,
             'cash_out_id': cash_out_id,
             'create_date_from': from_date,
@@ -168,42 +168,42 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'expiration_date_from': expire_from_date,
             'expiration_date_to': expire_to_date,
             'permissions': permissions,
-            'hold_status_list': self._get_hold_status_list(),
-            'hold_status': hold_status,
+            # 'hold_status_list': self._get_hold_status_list(),
+            # 'hold_status': hold_status,
             'cash_in_user_type_list': self._get_user_type_cash_in_list(),
             'cash_in_user_type' : cash_in_user_type,
-            'cancel_status_list': self._get_cancel_status_list(),
+            # 'cancel_status_list': self._get_cancel_status_list(),
             'cash_out_order_id': cash_out_order_id,
             'cash_in_order_id': cash_in_order_id,
             'issuer_user_id': issuer_user_id,
             'distributed_user_id': distributed_user_id,
-            'cancel_status': cancel_status,
+            # 'cancel_status': cancel_status,
             'voucher_type_list': self._get_voucher_type_list(),
             'voucher_type': voucher_type,
-            'distributed_status_list': self._get_distributed_status_list(),
-            'distributed_status': distributed_status,
+            # 'distributed_status_list': self._get_distributed_status_list(),
+            # 'distributed_status': distributed_status,
             'voucher_group': voucher_group,
-            'delete_status_list': self._get_delete_status_list(),
-            'delete_status': delete_status,
+            # 'delete_status_list': self._get_delete_status_list(),
+            # 'delete_status': delete_status,
             'services': self._get_services_list(),
             'sof_types': self._get_sof_types()
         }
         return render(request, self.template_name, context)
 
 
-    def _get_status_list(self):
-        return [
-            {"name": "All", "value": ""},
-            {"name": "Used", "value": "True"},
-            {"name": "Unused", "value": "False"},
-        ]
+    # def _get_status_list(self):
+    #     return [
+    #         {"name": "All", "value": ""},
+    #         {"name": "Used", "value": "True"},
+    #         {"name": "Unused", "value": "False"},
+    #     ]
 
-    def _get_hold_status_list(self):
-        return [
-            {"name": "All", "value": ""},
-            {"name": "Hold", "value": "True"},
-            {"name": "Unhold", "value": "False"},
-        ]
+    # def _get_hold_status_list(self):
+    #     return [
+    #         {"name": "All", "value": ""},
+    #         {"name": "Hold", "value": "True"},
+    #         {"name": "Unhold", "value": "False"},
+    #     ]
 
     def _get_user_type_cash_in_list(self):
         return [
@@ -212,12 +212,12 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             {"name": "Customer", "value": "customer"},
         ]
 
-    def _get_cancel_status_list(self):
-        return [
-            {"name": "All", "value": ""},
-            {"name": "Yes", "value": "True"},
-            {"name": "No", "value": "False"},
-        ]
+    # def _get_cancel_status_list(self):
+    #     return [
+    #         {"name": "All", "value": ""},
+    #         {"name": "Yes", "value": "True"},
+    #         {"name": "No", "value": "False"},
+    #     ]
     def _search_for_vouchers(self, body):
         is_success, status_code, status_message, data = RestFulClient.post(url=api_settings.SEARCH_VOUCHERS,
                                                                            headers=self._get_headers(),
@@ -244,21 +244,21 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             {"name": "3rd Party Vouchers", "value": "3rd Party Vouchers"}
         ]
 
-    @staticmethod
-    def _get_distributed_status_list():
-        return [
-            {"name": "All", "value": ""},
-            {"name": "Yes", "value": "True"},
-            {"name": "No", "value": "False"}
-        ]
+    # @staticmethod
+    # def _get_distributed_status_list():
+    #     return [
+    #         {"name": "All", "value": ""},
+    #         {"name": "Yes", "value": "True"},
+    #         {"name": "No", "value": "False"}
+    #     ]
     
-    @staticmethod
-    def _get_delete_status_list():
-        return [
-            {"name": "All", "value": ""},
-            {"name": "Deleted", "value": "True"},
-            {"name": "None", "value": "False"}
-        ]
+    # @staticmethod
+    # def _get_delete_status_list():
+    #     return [
+    #         {"name": "All", "value": ""},
+    #         {"name": "Deleted", "value": "True"},
+    #         {"name": "None", "value": "False"}
+    #     ]
 
 
     def _get_sof_types(self):
