@@ -240,13 +240,13 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             if date_of_birth:
                 context['customer_info']['date_of_birth'] = date_of_birth.split('T')[0]
 
-            citizen_card_date_of_issue = context['customer_info']['citizen_card_date_of_issue']
-            if citizen_card_date_of_issue:
-                context['customer_info']['citizen_card_date_of_issue'] = citizen_card_date_of_issue.split('T')[0]
-
-            passport_date_of_issue = context['customer_info']['passport_date_of_issue']
-            if passport_date_of_issue:
-                context['customer_info']['passport_date_of_issue'] = passport_date_of_issue.split('T')[0]
+            # citizen_card_date_of_issue = context['customer_info']['citizen_card_date_of_issue']
+            # if citizen_card_date_of_issue:
+            #     context['customer_info']['citizen_card_date_of_issue'] = citizen_card_date_of_issue.split('T')[0]
+            #
+            # passport_date_of_issue = context['customer_info']['passport_date_of_issue']
+            # if passport_date_of_issue:
+            #     context['customer_info']['passport_date_of_issue'] = passport_date_of_issue.split('T')[0]
 
             context['customer_id'] = customer_id
         elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (

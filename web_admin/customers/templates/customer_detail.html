@@ -82,21 +82,21 @@
                                     <label class="col-sm-3 control-label" id="lbl_customer_id">Customer ID*</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="customer_id"
-                                               id="txt_customer_id" value="{{ customer_id | default_if_none:'' }}" disabled/>
+                                               id="txt_customer_id" value="{{ customer_info.id | default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Testing Account</label>
                                     <div class="col-sm-7">
                                         <input type="checkbox" id="chk_testing_account" name="is_testing_account"
-                                               {% if customer_info.is_testing_account %}checked{% endif %}>
+                                               {% if customer_info.is_testing_account %}checked{% endif %} disabled>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">System Account</label>
                                     <div class="col-sm-7">
                                         <input type="checkbox" id="chk_system_account" name="is_system_account"
-                                               {% if customer_info.is_system_account %}checked{% endif %}>
+                                               {% if customer_info.is_system_account %}checked{% endif %} disabled>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -111,15 +111,14 @@
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="acquisition_source"
                                                id="txt_acquisition_source"
-                                               value="{{ customer_info.acquisition_source|default_if_none:'' }}"/>
+                                               value="{{ customer_info.acquisition_source|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Referrer User Type</label>
                                     <div class="col-sm-7">
-                                        <input type="text" id="txt_referrer_user_type"
-                                               value="{% if customer_info.referrer_user_type_id == 1 %}Customer{% elif  customer_info.referrer_user_type_id == 2 %}Agent{% elif  customer_info.referrer_user_type_id == 3 %}System User{% else %}{% endif %}"
-                                               class="form-control input-rounded" disabled/>
+                                        <input type="text" id="txt_referrer_user_type" class="form-control input-rounded"
+                                               value="{{ referrer_user_type.name | default_if_none:''}}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -149,14 +148,14 @@
                                     <label class="col-sm-3 control-label">Profile Create Date</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="created_date"
-                                                id="txt_created_date" value="{{ customer_info.created_date|default_if_none:'' }}" disabled/>
+                                                id="txt_created_date" value="{{ customer_info.created_timestamp|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Profile Updated Date</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="last_updated_date"
-                                                id="txt_last_updated_date" value="{{ customer_info.last_updated_date|default_if_none:'' }}" disabled/>
+                                                id="txt_last_updated_date" value="{{ customer_info.last_updated_timestamp|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                             </div>
@@ -392,7 +391,7 @@
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="civil_status"
                                                id="txt_civil_status"
-                                               value="{{ civil_status_name|default_if_none:'' }}" disabled/>
+                                               value="{{ customer_info.civil_status|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                             </div>
