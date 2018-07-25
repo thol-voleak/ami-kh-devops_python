@@ -7,6 +7,7 @@ from web_admin.utils import build_logger
 import logging
 from web_admin import api_settings
 from web_admin.restful_helper import RestfulHelper
+import re
 
 
 class MechanicDetail(TemplateView, GetHeaderMixin):
@@ -180,11 +181,14 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
                     continue
 
                 limitation_data = limitation['filters']
-                key_value_created_timestamp = self.get_limitation_data_value(limitation_data, 'created_timestamp')
-                if key_value_created_timestamp == None:
-                    limitation['limit_type'] = 'Count per recipient'
-                else:
-                    limitation['limit_type'] = 'Count per timebox'
+                for data in limitation_data:
+                    if data['key_name'] == 'created_timestamp' and data['operator'] == '>=' and re.match(r'@@(.*?)@@', data['key_value']):
+                        limitation['limit_type'] = 'Count per timebox'
+                        limitation['timebox'] = re.search(r'\((.*?)\)', data['key_value']).group(1)
+                        break
+                    else:
+                        limitation['limit_type'] = 'Count per recipient'
+
                 reward_to = self.get_limitation_data_value(limitation_data, 'user_id')
                 reward_to = self.get_person_name(reward_to, event_name)
                 limitation['reward_to'] = reward_to

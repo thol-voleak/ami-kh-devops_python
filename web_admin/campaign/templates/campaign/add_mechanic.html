@@ -254,20 +254,25 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Limitation Type *</label>
                                     <div class="col-xs-3">
-                                        <select class="form-control" id="ddl_limitation_type" name="limitation_type" required>
+                                        <select class="form-control" id="ddl_limitation_type" name="limitation_type" onchange="changeLimitationType(this, this.options[this.selectedIndex].label)" required>
                                             <option value= "count">Count per recipient</option>
+                                            <option value= "count">Count per timebox</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group">
+
+                                <div id="within-count-area">
+                                    <div class="form-group">
                                     <label class="col-sm-3 control-label">Limit to *</label>
                                     <div class="col-xs-3">
                                         <input min='0' id="txt_limit_to" class="form-control input-rounded" name="limit_to" type="number" required>
 
                                     </div>
                                     <span class="recipient-mechanic">/recipient/mechanic</span>
-
                                 </div>
+                                </div>
+                                <div id="within-count-timebox-area"></div>
+
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Reward Recipient should be *</label>
                                     <div class="col-xs-3">
@@ -1213,6 +1218,30 @@
         return withinDateHtml;
     };
 
+    var withinCountHtml = '<div class="form-group">\
+                            <label class="col-sm-3 control-label">Limit to *</label>\
+                            <div class="col-xs-3">\
+                                <input min=0 id="txt_limit_to" class="form-control input-rounded" name="limit_to" type="number" required>\
+                            </div>\
+                            <span id="per_recipient" class="recipient-mechanic">/recipient/mechanic</span>\
+                        </div>';
+
+    var withinCountTimeboxHtml = '<div class="form-group">\
+                                    <label class="col-sm-3 control-label">Limit to *</label>\
+                                    <div class="col-xs-3">\
+                                        <input min="0" id="txt_limit_to" class="form-control input-rounded" name="limit_to" type="number" required>\
+                                    </div>\
+                                    <span id="per_recipient" class="recipient-mechanic">/recipient/mechanic/timebox</span>\
+                                  </div>\
+                                  <div class="form-group">\
+                                    <label class="col-sm-3 control-label">Timebox *</label>\
+                                    <div class="col-xs-3">\
+                                        <input min="1" id="txt_timebox" class="form-control input-rounded" name="timebox" type="number" required>\
+                                    </div>\
+                                    <span class="recipient-mechanic">minutes</span>\
+                                  </div>';
+
+
     var getWithinTimeHtml = function(conditionNumber, typeCountOf) {
         var timeboxId = 'txt_timebox';
         var prefixName = '';
@@ -1246,6 +1275,27 @@
             withinTimeArea.appendChild(withinTimeElem);
          }
 
+    };
+
+    var changeLimitationType = function(elem, selectedValue) {
+        console.log("selected value:" + selectedValue);
+        var conditionElem = document.getElementById('limitation-group');
+
+         if(selectedValue == 'Count per recipient') {
+             conditionElem.querySelector('#within-count-timebox-area').innerHTML = '';
+             var withinDateArea = conditionElem.querySelector('#within-count-area');
+             var withinDateDiv = document.createElement('div');
+             withinDateDiv.innerHTML = withinCountHtml;
+             var withinDateElem  = withinDateDiv.cloneNode(true);
+             withinDateArea.appendChild(withinDateElem);
+         } else {
+             conditionElem.querySelector('#within-count-area').innerHTML = '';
+             var withinTimeArea = conditionElem.querySelector('#within-count-timebox-area');
+             var withinTimeDiv = document.createElement('div');
+             withinTimeDiv.innerHTML = withinCountTimeboxHtml;
+             var withinTimeElem  = withinTimeDiv.cloneNode(true);
+             withinTimeArea.appendChild(withinTimeElem);
+         }
     };
 
      var getCountOfOrCountConsecutiveOfHtml = function(conditionNumber, typeCountOf) {

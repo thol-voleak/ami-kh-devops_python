@@ -111,9 +111,9 @@
                         <label class="sub-label">Payment Service *</label>
                         <select class="form-control input-rounded sub-input" id="ddl_services" name="service_id"
                                 required>
-                            <option value="">-</option>
+                            <option value="" currency="">-</option>
                             {% for item in services %}
-                                <option value="{{ item.service_id }}">{{ item.service_name }}</option>
+                                <option value="{{ item.service_id }}" currency="{{ item.currency }}">{{ item.service_name }}</option>
                             {% endfor %}
                         </select>
                     </div>
