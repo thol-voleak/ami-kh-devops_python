@@ -45,6 +45,16 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
                                                                         params={})
         return data
 
+    def get_mm_card_level_list(self, card_type_id):
+        params = {
+            "mm_card_type_id": card_type_id
+        }
+        success, status_code, status_message, data = RestFulClient.post(url=api_settings.GET_MM_CARD_TYPE_LEVELS,
+                                                                        headers=self._get_headers(),
+                                                                        loggers=self.logger,
+                                                                        params=params)
+        return data
+
     def get_agent_classification_list(self):
         success, status_code, status_message, data = RestFulClient.post(url=api_settings.GET_AGENT_CLASSIFICATION_URL,
                                                                         headers=self._get_headers(),
@@ -90,6 +100,9 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         currencies = self.get_currencies(agent_id)[0]
         agent_profile = self.get_agent_profile(agent_id)
         mm_card_types = self.get_mm_card_type_list()
+        mm_card_levels = {}
+        if agent_profile['mm_card_type_id'] is not None:
+            mm_card_levels = self.get_mm_card_level_list(agent_profile['mm_card_type_id'])
         agent_classification_list = self.get_agent_classification_list()
         accreditation_status_list = self.get_accreditation_status()
 
@@ -152,6 +165,7 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             'currencies': currencies,
             'agent_profile': agent_profile,
             'mm_card_types': mm_card_types,
+            'mm_card_levels': mm_card_levels,
             'agent_classification_list': agent_classification_list,
             'accreditation_status_list': accreditation_status_list,
             'msgs': {
