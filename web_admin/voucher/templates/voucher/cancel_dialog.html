@@ -47,7 +47,7 @@
 
 <div class="modal" tabindex="-1" role="dialog" id="cancelModal" style="vertical-align: top; padding-top: 15px;">
     <div class="modal-dialog large-modal-dialog" role="document">
-        <form method="POST" class="form-horizontal" role="form" id="mForm" onsubmit="return validate(this)">
+        <form method="POST" class="form-horizontal" role="form" id="mForm" onsubmit="return validateCancel(this)">
             {% csrf_token %}
             <div class="modal-content">
                 <div id="confirmation_body" class="col-sm-6">
@@ -199,10 +199,136 @@
     </div>
 </div>
 
+<div class="modal" tabindex="-1" role="dialog" id="cancelRequestModal" style="text-align: center; margin-top: 150px">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div style="margin-top: 40px;">
+                    <span style="font-weight: bold; font-size: 20px;">Cancel request has been created</span>
+                </div>
+                <div style="margin-top: 30px;">
+                    <span style="font-size: 15px;">Cancellation request ID</span>
+                </div>
+                <table style="width: 60%; align: center; margin-left: 20%;">
+                    <tbody>
+                        <tr><td class="text-center" colspan="2" style="font-size: 15px; font-weight:bold;" id = "voucher_cancel_id"></td></tr>
+                        <tr><td class="text-left" style="font-size: 15px;">Total Vouchers</td><td class="text-right" id = "total_vouchers"></td></tr>
+                        <tr><td class="text-left" style="font-size: 15px;">Total Amount</td><td class="text-right" id = "total_amount"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="text-align: center; margin-top: 40px; margin-bottom: 40px">
+                <button id="btn_dialog_done" type="button" class="btn btn-default"
+                        style="font-size: 15px; font-weight: bold; border-radius: 4px; width: 25%;"
+                        data-dismiss="modal">Done</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-    function validate() {
+    function validateCancel() {
         var dialog = $("#cancelModal");
-        var form = dialog.find('$mForm')[0];
+        if($('#cancelModal #mForm')[0].checkValidity()) {
+            var product_service_id = dialog.find("#ddl_services").val();
+            var product_ref1 = dialog.find("#txt_prod_ref1").val();
+            var product_ref2 = dialog.find("#txt_prod_ref2").val();
+            var product_ref3 = dialog.find("#txt_prod_ref3").val();
+            var product_ref4 = dialog.find("#txt_prod_ref4").val();
+            var product_ref5 = dialog.find("#txt_prod_ref5").val();
+            var reason_for_cancel = dialog.find("#txt_reason_for_cancel").val();
+            var initiator_user_id = dialog.find("#txt_initiator_user_id").val();
+            var initiator_sof_id = dialog.find("#ddl_initiator_sof_id").val();
+            var issuer_user_id = dialog.find("#confirm_issuer_user_id").val();
+            var issuer_user_type_name = dialog.find("#confirm_issuer_user_type").val();
+
+            var issuer_user_type_id;
+            switch(issuer_user_type_name){
+                case "customer":
+                    issuer_user_type_id = "1";
+                    break;
+                case "agent":
+                    issuer_user_type_id = "2";
+                    break;
+                case "system-user":
+                    issuer_user_type_id = "3";
+                    break;
+            }
+
+            var issuer_sof_id = dialog.find("#confirm_issuer_sof_id").val();
+            var issuer_sof_type_name = dialog.find("#confirm_issuer_sof_type").val();
+
+            var issuer_sof_type_id;
+            switch(issuer_sof_type_name){
+                case "Bank":
+                    issuer_sof_type_id = "1";
+                    break;
+                case "Cash":
+                    issuer_sof_type_id = "2";
+                    break;
+                case "Card":
+                    issuer_sof_type_id = "3";
+                    break;
+            }
+
+            var payee_user_id = dialog.find("#txt_payee_user_id").val();
+            var payee_sof_id = dialog.find("#ddl_payee_sof_id").val();
+
+            var currency = dialog.find("#confirm_currency").val();
+            var total_vouchers = dialog.find("#confirm_selected_vouchers").val();
+            var total_amount = dialog.find("#confirm_total_amount").val();;
+
+            var vouchers = [];
+            var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
+            $(checkedInput).each(function (index, value) {
+                var id = $(value).val();
+                var voucher_amount = $(value).parent().parent().find("#voucher_amount").text();
+                var voucher = {
+                    "id": id,
+                    "amount": voucher_amount
+                };
+                vouchers.push(voucher)
+            });
+            var data = {
+                "product_service_id": product_service_id,
+                "product_ref1": product_ref1,
+                "product_ref2": product_ref2,
+                "product_ref3": product_ref3,
+                "product_ref4": product_ref4,
+                "product_ref5": product_ref5,
+                "initiator_user_id": initiator_user_id,
+                "initiator_sof_id": initiator_sof_id,
+                "issuer_user_id": issuer_user_id,
+                "issuer_user_type_id": issuer_user_type_id,
+                "issuer_user_type_name": issuer_user_type_name,
+                "issuer_sof_id": issuer_sof_id,
+                "issuer_sof_type_id": issuer_sof_type_id,
+                "payee_user_id": payee_user_id,
+                "payee_sof_id": payee_sof_id,
+                "total_vouchers": total_vouchers,
+                "total_amount": total_amount,
+                "currency": currency,
+                "reason_for_cancel": reason_for_cancel,
+                "vouchers": JSON.stringify(vouchers)
+            }
+
+            var url =  '{% url 'voucher:cancel' %}';
+            $.ajax({
+                url : url,
+                type : "POST",
+                data: data,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function (response) {
+                    $("#cancelRequestModal #voucher_cancel_id").text("#" + response.voucher_cancel_id);
+                    $("#cancelRequestModal #total_vouchers").text(total_vouchers);
+                    $("#cancelRequestModal #total_amount").text(total_amount + " " + currency);
+                    $("#cancelModal").modal('hide');
+                    $("#cancelRequestModal").modal('show');
+                }
+            });
+        }
         return false;
     }
 

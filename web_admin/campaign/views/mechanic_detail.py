@@ -180,6 +180,11 @@ class MechanicDetail(TemplateView, GetHeaderMixin):
                     continue
 
                 limitation_data = limitation['filters']
+                key_value_created_timestamp = self.get_limitation_data_value(limitation_data, 'created_timestamp')
+                if key_value_created_timestamp == None:
+                    limitation['limit_type'] = 'Count per recipient'
+                else:
+                    limitation['limit_type'] = 'Count per timebox'
                 reward_to = self.get_limitation_data_value(limitation_data, 'user_id')
                 reward_to = self.get_person_name(reward_to, event_name)
                 limitation['reward_to'] = reward_to
