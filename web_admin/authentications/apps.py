@@ -56,8 +56,8 @@ class CustomBackend:
 
     def authenticate(self, request=None, username=None, password=None):
         try:
-            loggers = setup_logger(request, logger, request.user)
-            loggers.info('[Start authentication backend service]')
+            loggers = setup_logger(request, logger, "")
+            loggers.info("[{}] [Start authentication backend service]".format(username))
             client_id = settings.CLIENTID
             client_secret = settings.CLIENTSECRET
             url = settings.DOMAIN_NAMES + api_settings.LOGIN_URL
@@ -75,7 +75,7 @@ class CustomBackend:
                 'client_id': client_id,
                 'client_secret': client_secret,
             }
-            loggers.info('Calling authentication backend')
+            loggers.info("[{}] Calling authentication backend".format(username))
 
             start_date = time.time()
             auth_response = requests.post(url, params=payload, headers=headers, verify=settings.CERT)
@@ -89,15 +89,15 @@ class CustomBackend:
                 correlation_id = json_data.get('correlation_id', None)
 
                 if access_token != "" and access_token is not None:
-                    loggers.info('Checking user is exit in system')
                     user, created = User.objects.get_or_create(username=username)
+
                     if created:
-                        loggers.info("{} user was created".format(username))
                         user.is_staff = True
                         user.save()
 
                     user_profiles = self.get_user_profiles(username, access_token, correlation_id, loggers)
-                    loggers.info("Adding access token for {} user name".format(username))
+                    loggers = setup_logger(request, logger, correlation_id)
+                    loggers.info("[{}] Adding access token".format(username))
                     auth, created_token = Authentications.objects.get_or_create(user=user)
                     auth.access_token = access_token
                     auth.correlation_id = correlation_id
@@ -111,20 +111,21 @@ class CustomBackend:
                     auth.created_timestamp = user_profiles['created_timestamp']
                     auth.last_updated_timestamp = user_profiles['last_updated_timestamp']
                     auth.save()
-                    loggers.info("Authentication success and generate session for {} user name".format(username))
+                    loggers.info("[{}] Authentication success and generate session".format(username))
 
-                    loggers.info('========== Finish authentication backend service ==========')
+                    loggers.info("[{}] ========== Finish authentication backend service ==========".format(username))
 
                     request.session['access_token'] = access_token
                     request.session['correlation_id'] = correlation_id
 
                     return user
                 else:
-                    loggers.error("Cannot get access token from response of {} user name".format(username))
-                    loggers.info('[Finish authentication backend service]')
+                    loggers.error("[{}] Cannot get access token from response".format(username))
+                    loggers.info("[{}] [Finish authentication backend service]".format(username))
                     return None
             else:
                 if json_data.get('error_description') == 'Invalid credential':
+                    loggers.error("[{}] Your username and password didn't match. Please try again.".format(username))
                     messages.add_message(
                         request,
                         messages.INFO,
@@ -139,7 +140,7 @@ class CustomBackend:
 
         except Exception as ex:
             loggers.error(ex)
-            loggers.error("[{} user name authentication to backend was failed]".format(username))
+            loggers.error("[[{}] user name authentication to backend was failed]".format(username))
             return None
 
     def get_user(self, user_id):
