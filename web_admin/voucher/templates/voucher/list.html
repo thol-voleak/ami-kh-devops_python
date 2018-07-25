@@ -419,7 +419,8 @@
             var isOk = true;
 
             var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
-            firstCurrency = checkedInput.length > 0 ? $(checkedInput.get(0)).parent().parent().find("#voucher_currency").text() : "";
+            if (checkedInput.length == 0)   return;
+            firstCurrency = $(checkedInput.get(0)).parent().parent().find("#voucher_currency").text();
             $(checkedInput).each(function (index, value) {
                 currentCurrency = $(value).parent().parent().find("#voucher_currency").text();
                 if (firstCurrency != currentCurrency) {
@@ -813,6 +814,7 @@
         };
 
         var showCancelDialog = function () {
+
             if (!validateCurrencies() ||
                 !validateDeleteStatus() ||
                 !validateCancelStatus() ||
@@ -848,6 +850,8 @@
             dialog.find("#confirm_issuer_user_type").val(selectedIssuerUserType).change();
             dialog.find("#confirm_issuer_sof_id").val(selectedIssuerSofId);
             dialog.find("#confirm_issuer_sof_type").val(selectedIssuerSofType);
+            dialog.find("#ddl_services").find("option[currency!='']").attr('disabled','disabled');
+            dialog.find("#ddl_services").find("option[currency='"+selectedCurrency+"']").removeAttr('disabled');
         }
 
         bindApproveRefundVoucher = function () {

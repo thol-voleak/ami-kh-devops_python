@@ -55,6 +55,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             # 'distributed_status_list': self._get_distributed_status_list(),
             # 'delete_status_list': self._get_delete_status_list(),
             'sof_types': self._get_sof_types(),
+            'services': self._get_services_list(),
         }
         self.logger.info('========== Finish render Vouchers List page==========')
         return render(request, self.template_name, context)
