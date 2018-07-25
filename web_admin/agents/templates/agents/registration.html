@@ -1551,6 +1551,7 @@
             var cardTypeId = $ele.val();
             var url = $ele.data('url');
             $('#ddl_mm_card_level').empty();
+            $('#ddl_mm_card_level').append('<option value="">-</option>');
             if (cardTypeId) {
                 $.ajax({
                     url: url,

@@ -274,7 +274,7 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             'branch_city': request.POST.get('bank_branch_city'),
             'register_date': bank_register_date,
             'register_source': request.POST.get('bank_register_source'),
-            'is_verified': bool(request.POST.get('bank_is_verified')),
+            'is_verified': bool(request.POST.get('bank_verify_status')),
             'end_date': bank_end_date,
         }
 
