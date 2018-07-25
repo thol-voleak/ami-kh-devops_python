@@ -39,21 +39,25 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Created Date: From</label>
             <div class="col-sm-2">
-                <input id="dtp_from_created_date" class="form-control input-rounded" name="from_created_date" type="date">
+                <input id="dtp_from_created_date" class="form-control input-rounded" name="from_created_date"
+                       value="{{ from_created_date|default_if_none:'' }}" type="date">
             </div>
             <label class="col-sm-2 control-label">To</label>
             <div class="col-sm-2">
-                <input id="dtp_to_created_date" class="form-control input-rounded" name="to_created_date" type="date">
+                <input id="dtp_to_created_date" class="form-control input-rounded" name="to_created_date"
+                       value="{{ to_created_date|default_if_none:'' }}" type="date">
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-2 control-label">Activated Date: From</label>
             <div class="col-sm-2">
-                <input id="dtp_from_activated_date" class="form-control input-rounded" name="from_activated_date" type="date">
+                <input id="dtp_from_activated_date" class="form-control input-rounded" name="from_activated_date"
+                       value="{{ from_activated_date|default_if_none:'' }}" type="date">
             </div>
             <label class="col-sm-2 control-label">To</label>
             <div class="col-sm-2">
-                <input id="dtp_to_activated_date" class="form-control input-rounded" name="to_activated_date" type="date">
+                <input id="dtp_to_activated_date" class="form-control input-rounded" name="to_activated_date"
+                       value="{{ to_activated_date|default_if_none:'' }}" type="date">
             </div>
         </div>
         <div class="form-group">
