@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 
 from voucher.views.refund import VoucherRefundView, VoucherRefundRequestView
 from voucher.views.third_party_voucher_upload import upload_form, upload_progress
+
+from voucher.views.cancel import VoucherCancelView
 from .views.list import VoucherList
 from .views.detail import VoucherDetail
 from .views.transit import Transit
@@ -29,4 +31,5 @@ urlpatterns = [
     url(r'^adjustment/detail/(?P<voucher_refund_id>[0-9]+)/$', login_required(VoucherAdjustmentDetailView.as_view(), login_url='authentications:login'), name="voucher_adjustment_detail"),
     url(r'^upload/$', login_required(upload_form, login_url='authentications:login'), name="upload"),
     url(r'^upload_progress/$', login_required(upload_progress, login_url='authentications:login'),name="upload_progress"),
+    url(r'^cancel', login_required(VoucherCancelView.as_view(), login_url='authentications:login'), name="cancel"),
 ]

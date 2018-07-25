@@ -1,3 +1,7 @@
+import json
+
+from django.http import HttpResponse
+
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from web_admin import setup_logger
 from web_admin.api_settings import CASH_SOFS_URL
@@ -7,6 +11,8 @@ from django.views.generic.base import TemplateView
 from braces.views import GroupRequiredMixin
 
 from web_admin.get_header_mixins import GetHeaderMixin
+from web_admin.global_constants import UserType
+from web_admin.restful_methods import RESTfulMethods
 from web_admin.utils import calculate_page_range_from_page_info, make_download_file, export_file
 from web_admin.api_logger import API_Logger
 from web_admin.restful_client import RestFulClient
@@ -118,3 +124,46 @@ class CashSOFView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         for i in data['cash_sofs']:
             i['is_success'] = IS_SUCCESS.get(i.get('is_success'))
         return data
+
+class CashSofJsonView(GroupRequiredMixin, RESTfulMethods, TemplateView):
+    group_required = "CAN_SEARCH_CASH_SOF_CREATION"
+    login_url = 'web:permission_denied'
+    raise_exception = False
+    logger = logger
+
+    def dispatch(self, request, *args, **kwargs):
+        correlation_id = get_correlation_id_from_username(self.request.user)
+        self.logger = setup_logger(self.request, logger, correlation_id)
+        return super(CashSofJsonView, self).dispatch(request, *args, **kwargs)
+
+    def check_membership(self, permission):
+        self.logger.info(
+            "Checking permission for [{}] username with [{}] permission".format(self.request.user, permission))
+        return check_permissions_by_user(self.request.user, permission[0])
+
+    def post(self, request, *args, **kwargs):
+        agent_id = self.request.POST.get('agent_id', None);
+        data, success = self._get_cash_sof_list(agent_id, UserType.AGENT.value)
+        result = []
+        if success:
+            data = data.get('cash_sofs', [])
+            for item in data:
+                result.append(item.get("id", None))
+        else:
+            result = []
+        return HttpResponse(json.dumps({"data": result}))
+
+    def _get_cash_sof_list(self, user_id,user_type_id):
+        body = {'user_id': user_id, 'user_type': user_type_id}
+        body['paging'] = False
+        success, status_code, status_message, data = RestFulClient.post(url=CASH_SOFS_URL, headers=self._get_headers(),
+                                                                        params=body, loggers=self.logger)
+        data = data or {}
+        API_Logger.post_logging(
+            loggers=self.logger,
+            params=body,
+            response=data.get('cash_sofs', []),
+            status_code=status_code,
+            is_getting_list=True
+        )
+        return data, success

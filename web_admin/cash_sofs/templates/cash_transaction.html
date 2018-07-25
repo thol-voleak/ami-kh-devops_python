@@ -170,7 +170,7 @@
                     <thead>
                     <tr>
                         <th id="sof_id">SOF ID</th>
-                        <th id="owner">User Type (User ID)</th>
+                        <th id="owner" style="min-width: 100px">User Type (User ID)</th>
                         <th id="order_detail_id">Order Detail ID</th>
                         <th id="order_id">Order ID</th>
                         <th id="short_order_id">Short Order ID</th>
@@ -185,7 +185,7 @@
                     {% for transaction in transaction_list %}
                         <tr>
                             <td class="col-sm-1">{{ transaction.sof.id }}</td>
-                            <td class="col-sm-2">{{ transaction.sof.user_type.name|default_if_none:'' }} ({{ transaction.sof.user_id|default_if_none:'' }})</td>
+                            <td style="min-width: 100px">{{ transaction.sof.user_type.name|default_if_none:'' }} ({{ transaction.sof.user_id|default_if_none:'' }})</td>
                             <td class="col-sm-2">{{ transaction.order_detail_id }}</td>
                             <td class="col-sm-2">{{ transaction.order_id|default_if_none:''}}</td>
                             <td class="col-sm-2">{{ transaction.short_order_id|default_if_none:''}}</td>

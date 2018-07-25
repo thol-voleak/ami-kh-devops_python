@@ -332,6 +332,20 @@ class AddAction(TemplateView, GetHeaderMixin):
                     }
                 ]
             }
+            timebox_minutes = request.POST.get('timebox')
+            if timebox_minutes:
+                params['filters'].append({
+                    'key_name': 'created_timestamp',
+                    'key_value_type': 'timestamp',
+                    'operator': '>=',
+                    'key_value': "@@@@event_created_timestamp@@-minutes(" + timebox_minutes + ")@@",
+                })
+                params['filters'].append({
+                    'key_name': 'created_timestamp',
+                    'key_value_type': 'timestamp',
+                    'operator': '<=',
+                    'key_value': "@@created_timestamp@@",
+                })
 
             success, data, message = self.create_limitation(campaign_id, mechanic_id, action_id, params)
             if not success:

@@ -1,5 +1,8 @@
+from authentications.apps import InvalidAccessToken
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
+from web_admin import settings
 from web_admin import setup_logger, api_settings
+from web_admin.api_settings import SEARCH_SERVICE
 from web_admin.restful_client import RestFulClient
 from django.views.generic.base import TemplateView
 from web_admin.get_header_mixins import GetHeaderMixin
@@ -51,6 +54,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'voucher_type_list': self._get_voucher_type_list(),
             'distributed_status_list': self._get_distributed_status_list(),
             'delete_status_list': self._get_delete_status_list(),
+            'sof_types': self._get_sof_types(),
         }
         self.logger.info('========== Finish render Vouchers List page==========')
         return render(request, self.template_name, context)
@@ -148,7 +152,6 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         permissions['CAN_HOLD_VOUCHER_ACTION'] = self.check_membership(['CAN_HOLD_VOUCHER_ACTION'])
         permissions['CAN_UNHOLD_VOUCHER_ACTION'] = self.check_membership(['CAN_UNHOLD_VOUCHER_ACTION'])
-
         page = data['page']
         context = {
             'data': data['vouchers'],
@@ -182,6 +185,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'voucher_group': voucher_group,
             'delete_status_list': self._get_delete_status_list(),
             'delete_status': delete_status,
+            'services': self._get_services_list(),
+            'sof_types': self._get_sof_types()
         }
         return render(request, self.template_name, context)
 
@@ -254,3 +259,28 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             {"name": "Deleted", "value": "True"},
             {"name": "None", "value": "False"}
         ]
+
+
+    def _get_sof_types(self):
+        success, status_code, data  = RestFulClient.get(url=api_settings.SOF_TYPES_URL, loggers=self.logger, headers=self._get_headers())
+        return data
+
+    def _get_services_list(self):
+        self.logger.info('========== Start Getting services list ==========')
+        url = api_settings.SEARCH_SERVICE
+        success, status_code, status_message, data = RestFulClient.post(url=url, headers=self._get_headers(),
+                                                          loggers=self.logger,
+                                                           params={"paging":False},
+                                                           timeout=settings.GLOBAL_TIMEOUT)
+        if success:
+            self.logger.info("Response_content_count:{}".format(len(data)))
+            data = data.get("services",None)
+        elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
+                    status_code == 'invalid_access_token'):
+            self.logger.info("{}".format(data))
+            raise InvalidAccessToken(data)
+        self.logger.info('========== Finish Get services list ==========')
+        self.logger.info(data)
+
+        return data
+

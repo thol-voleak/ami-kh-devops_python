@@ -302,6 +302,8 @@ SEARCH_VOUCHERS = 'api-gateway/report/'+API_VERSION+'/vouchers'
 UPDATE_HOLD_STATUS = 'api-gateway/voucher/'+API_VERSION+'/admin/vouchers/{voucher_id}/status'
 CREATE_REFUND_REQUEST = 'api-gateway/workflow/'+API_VERSION+'/admin/vouchers/refund'
 SEARCH_VOUCHER_ADJUSTMENT = 'api-gateway/report/'+API_VERSION+'/workflows/voucher-refunds'
+CREATE_CANCEL_REQUEST = 'api-gateway/workflow/' +API_VERSION+'/admin/vouchers/cancellation'
+CONFIRM_CANCEL_REQUEST = 'api-gateway/workflow/' +API_VERSION+'/admin/voucher-cancellations/{id}'
 
 #Third Party
 GET_VOUCHER_GROUP_LIST = 'api-gateway/voucher/'+API_VERSION+'/admin/vouchers/voucher-groups'

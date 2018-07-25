@@ -572,10 +572,6 @@
                                  {% if filter.operator != 'is_blank' and filter.operator != 'is_not_blank' %}
                                      <div class="info-group">
                                             <div>Key Value:</div>
-                                            {% if filter.operator != 'is_blank' and filter.operator != 'is_not_blank' %}
-                                                <div>Key Value:</div>
-                                            {% endif %}
-
                                             <div>
                                                 {% if filter.operator != 'in_list' and filter.operator != 'not_in_list' %}
                                                     <span id="lbl_filter_key_value">{{filter.key_value}}</span>

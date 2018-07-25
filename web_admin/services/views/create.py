@@ -52,12 +52,16 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         description = request.POST.get('description')
         clone_from = request.POST.get('clone_from')
         clone_service_name = request.POST.get('service_name_hidden')
+        image_url = request.POST.get('image_url')
+        display_name = request.POST.get('display_name')
 
         body = {
             'service_group_id': service_group_id,
             'service_name': service_name,
             'currency': currency,
             'description': description,
+            'image_url': image_url,
+            'display_name': display_name
         }
 
         if clone_from.isdigit():

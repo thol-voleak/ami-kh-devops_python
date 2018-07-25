@@ -73,12 +73,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">ORDER ID</label>
+                    <label class="col-sm-2 control-label">Order ID</label>
                     <div class="col-sm-2">
                         <input id="txt_order_id" type="text" class="form-control input-rounded" name="order_id"
                                value="{{ search_by.order_id }}"/>
                     </div>
-                    <label class="col-sm-2 control-label">ORDER DETAIL ID</label>
+                    <label class="col-sm-2 control-label">Order Detail ID</label>
                     <div class="col-sm-2">
                         <input id="txt_order_detail_id" type="text" class="form-control input-rounded"
                                name="order_detail_id" value="{{ search_by.order_detail_id }}"/>
@@ -95,7 +95,7 @@
                 </div>
 
                 <div class="form-group">
-                     <label class="col-sm-2 control-label">SHORT ORDER ID</label>
+                     <label class="col-sm-2 control-label">Short Order ID</label>
                     <div class="col-sm-2">
                         <input id="txt_short_order_id" type="text" class="form-control input-rounded"
                                name="short_order_id" value="{{ search_by.short_order_id }}"/>
@@ -182,7 +182,7 @@
                     <thead>
                     <tr>
                         <th id="sof_id">SOF ID</th>
-                        <th id="user">User Type (ID)</th>
+                        <th id="user" style="min-width: 100px">User Type (User ID)</th>
                         <th id="order_detail_id">Order detail ID</th>
                         <th id="order_id">Order ID</th>
                         <th id="short_order_id">Short Order ID</th>
@@ -201,8 +201,7 @@
                     {% for transaction in transaction_list %}
                         <tr>
                             <td class="col-sm-1">{{ transaction.sof.id }}</td>
-                            <td class="col-sm-2">{{ transaction.sof.user_type.name }} ({{ transaction.sof.user_id }})
-                            </td>
+                            <td style="min-width: 100px">{{ transaction.sof.user_type.name }} ({{ transaction.sof.user_id }})</td>
                             <td class="col-sm-2">{{ transaction.order_detail_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.order_id|default_if_none:'' }}</td>
                             <td class="col-sm-2">{{ transaction.short_order_id|default_if_none:'' }}</td>
