@@ -209,8 +209,8 @@
                         <tr class="checkboxlist" id="adjustment-{{ i.id|default_if_none:'' }}">
                             <td><input type="checkbox" name="voucher_adjustment_checkbox" value="{{ i.id }}" id="chk_voucher_adjustment_{{ i.id|default_if_none:'' }}"/></td>
                             <td>{{ i.id|default_if_none:'' }}</td>
-                            <td>Refund</td>
-                            <td>1</td>
+                            <td>{{ i.action|default_if_none:'' }}</td>
+                            <td>{{ i.affected_vouchers|default_if_none:'' }}</td>
                             <td>{{ i.amount|default_if_none:'' }}</td>
                             <td id="voucher_adjustment_currency">{{ i.currency|default_if_none:'' }}</td>
                             <td>{{ i.status|default_if_none:'' }}</td>

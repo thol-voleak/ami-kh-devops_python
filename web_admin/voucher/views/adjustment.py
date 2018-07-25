@@ -54,6 +54,8 @@ class VoucherAdjustmentList(TemplateView, GetHeaderMixin):
             body['requested_username'] = requested_by
         if request_status:
             body['status_id'] = int(request_status)
+        if request_action != '':
+            body['action'] = request_action
         if original_voucher_id:
             body['original_voucher_id'] = original_voucher_id
 
@@ -74,7 +76,7 @@ class VoucherAdjustmentList(TemplateView, GetHeaderMixin):
 
         page = data['page']
         context = {
-            'data': self._format_data(data['refund_vouchers']),
+            'data': self._format_data(data['voucher_adjustments']),
             'paginator': page,
 			'search_count': page['total_elements'],
 			'page_range': calculate_page_range_from_page_info(page),
@@ -97,6 +99,7 @@ class VoucherAdjustmentList(TemplateView, GetHeaderMixin):
     def _get_requested_action_list(self):
         return [
             {"name": "Refund", "value": "Refund"},
+            {"name": "Cancel", "value": "Cancel"},
         ]
     
     def _format_data(self, data):
