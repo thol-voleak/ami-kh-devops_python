@@ -47,7 +47,7 @@ class VoucherAdjustmentDetailView(TemplateView, GetHeaderMixin):
         return voucherRefund
 
     def _get_voucher_refund_detail(self, id):
-        url = api_settings.SEARCH_VOUCHER_ADJUSTMENT
+        url = api_settings.SEARCH_VOUCHER_REFUND
         params = {
             'id': id
         }
