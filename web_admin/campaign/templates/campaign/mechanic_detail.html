@@ -808,13 +808,19 @@
                                 <div class="info-group">
                                     <div>Limit Type:</div>
                                     <div>
-                                        <span id="lbl_limitation_type">{{limitation.limit_type|default_if_none:''}}</span>
+                                        <span id="lbl_limitation_type">count</span>
                                     </div>
                                 </div>
                                 <div class="info-group">
                                     <div>Limit to:</div>
                                     <div>
-                                        <span id="lbl_limit_to">{{limitation.value|default_if_none:''}} /recipent/mechanic</span>
+                                        <span id="lbl_limit_to">
+                                            {% if limitation.limit_type == 'Count per recipient' %}
+                                               {{limitation.value|default_if_none:''}} /recipient/mechanic
+                                            {% elif limitation.limit_type == 'Count per timebox' %}
+                                                {{limitation.value|default_if_none:''}} /recipient every {{limitation.timebox|default_if_none:''}} minutes
+                                            {% endif %}
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="info-group">
