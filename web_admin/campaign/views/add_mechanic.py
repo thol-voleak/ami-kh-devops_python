@@ -550,6 +550,8 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         # add limitation
         limit_to = request.POST.get('limit_to')
         limit_to = int(limit_to)
+        timebox_minute = request.POST.get('timebox')
+
         params = {
             "limit_type": request.POST.get('limitation_type'),
             "value": limit_to,
@@ -568,6 +570,22 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 }
             ]
         }
+
+        if timebox_minute:
+            # create 2 filter
+            params['filters'].append({
+                'key_name': 'created_timestamp',
+                'key_value_type': 'timestamp',
+                'operator': '>=',
+                'key_value': "@@@@event_created_timestamp@@-minutes(" + timebox_minute + ")@@"
+            })
+
+            params['filters'].append({
+                'key_name': 'created_timestamp',
+                'key_value_type': 'timestamp',
+                'operator': '<=',
+                'key_value': "@@event_created_timestamp@@"
+            })
 
         success, data, message = self.create_limitation(campaign_id, mechanic_id, action_id, params)
         if success:
