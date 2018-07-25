@@ -185,6 +185,7 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         mm_factory_card_number = request.POST.get('mm_factory_card_number')
         model_type = request.POST.get('model_type')
         is_require_otp = bool(request.POST.get('is_require_otp'))
+        agent_classification_id = int(request.POST.get("agent_classification_id")) if request.POST.get("agent_classification_id") else None
 
         # Personal Details
         tin_number = request.POST.get('tin_number')
@@ -406,6 +407,7 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             'mm_factory_card_number': mm_factory_card_number,
             'model_type': model_type,
             'is_require_otp': is_require_otp,
+            'agent_classification_id': agent_classification_id,
 
             'tin_number': tin_number,
             'title': title,
@@ -441,9 +443,9 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         #     if not data.get(key, ''):
         #         del data[key]
 
-        for key, value in data.items():
-            if not value:
-                data[key] = ''
+        # for key, value in data.items():
+        #     if not value:
+        #         data[key] = ''
 
         data, success = self._put_method(api_path=api_settings.AGENT_UPDATE_PATH.format(agent_id=agent_id),
                                          func_description="Agent",

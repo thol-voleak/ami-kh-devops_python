@@ -270,18 +270,10 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 if not success:
                     return JsonResponse({"status": 3, "msg": message})
                 # consecutive key detail
-                consecutive_key_value_type = request.POST.get('consecutive_key_value_type_' + suffix)
-                consecutive_detail_name = request.POST.get('consecutive_detail_name_' + suffix)
-                consecutive_operator = request.POST.get('consecutive_operator_' + suffix)
-                consecutive_key_value = request.POST.get('consecutive_key_value_' +suffix)
                 condition_reset_event = request.POST.get('condition_reset_event_' + suffix)
-                params = {
-                    'key_name': consecutive_detail_name,
-                    'key_value_type': self._kv_type_map[consecutive_key_value_type],
-                    'operator': self._operator_map[consecutive_operator],
-                    'key_value': consecutive_key_value,
-                    'is_consecutive_key': True
-                }
+                params = self._build_create_filter_params(request, 'consecutive_detail_name_' + suffix, 'consecutive_key_value_type_' + suffix,
+                                                          'consecutive_operator_' + suffix, 'consecutive_key_value_' + suffix)
+                params["is_consecutive_key"] = True
                 success, data, message = self.create_filter(campaign_id, mechanic_id, condition_id, params)
 
                 # condition reset value
@@ -299,7 +291,7 @@ class AddMechanic(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                     operator = prefix + '_reset_filter_operator_' + suffix
                     key_value = prefix + '_reset_filter_key_value_' + suffix
 
-                    if not request.POST.get(key_value) and not self._is_blank_operator(operator):
+                    if not request.POST.get(key_value) and not self._is_blank_operator(request, operator):
                         continue
                     params = self._build_create_filter_params(request, detail_name, key_value_type, operator, key_value)
                     success, data, message = self.create_reset_filter(campaign_id, mechanic_id, condition_id, params)

@@ -9,7 +9,7 @@ from django.views.generic.base import TemplateView
 from braces.views import GroupRequiredMixin
 from web_admin import ajax_functions
 from web_admin.restful_helper import RestfulHelper
-
+from datetime import datetime, date, timedelta
 from web_admin.api_logger import API_Logger
 import logging
 
@@ -49,13 +49,58 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
         context = super(CardFreezeList, self).get_context_data(**kwargs)
 
         self.logger.info('========== Start get freeze card ==========')
+        ticket_id = request.GET.get('ticket_id', None)
+        card_id = request.GET.get('card_id', None)
+        from_created_date = request.GET.get('from_created_date')
+        to_created_date = request.GET.get('to_created_date')
+        from_activated_date = request.GET.get('from_activated_date')
+        to_activated_date = request.GET.get('to_activated_date')
+        is_deleted = request.GET.get('is_deleted')
+        if is_deleted == None:
+            is_deleted = 'ALL'
 
         body = {
-            "action": "unstop card",
+            # "action": "unstop card",
             "paging": True,
             "page_index": 1
 
         }
+
+        if ticket_id:
+            body['ticket_id'] = ticket_id
+
+        if card_id:
+            body['card_id'] = int(card_id)
+
+        if from_created_date is not '' and from_created_date is not None:
+            new_from_created_date = datetime.strptime(from_created_date, "%Y-%m-%d")
+            new_from_created_date = new_from_created_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['from_created_date'] = new_from_created_date
+
+        if to_created_date is not '' and to_created_date is not None:
+            new_to_created_date = datetime.strptime(to_created_date, "%Y-%m-%d")
+            new_to_created_date = new_to_created_date.replace(hour=23, minute=59, second=59)
+            new_to_created_date = new_to_created_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['to_created_date'] = new_to_created_date
+
+        if from_activated_date is not '' and from_activated_date is not None:
+            new_from_activated_date = datetime.strptime(from_activated_date, "%Y-%m-%d")
+            new_from_activated_date = new_from_activated_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['from_activated_date'] = new_from_activated_date
+
+        if to_activated_date is not '' and to_created_date is not None:
+            new_to_activated_date = datetime.strptime(to_activated_date, "%Y-%m-%d")
+            new_to_activated_date = new_to_activated_date.replace(hour=23, minute=59, second=59)
+            new_to_activated_date = new_to_activated_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['to_activated_date'] = new_to_activated_date
+
+        if not is_deleted:
+            body['is_deleted'] = 1
+        else:
+            context['is_deleted'] = is_deleted
+        if is_deleted in ['0', '1']:
+            body['is_deleted'] = int(is_deleted)
+
         opening_page_index = request.GET.get('current_page_index')
         if opening_page_index:
             body['page_index'] = int(opening_page_index)
@@ -71,7 +116,9 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
             context.update ({'data': result_data,
                              'permissions': permissions,
                              'paginator': page,
-                             'page_range': calculate_page_range_from_page_info(page)
+                             'page_range': calculate_page_range_from_page_info(page),
+                             'ticket_id': str("" if ticket_id is None else ticket_id),
+                             'card_id': str("" if card_id is None else card_id)
                              })
 
         self.logger.info('========== End get freeze card ==========')

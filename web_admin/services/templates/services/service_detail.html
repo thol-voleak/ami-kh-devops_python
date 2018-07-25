@@ -70,11 +70,33 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-sm-2 control-label">Service Display Name (English):</label>
+                        <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                          id="txt_display_name" name="display_name"
+                                          readonly value="{{ service_info.display_name | default_if_none:'' }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">Service Display Name (Local):</label>
                         <div class="col-sm-8">
                                 <input type="text" class="form-control input-rounded"
                                           id="txt_display_name_local" name="display_name_local"
                                           readonly value="{{ service_info.display_name_local | default_if_none:'' }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Service Image:</label>
+                        <div class="col-sm-8">
+                                <input type="text" class="form-control input-rounded"
+                                          id="txt_image_url" name="image_url" value="{{ service_info.image_url | default_if_none:'' }}" 
+                                          readonly />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-8">
+                           <img src="{{ service_info.image_url }}" onerror="this.src='{% static 'img/no-image.png' %}'" style="width: 150px; height: 150px; border: 1px solid #c0c0c0;" />
                         </div>
                     </div>
                     <div class="pull-right">

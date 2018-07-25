@@ -46,7 +46,7 @@
 
 <div class="modal" tabindex="-1" role="dialog" id="refundModal" style="vertical-align: middle; padding-top: 150px;">
     <div class="modal-dialog large-modal-dialog" role="document">
-        <form method="POST" class="form-horizontal" role="form" id="mForm" onsubmit="return validate(this)">
+        <form method="POST" class="form-horizontal" role="form" id="mForm" onsubmit="return validateRefund(this)">
         <div class="modal-content">
             <div id="confirmation_body" class="col-sm-6">
                 <div class="confirmation_border pull-left">
@@ -165,7 +165,7 @@
 </div>
 
 <script>
-    function validate(form) {
+    function validateRefund(form) {
         if($('#mForm')[0].checkValidity()) {
             var voucher_id = $("#refundModal #id").val();
             var original_voucher_id = $("#refundModal #confirm_voucher_id").val()

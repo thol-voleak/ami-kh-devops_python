@@ -197,6 +197,11 @@ function onInlineSetupDataTable(tableId, m_action_types, m_actor_types, m_specif
             setSpecificIDDisabled = 'disabled';
         }
 
+        if (aData[1] === "Specific ID"){
+            setSpecificSOFRequired = 'required';
+            setSpecificSOFDisabled ='';
+        }
+
         // set disabled, required for Specific SOF according to Actor Types
         if (aData[1] === "Specific ID's Beneficiary") {
             setSpecificSOFDisabled = 'disabled';

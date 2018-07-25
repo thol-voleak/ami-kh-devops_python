@@ -5,6 +5,7 @@
         margin-top: 4px;
         margin-bottom: 4px;
     }
+
     .sub-label {
         width: 130px;
         margin-right: 15px;
@@ -46,149 +47,391 @@
 
 <div class="modal" tabindex="-1" role="dialog" id="cancelModal" style="vertical-align: top; padding-top: 15px;">
     <div class="modal-dialog large-modal-dialog" role="document">
-        <form method="POST" class="form-horizontal" role="form" id="mForm" onsubmit="return validate(this)">
-        <div class="modal-content">
-            <div id="confirmation_body" class="col-sm-6">
-                <div class="confirmation_border pull-left">
-                    <div>
-                        <label class="parent-label">Confirmation Details</label>
-                    </div>
-                    <div style="clear:both;">
-                        <label class="sub-label">Selected Vouchers</label>
-                        <input type="number" class="form-control input-rounded sub-input"
-                               id="confirm_selected_vouchers"
-                               readonly>
-                    </div>
-                    <div style="clear:both;">
-                        <label class="sub-label">Total amount of seleted Vouchers</label>
-                        <input type="text" class="form-control input-rounded sub-input"
-                               id="confirm_total_amount"
-                               readonly>
-                    </div>
-                    <div style="clear:both;">
-                        <label class="sub-label">Initiator Name</label>
-                        <input type="text" class="form-control input-rounded sub-input" id="confirm_initiator_name"
-                               readonly>
-                    </div>
-                    <div style="clear:both;">
-                        <label class="parent-label">Payer Information</label>
-                    </div>
-                    <div style="clear:both;">
-                        <label class="sub-label">Issuer User ID</label>
-                        <input type="text" class="form-control input-rounded sub-input"
-                               id="confirm_issuer_user_id"
-                               readonly>
-                    </div>
-                    <div style="clear:both;">
-                        <label class="sub-label">Issuer User Name</label>
-                        <input type="text" class="form-control input-rounded sub-input"
-                               id="confirm_issuer_user_name"
-                               readonly>
-                    </div>
-                    <div style="clear:both;">
-                        <label class="sub-label">Issuer SOF Type</label>
-                        <input type="text" class="form-control input-rounded sub-input"
-                               id="confirm_issuer_sof_type"
-                               readonly>
-                    </div>
-                    <div style="clear:both;">
-                        <label class="sub-label">Issuer SOF ID</label>
-                        <input type="text" class="form-control input-rounded sub-input"
-                               id="confirm_issuer_sof_id"
-                               readonly>
+        <form method="POST" class="form-horizontal" role="form" id="mForm" onsubmit="return validateCancel(this)">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div id="confirmation_body" class="col-sm-6">
+                    <div class="confirmation_border pull-left">
+                        <div>
+                            <label class="parent-label">Confirmation Details</label>
+                        </div>
+                        <div style="clear:both;">
+                            <label class="sub-label">Selected Vouchers</label>
+                            <input type="number" class="form-control input-rounded sub-input"
+                                   id="confirm_selected_vouchers"
+                                   readonly>
+                        </div>
+                        <div style="clear:both;">
+                            <label class="sub-label">Total amount of seleted Vouchers</label>
+                            <input type="text" class="form-control input-rounded sub-input"
+                                   id="confirm_total_amount"
+                                   readonly>
+                        </div>
+                        <div style="clear:both;">
+                            <label class="sub-label">Currency</label>
+                            <input type="text" class="form-control input-rounded sub-input"
+                                   id="confirm_currency"
+                                   readonly>
+                        </div>
+                        <div style="clear:both;">
+                            <label class="parent-label">Payer Information</label>
+                        </div>
+                        <div style="clear:both;">
+                            <label class="sub-label">Issuer User ID</label>
+                            <input type="text" class="form-control input-rounded sub-input"
+                                   id="confirm_issuer_user_id"
+                                   readonly>
+                            <input type="text" class="form-control input-rounded sub-input"
+                                   id="confirm_issuer_user_type"
+                                   readonly style="display: none">
+                        </div>
+                        <div style="clear:both;">
+                            <label class="sub-label">Issuer User Name</label>
+                            <input type="text" class="form-control input-rounded sub-input"
+                                   id="confirm_issuer_user_name"
+                                   readonly>
+                        </div>
+                        <div style="clear:both;">
+                            <label class="sub-label">Issuer SOF Type</label>
+                            <input type="text" class="form-control input-rounded sub-input"
+                                   id="confirm_issuer_sof_type"
+                                   readonly>
+                        </div>
+                        <div style="clear:both;">
+                            <label class="sub-label">Issuer SOF ID</label>
+                            <input type="text" class="form-control input-rounded sub-input"
+                                   id="confirm_issuer_sof_id"
+                                   readonly>
+                        </div>
                     </div>
                 </div>
+                <div id="input_body" style="padding-left: 30px;" class="col-sm-6">
+                    <label class="parent-label">Select Payment Service</label>
+                    <div style="clear:both;">
+                        <label class="sub-label">Payment Service *</label>
+                        <select class="form-control input-rounded sub-input" id="ddl_services" name="service_id"
+                                required>
+                            <option value="">-</option>
+                            {% for item in services %}
+                                <option value="{{ item.service_id }}">{{ item.service_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <label class="parent-label">Input Initiator Information</label>
+                    <div style="clear:both;">
+                        <label class="sub-label">User ID *</label>
+                        <input type="number" class="form-control input-rounded sub-input" name="initiator_user_id"
+                               id="txt_initiator_user_id" required>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Display Initiator Name</label>
+                        <input type="text" class="form-control input-rounded sub-input" name="initiator_user_name"
+                               id="txt_initiator_user_name" disabled>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Cash SOF ID *</label>
+                        <select class="form-control input-rounded sub-input" id="ddl_initiator_sof_id"
+                                name="initiator_sof_id" required>
+                            <option value="">-</option>
+                        </select>
+                    </div>
+                    <label class="parent-label">Input prod references</label>
+                    <div style="clear:both;">
+                        <label class="sub-label">Prod_ref1</label>
+                        <input type="text" class="form-control input-rounded sub-input" name="prod_ref1"
+                               id="txt_prod_ref1">
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Prod_ref2</label>
+                        <input type="text" class="form-control input-rounded sub-input" name="prod_ref2"
+                               id="txt_prod_ref2">
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Prod_ref3</label>
+                        <input type="text" class="form-control input-rounded sub-input" name="prod_ref3"
+                               id="txt_prod_ref3">
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Prod_ref4</label>
+                        <input type="text" class="form-control input-rounded sub-input" name="prod_ref4"
+                               id="txt_prod_ref4">
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Prod_ref5</label>
+                        <input type="text" class="form-control input-rounded sub-input" name="prod_ref5"
+                               id="txt_prod_ref5">
+                    </div>
+                    <div style="clear:both;">
+                        <label class="parent-label">Input Reason for Cancellation</label>
+                    </div>
+                    <div style="clear:both;">
+                        <textarea rows="2" style="width: 100%;" name="reason_for_cancel"
+                                  id="txt_reason_for_cancel"></textarea>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="parent-label">Input Payee information</label>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">User ID *</label>
+                        <input type="number" class="form-control input-rounded sub-input" name="payee_user_id"
+                               id="txt_payee_user_id" required>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Display Payee Name</label>
+                        <input type="text" class="form-control input-rounded sub-input" name="payee_user_name"
+                               id="txt_payee_user_name" disabled>
+                    </div>
+                    <div style="clear:both;">
+                        <label class="sub-label">Cash SOF ID *</label>
+                        <select class="form-control input-rounded sub-input" id="ddl_payee_sof_id"
+                                name="initiator_payee_id" required>
+                            <option value="">-</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="clear:both; margin-bottom:60px; padding-right:40px">
+                    <input type="submit" class="btn btn-success pull-right col-sm-2 input-rounded" value="Next">
+                    <input type="button" class="btn pull-right col-sm-2 input-rounded" onclick="$('#cancelModal').modal('hide')" value="Cancel">
+                </div>
+                <div style="clear: both;"></div>
             </div>
-            <div id="input_body" style="padding-left: 30px;" class="col-sm-6">
-                <label class="parent-label">Select Payment Service</label>
-                <div style="clear:both;">
-                    <label class="sub-label">Payment Service *</label>
-                    <select class="form-control input-rounded sub-input" id="ddl_service_name" name="service_id" required>
-                        <option value="">-</option>
-                        {% for item in service_list %}
-                            {% if item.id|slugify == form.service_id|slugify %}
-                                <option value="{{ item.id }}" selected>{{ item.name }}</option>
-                            {% else %}
-                                <option value="{{ item.id }}">{{ item.name }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-                <label class="parent-label">Input Initiator Information</label>
-                <div style="clear:both;">
-                    <label class="sub-label">User ID *</label>
-                    <input type="number" class="form-control input-rounded sub-input" name="initiator_user_id" id="txt_initiator_user_id" required>
-                </div>
-                <div style="clear:both;">
-                    <label class="sub-label">Display Initiator Name</label>
-                    <input type="text" class="form-control input-rounded sub-input" name="initiator_user_name" id="txt_initiator_user_name" disabled>
-                </div>
-                <div style="clear:both;">
-                    <label class="sub-label">Cash SOF ID *</label>
-                    <select class="form-control input-rounded sub-input" id="ddl_initiator_sof_id" name="initiator_sof_id" required>
-                        <option value="">-</option>
-                    </select>
-                </div>
-                <label class="parent-label">Input prod references</label>
-                <div style="clear:both;">
-                    <label class="sub-label">Prod_ref1</label>
-                    <input type="text" class="form-control input-rounded sub-input" name="prod_ref1" id="txt_prod_ref1">
-                </div>
-                <div style="clear:both;">
-                    <label class="sub-label">Prod_ref2</label>
-                    <input type="text" class="form-control input-rounded sub-input" name="prod_ref2" id="txt_prod_ref2">
-                </div>
-                <div style="clear:both;">
-                    <label class="sub-label">Prod_ref3</label>
-                    <input type="text" class="form-control input-rounded sub-input" name="prod_ref3" id="txt_prod_ref3">
-                </div>
-                <div style="clear:both;">
-                    <label class="sub-label">Prod_ref4</label>
-                    <input type="text" class="form-control input-rounded sub-input" name="prod_ref4" id="txt_prod_ref4">
-                </div>
-                <div style="clear:both;">
-                    <label class="sub-label">Prod_ref5</label>
-                    <input type="text" class="form-control input-rounded sub-input" name="prod_ref5" id="txt_prod_ref5">
-                </div>
-                <div style="clear:both;">
-                    <label class="parent-label">Input Reason for Cancellation</label>
-                </div>
-                <div style="clear:both;">
-                    <textarea rows="2" style="width: 100%;" name="reason_for_cancel" id="txt_reason_for_cancel"></textarea>
-                </div>
-                <div style="clear:both;">
-                    <label class="parent-label">Input Payee information</label>
-                </div>
-                <div style="clear:both;">
-                    <label class="sub-label">User ID *</label>
-                    <input type="number" class="form-control input-rounded sub-input" name="payee_user_id" id="txt_payee_user_id" required>
-                </div>
-                <div style="clear:both;">
-                    <label class="sub-label">Display Payee Name</label>
-                    <input type="text" class="form-control input-rounded sub-input" name="payee_user_name" id="txt_payee_user_name" disabled>
-                </div>
-                <div style="clear:both;">
-                    <label class="sub-label">Cash SOF ID *</label>
-                    <select class="form-control input-rounded sub-input" id="ddl_payee_sof_id" name="initiator_payee_id" required>
-                        <option value="">-</option>
-                    </select>
-                </div>
-            </div>
-            <div style="clear:both; margin-bottom:60px; padding-right:40px">
-                <input type="submit" class="btn btn-success pull-right col-sm-2 input-rounded" value="Next">
-                <input type="submit" class="btn pull-right col-sm-2 input-rounded" value="Cancel">
-            </div>
-            <div style="clear: both;"></div>
-        </div>
         </form>
     </div>
 </div>
 
+<div class="modal" tabindex="-1" role="dialog" id="cancelRequestModal" style="text-align: center; margin-top: 150px">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div style="margin-top: 40px;">
+                    <span style="font-weight: bold; font-size: 20px;">Cancel request has been created</span>
+                </div>
+                <div style="margin-top: 30px;">
+                    <span style="font-size: 15px;">Cancellation request ID</span>
+                </div>
+                <table style="width: 60%; align: center; margin-left: 20%;">
+                    <tbody>
+                        <tr><td class="text-center" colspan="2" style="font-size: 15px; font-weight:bold;" id = "voucher_cancel_id"></td></tr>
+                        <tr><td class="text-left" style="font-size: 15px;">Total Vouchers</td><td class="text-right" id = "total_vouchers"></td></tr>
+                        <tr><td class="text-left" style="font-size: 15px;">Total Amount</td><td class="text-right" id = "total_amount"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="text-align: center; margin-top: 40px; margin-bottom: 40px">
+                <button id="btn_dialog_done" type="button" class="btn btn-default"
+                        style="font-size: 15px; font-weight: bold; border-radius: 4px; width: 25%;"
+                        data-dismiss="modal">Done</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-    function validate(form) {
+    function validateCancel() {
         var dialog = $("#cancelModal");
-        var form = dialog.find('$mForm')[0];
-        return true;
+        if($('#cancelModal #mForm')[0].checkValidity()) {
+            var product_service_id = dialog.find("#ddl_services").val();
+            var product_ref1 = dialog.find("#txt_prod_ref1").val();
+            var product_ref2 = dialog.find("#txt_prod_ref2").val();
+            var product_ref3 = dialog.find("#txt_prod_ref3").val();
+            var product_ref4 = dialog.find("#txt_prod_ref4").val();
+            var product_ref5 = dialog.find("#txt_prod_ref5").val();
+            var reason_for_cancel = dialog.find("#txt_reason_for_cancel").val();
+            var initiator_user_id = dialog.find("#txt_initiator_user_id").val();
+            var initiator_sof_id = dialog.find("#ddl_initiator_sof_id").val();
+            var issuer_user_id = dialog.find("#confirm_issuer_user_id").val();
+            var issuer_user_type_name = dialog.find("#confirm_issuer_user_type").val();
+
+            var issuer_user_type_id;
+            switch(issuer_user_type_name){
+                case "customer":
+                    issuer_user_type_id = "1";
+                    break;
+                case "agent":
+                    issuer_user_type_id = "2";
+                    break;
+                case "system-user":
+                    issuer_user_type_id = "3";
+                    break;
+            }
+
+            var issuer_sof_id = dialog.find("#confirm_issuer_sof_id").val();
+            var issuer_sof_type_name = dialog.find("#confirm_issuer_sof_type").val();
+
+            var issuer_sof_type_id;
+            switch(issuer_sof_type_name){
+                case "Bank":
+                    issuer_sof_type_id = "1";
+                    break;
+                case "Cash":
+                    issuer_sof_type_id = "2";
+                    break;
+                case "Card":
+                    issuer_sof_type_id = "3";
+                    break;
+            }
+
+            var payee_user_id = dialog.find("#txt_payee_user_id").val();
+            var payee_sof_id = dialog.find("#ddl_payee_sof_id").val();
+
+            var currency = dialog.find("#confirm_currency").val();
+            var total_vouchers = dialog.find("#confirm_selected_vouchers").val();
+            var total_amount = dialog.find("#confirm_total_amount").val();;
+
+            var vouchers = [];
+            var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
+            $(checkedInput).each(function (index, value) {
+                var id = $(value).val();
+                var voucher_amount = $(value).parent().parent().find("#voucher_amount").text();
+                var voucher = {
+                    "id": id,
+                    "amount": voucher_amount
+                };
+                vouchers.push(voucher)
+            });
+            var data = {
+                "product_service_id": product_service_id,
+                "product_ref1": product_ref1,
+                "product_ref2": product_ref2,
+                "product_ref3": product_ref3,
+                "product_ref4": product_ref4,
+                "product_ref5": product_ref5,
+                "initiator_user_id": initiator_user_id,
+                "initiator_sof_id": initiator_sof_id,
+                "issuer_user_id": issuer_user_id,
+                "issuer_user_type_id": issuer_user_type_id,
+                "issuer_user_type_name": issuer_user_type_name,
+                "issuer_sof_id": issuer_sof_id,
+                "issuer_sof_type_id": issuer_sof_type_id,
+                "payee_user_id": payee_user_id,
+                "payee_sof_id": payee_sof_id,
+                "total_vouchers": total_vouchers,
+                "total_amount": total_amount,
+                "currency": currency,
+                "reason_for_cancel": reason_for_cancel,
+                "vouchers": JSON.stringify(vouchers)
+            }
+
+            var url =  '{% url 'voucher:cancel' %}';
+            $.ajax({
+                url : url,
+                type : "POST",
+                data: data,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function (response) {
+                    $("#cancelRequestModal #voucher_cancel_id").text("#" + response.voucher_cancel_id);
+                    $("#cancelRequestModal #total_vouchers").text(total_vouchers);
+                    $("#cancelRequestModal #total_amount").text(total_amount + " " + currency);
+                    $("#cancelModal").modal('hide');
+                    $("#cancelRequestModal").modal('show');
+                }
+            });
+        }
+        return false;
+    }
+
+    getAgentDetails = function (event) {
+        var url = '{% url 'agents:agent_details_json' %}';
+        var agentId = $(event.data.source).val();
+        $(event.data.name).val("");
+        if (agentId == undefined || agentId == null || agentId == "") return;
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {"agent_id": agentId},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            success: function (response) {
+                if (response.invalid_access_token) {
+                    var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";
+                    window.location.replace(url);
+                    location.reload();
+                } else {
+                    var jsonResponse = JSON.parse(response);
+                    var firstName = "";
+                    var lastName = "";
+                    if (jsonResponse.data != null) {
+                        firstName = jsonResponse.data.first_name;
+                        lastName = jsonResponse.data.last_name;
+                        lastName = lastName == null ? "" : lastName;
+                        firstName = firstName == null ? "" : firstName;
+                    }
+                    $(event.data.name).val(lastName == ""? firstName: lastName + " " + firstName)
+                }
+            }
+        });
+    };
+
+    getCashSofs = function (event) {
+        var url = '{% url 'cash_sofs:cash_sof_json' %}';
+        var destinationControl = $(event.data.sof);
+        destinationControl
+            .find('option')
+            .remove()
+            .end()
+            .append('<option value="" selected>-</option>');
+        var agentId = $(event.data.source).val();
+        if (agentId == undefined || agentId == null || agentId == "") return;
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {"agent_id": agentId},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            success: function (response) {
+                if (response.invalid_access_token) {
+                    var url = window.location.origin + "/admin-portal/authentications/login/?next=/admin-portal/voucher/";
+                    window.location.replace(url);
+                    location.reload();
+                } else {
+                    var jsonResponse = JSON.parse(response);
+                    sofs = jsonResponse.data;
+                    destinationControl
+                        .find('option')
+                        .remove()
+                        .end()
+                        .append('<option value="" selected>-</option>');
+                    for (index in sofs) {
+                        destinationControl.append("<option value='" + sofs[index] + "'>" + sofs[index] + "" + "</option>");
+                    }
+                }
+            }
+        });
+    };
+
+    getProfileAndSof = function (event) {
+        getAgentDetails(event);
+        getCashSofs(event);
+    };
+
+    bindTriggerChange = function (selectors, updateFunc) {
+        $(selectors.source).on("change", selectors, updateFunc);
+    };
+
+    initCancelDialog = function () {
+        var dialog = $("#cancelModal");
+        var issuerSelector = {
+            "source": "#cancelModal #confirm_issuer_user_id",
+            "name": "#cancelModal #confirm_issuer_user_name"
+        };
+        var payeeSelector = {
+            "source": "#cancelModal #txt_payee_user_id",
+            "name": "#cancelModal #txt_payee_user_name",
+            "sof": "#cancelModal #ddl_payee_sof_id",
+        };
+        var initiatorSelector = {
+            "source": "#cancelModal #txt_initiator_user_id",
+            "name": "#cancelModal #txt_initiator_user_name",
+            "sof": "#cancelModal #ddl_initiator_sof_id",
+        };
+        bindTriggerChange(issuerSelector, getAgentDetails);
+        bindTriggerChange(payeeSelector, getProfileAndSof);
+        bindTriggerChange(initiatorSelector, getProfileAndSof);
     }
 </script>
 
