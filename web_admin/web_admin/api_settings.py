@@ -210,6 +210,10 @@ CUSTOMER_CHANNEL_REVOKE_URL = 'api-gateway/ami-device-management/' + API_VERSION
 CUSTOMER_CHANNEL_PERMISSION_LIST_URL = 'api-gateway/report/' + API_VERSION + '/channels/permissions'
 CUSTOMER_DEVICE_DETAIL_URL = 'api-gateway/customer/'+API_VERSION+'/admin/devices/{}'
 CUSTOMER_UPDATE_DEVICE_URL = 'api-gateway/customer/'+API_VERSION+'/admin/devices/{}'
+GET_CUSTOMER_CLASSIFICATION_URL = 'api-gateway/report/'+API_VERSION+'/customers/classifications'
+GET_CUSTOMER_MM_CARD_TYPE_URL = 'api-gateway/report/'+API_VERSION+'/customers/mm-card-types'
+GET_CUSTOMER_MM_CARD_LEVEL_URL = 'api-gateway/report/'+API_VERSION+'/customers/mm-card-type-levels'
+GET_CUSTOMER_KYC_LEVEL_URL = 'api-gateway/report/'+API_VERSION+'/customers/kyc-levels'
 
 # Reconcile
 SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/'+API_VERSION+'/reconciled/partners'

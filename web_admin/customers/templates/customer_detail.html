@@ -118,7 +118,7 @@
                                     <label class="col-sm-3 control-label">Referrer User Type</label>
                                     <div class="col-sm-7">
                                         <input type="text" id="txt_referrer_user_type" class="form-control input-rounded"
-                                               value="{{ referrer_user_type.name | default_if_none:''}}" disabled/>
+                                               value="{% if customer_info.referrer_user_type_id.id == 1 %}Customer{% elif  customer_info.referrer_user_type_id.id == 2 %}Agent{% elif  customer_info.referrer_user_type_id.id == 3 %}System User{% else %}{% endif %}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -186,7 +186,7 @@
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
                                                id="txt_classification"
-                                               value="{{ classification_name|default_if_none:'' }}" disabled/>
+                                               value="{{ customer_info.customer_classification_name|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -201,7 +201,7 @@
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="mm_card_type_id"
                                                id="txt_mm_card_type"
-                                               value="{{ mm_card_type_name|default_if_none:'' }}" disabled/>
+                                               value="{{ customer_info.mm_card_type_name|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -209,7 +209,7 @@
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="mm_card_level_id"
                                                id="txt_mm_card_level"
-                                               value="{{ mm_card_type_level_name|default_if_none:'' }}" disabled/>
+                                               value="{{ customer_info.mm_card_level_name|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -1021,7 +1021,7 @@
                                         <input type="text" class="form-control input-rounded"
                                                name="kyc_level"
                                                id="txt_kyc_level"
-                                               value="{{ customer_info.kyc.kyc_level_name|default_if_none:'' }}" disabled/>
+                                               value="{{ customer_info.kyc.level_name|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
