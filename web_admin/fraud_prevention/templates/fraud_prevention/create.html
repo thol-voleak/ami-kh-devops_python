@@ -21,7 +21,7 @@
 
         <div id="accordion" class="col-xs-12" {{ summary_result|yesno:"'',hidden" }} >
             <h3>{{ summary_result }}</h3>
-            <div>
+            <div id="msg_cre_fraud">
                 {% if result_messages.success %}
                     {% for  message in result_messages.success %}
                         <strong>{{ message|capfirst }}</strong><br/>
@@ -94,9 +94,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">Start Date *</label>
+                            <label class="col-sm-3 control-label">Start Date</label>
                             <div class="col-xs-3">
-                                <input id="dtp_start_date" class="form-control input-rounded" name="start_date" type="date" required/>
+                                <input id="dtp_start_date" class="form-control input-rounded" name="start_date" type="date"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -236,6 +236,11 @@
             collapsible: true,
             active: false
         });
+
+        $(document).ready(function(){
+            $("#txt_key_value_tag").attr("required","required")
+        });
+
     </script>
 {% endblock %}
 
