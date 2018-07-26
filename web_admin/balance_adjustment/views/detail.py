@@ -39,6 +39,7 @@ class BalanceAdjustmentDetailView(GroupRequiredMixin, TemplateView, GetHeaderMix
         context = super(BalanceAdjustmentDetailView, self).get_context_data(**kwargs)
         reference_id = context['ReferenceId']
         body = {'reference_id':reference_id}
+        body['is_for_voucher_cancellation'] = False
         url = api_settings.BALANCE_ADJUSTMENT_PATH
         #url = 'http://localhost:43931/additional_detail' # status: REJECT_FAIL
         #url = 'http://localhost:43932/additional_detail'  # status: APPROVE_FAIL
