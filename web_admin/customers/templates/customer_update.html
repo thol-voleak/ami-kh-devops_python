@@ -93,7 +93,7 @@
                             </div>
                             <div class="collapsible">
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label" id="lbl_customer_id">Customer ID*</label>
+                                    <label class="col-sm-3 control-label" id="lbl_customer_id">Customer ID *</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="customer_id"
                                                id="txt_customer_id" value="{{ customer_info.id | default_if_none:'' }}" readonly/>
@@ -220,10 +220,10 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Unique Reference</label>
+                                    <label class="col-sm-3 control-label">Unique Reference *</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded" name="unique_reference"
-                                               id="txt_unique_reference" value="{{ customer_info.unique_reference|default_if_none:'' }}" />
+                                        <input type="text" class="form-control input-rounded" name="unique_reference" id="txt_unique_reference"
+                                               value="{{ customer_info.unique_reference|default_if_none:'' }}" required />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -274,7 +274,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Always require OTP *</label>
+                                    <label class="col-sm-3 control-label">Always require OTP</label>
                                     <div class="col-sm-7">
                                         <input type="checkbox" id="chk_require_otp" name="is_require_otp"
                                                {% if customer_info.is_require_otp %}checked{% endif %} />
@@ -319,10 +319,10 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">First Name</label>
+                                    <label class="col-sm-3 control-label">First Name *</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="first_name"
-                                               id="txt_first_name" value="{{ customer_info.first_name|default_if_none:'' }}" />
+                                               id="txt_first_name" value="{{ customer_info.first_name|default_if_none:'' }}" required />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -333,10 +333,10 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Last Name</label>
+                                    <label class="col-sm-3 control-label">Last Name *</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="last_name"
-                                               id="txt_last_name" value="{{ customer_info.last_name|default_if_none:'' }}" />
+                                               id="txt_last_name" value="{{ customer_info.last_name|default_if_none:'' }}" required />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -347,11 +347,11 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Date of Birth</label>
+                                    <label class="col-sm-3 control-label">Date of Birth *</label>
                                     <div class="col-sm-7">
                                         <input type="date" class="form-control input-rounded" name="date_of_birth"
                                                onchange="VerifyDate(this)"
-                                               id="txt_birth_date" value="{{ customer_info.date_of_birth|default_if_none:'' }}" />
+                                               id="txt_birth_date" value="{{ customer_info.date_of_birth|default_if_none:'' }}" required />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -478,7 +478,7 @@
                                     <div class="col-sm-7">
                                         <input type="number" class="form-control input-rounded" name="primary_mobile_number"
                                                id="txt_primary_mobile_number"
-                                               value="{{ customer_info.primary_mobile_number|default_if_none:'' }}" />
+                                               value="{{ customer_info.primary_mobile_number|default_if_none:'' }}" required />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -547,12 +547,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Address</label>
+                                    <label class="col-sm-3 control-label">Address *</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
                                                name="current_address_address"
                                                id="txt_current_address_address"
-                                               value="{{ customer_info.address.current_address.address|default_if_none:'' }}"  />
+                                               value="{{ customer_info.address.current_address.address|default_if_none:'' }}" required />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -574,12 +574,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">City</label>
+                                    <label class="col-sm-3 control-label">City *</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
                                                name="current_address_city"
                                                id="txt_current_address_city"
-                                               value="{{ customer_info.address.current_address.city|default_if_none:'' }}" />
+                                               value="{{ customer_info.address.current_address.city|default_if_none:'' }}" required />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -592,12 +592,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Postal Code</label>
+                                    <label class="col-sm-3 control-label">Postal Code *</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
                                                name="current_address_postal_code"
                                                id="txt_current_address_postal_code"
-                                               value="{{ customer_info.address.current_address.postal_code|default_if_none:'' }}" />
+                                               value="{{ customer_info.address.current_address.postal_code|default_if_none:'' }}" required />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -682,12 +682,12 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">Address</label>
+                                        <label class="col-sm-3 control-label">Address *</label>
                                         <div class="col-sm-7">
                                             <input type="text" class="form-control input-rounded"
                                                    name="permanent_address_address"
                                                    id="txt_permanent_address_address"
-                                                   value="{{ customer_info.address.permanent_address.address|default_if_none:'' }}"  />
+                                                   value="{{ customer_info.address.permanent_address.address|default_if_none:'' }}" required />
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -709,12 +709,12 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">City</label>
+                                        <label class="col-sm-3 control-label">City *</label>
                                         <div class="col-sm-7">
                                             <input type="text" class="form-control input-rounded"
                                                    name="permanent_address_city"
                                                    id="txt_permanent_address_city"
-                                                   value="{{ customer_info.address.permanent_address.city|default_if_none:'' }}"  />
+                                                   value="{{ customer_info.address.permanent_address.city|default_if_none:'' }}" required />
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -727,12 +727,12 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">Postal Code</label>
+                                        <label class="col-sm-3 control-label">Postal Code *</label>
                                         <div class="col-sm-7">
                                             <input type="text" class="form-control input-rounded"
                                                    name="permanent_address_postal_code"
                                                    id="txt_permanent_address_postal_code"
-                                                   value="{{ customer_info.address.permanent_address.postal_code|default_if_none:'' }}"  />
+                                                   value="{{ customer_info.address.permanent_address.postal_code|default_if_none:'' }}" required />
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -799,12 +799,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Identity Type</label>
+                                    <label class="col-sm-3 control-label">Identity Type *</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
                                                name="primary_identity_type"
                                                id="txt_primary_identity_type"
-                                               value="{{ customer_info.kyc.primary_identity.type|default_if_none:'' }}" />
+                                               value="{{ customer_info.kyc.primary_identity.type|default_if_none:'' }}" required />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -819,11 +819,11 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Identity ID</label>
+                                    <label class="col-sm-3 control-label">Identity ID *</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="primary_identity_id"
                                                id="txt_primary_identity_id"
-                                               value="{{ customer_info.kyc.primary_identity.identity_id|default_if_none:'' }}" />
+                                               value="{{ customer_info.kyc.primary_identity.identity_id|default_if_none:'' }}" required />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -1089,7 +1089,7 @@
                                         <input type="text" class="form-control input-rounded"
                                                name="kyc_updated_date"
                                                id="txt_kyc_updated_date"
-                                               value="{{ customer_info.kyc.last_updated_timestamp|default_if_none:'' }}" />
+                                               value="{{ customer_info.kyc.last_updated_timestamp|default_if_none:'' }}" disabled />
                                     </div>
                                 </div>
                                 <div class="form-group">
