@@ -61,7 +61,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'service_name': service_name,
             'currency': currency,
             'description': description,
-            'display_name_local': display_name_local
+            'display_name_local': display_name_local,
             'image_url': image_url,
             'display_name': display_name
         }
