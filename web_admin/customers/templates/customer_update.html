@@ -96,7 +96,7 @@
                                     <label class="col-sm-3 control-label" id="lbl_customer_id">Customer ID*</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="customer_id"
-                                               id="txt_customer_id" value="{{ customer_info.id | default_if_none:'' }}" disabled/>
+                                               id="txt_customer_id" value="{{ customer_info.id | default_if_none:'' }}" readonly/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -117,7 +117,7 @@
                                     <label class="col-sm-3 control-label">Status *</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
-                                               id="txt_status" value="{{ customer_info.is_suspended|default_if_none:'' }}" disabled/>
+                                               id="txt_status" value="{{ customer_info.is_suspended|default_if_none:'' }}" readonly/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -152,7 +152,7 @@
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="suspend_reason"
                                                id="txt_suspend_reason"
-                                               value="{{ customer_info.active_suspend_reason|default_if_none:'' }}" disabled/>
+                                               value="{{ customer_info.active_suspend_reason|default_if_none:'' }}" readonly/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -166,14 +166,14 @@
                                     <label class="col-sm-3 control-label">Profile Create Date</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="created_date"
-                                               id="txt_created_date" value="{{ customer_info.created_timestamp|default_if_none:'' }}" disabled/>
+                                               id="txt_created_date" value="{{ customer_info.created_timestamp|default_if_none:'' }}" readonly/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Profile Updated Date</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="last_updated_date"
-                                               id="txt_last_updated_date" value="{{ customer_info.last_updated_timestamp|default_if_none:'' }}" disabled/>
+                                               id="txt_last_updated_date" value="{{ customer_info.last_updated_timestamp|default_if_none:'' }}" readonly/>
                                     </div>
                                 </div>
                             </div>
@@ -202,32 +202,66 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Classification</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded"
-                                               id="txt_classification"
-                                               value="{{ classification_name|default_if_none:'' }}" />
+                                        <select class="form-control" id="ddl_customer_classification"
+                                            name="customer_classification_id">
+                                            {% if not customer_info.customer_classification_id %}
+                                                <option value="" selected>-</option>
+                                            {% else %}
+                                                <option value="">-</option>
+                                            {% endif %}
+                                            {% for classification in classification_list %}
+                                                {% if customer_info.customer_classification_id == classification.id %}
+                                                    <option value="{{ classification.id }}" selected>{{ classification.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ classification.id }}">{{ classification.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Unique Reference</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded"
+                                        <input type="text" class="form-control input-rounded" name="unique_reference"
                                                id="txt_unique_reference" value="{{ customer_info.unique_reference|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">MM Card Type</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded" name="mm_card_type_id"
-                                               id="txt_mm_card_type"
-                                               value="{{ mm_card_type_name|default_if_none:'' }}" />
+                                        <select class="form-control" id="ddl_mm_card_types" name="mm_card_type_id">
+                                            {% if not customer_info.mm_card_type_id %}
+                                                <option value="" selected>-</option>
+                                            {% else %}
+                                                <option value="">-</option>
+                                            {% endif %}
+                                            {% for item in mm_card_type_list %}
+                                                {% if customer_info.mm_card_type_id == item.id %}
+                                                    <option value="{{ item.id }}" selected>{{ item.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ item.id }}">{{ item.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">MM Card Level</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded" name="mm_card_level_id"
-                                               id="txt_mm_card_level"
-                                               value="{{ mm_card_type_level_name|default_if_none:'' }}" />
+                                        <select class="form-control" id="ddl_mm_card_levels" name="mm_card_level_id">
+                                            {% if not customer_info.mm_card_level_id %}
+                                                <option value="" selected>-</option>
+                                            {% else %}
+                                                <option value="">-</option>
+                                            {% endif %}
+                                            {% for item in mm_card_level_list %}
+                                                {% if customer_info.mm_card_level_id == item.id %}
+                                                    <option value="{{ item.id }}" selected>{{ item.level }}</option>
+                                                {% else %}
+                                                    <option value="{{ item.id }}">{{ item.level }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -315,7 +349,8 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Date of Birth</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded" name="date_of_birth"
+                                        <input type="date" class="form-control input-rounded" name="date_of_birth"
+                                               onchange="VerifyDate(this)"
                                                id="txt_birth_date" value="{{ customer_info.date_of_birth|default_if_none:'' }}" />
                                     </div>
                                 </div>
@@ -604,14 +639,16 @@
                             </div>
                             <div class="checkbox" style="margin-left: 30px;">
                                 <label>
-                                    <input type="checkbox" id="chk_permanent_address" name="is_permanent_same_current">Permanent
-                                    Address and Current Address are the same</label>
+                                    <input type="checkbox" id="chk_permanent_address" name="is_permanent_same_current"
+                                        {% if is_permanent_same_current %}checked{% endif %} />
+                                    Permanent Address and Current Address are the same
+                                </label>
                             </div>
                             <!-- [End] section 5 - Current Address -->
 
                             <hr/>
 
-                            <div id="permanent-address-area">
+                            <div id="permanent-address-area" {% if is_permanent_same_current %}style="display: none"{% endif %}>
                                 <!-- [Start] section 6 - Permanent Address -->
                                 <div class="row">
                                     <div class="form-group col-md-6">
@@ -786,8 +823,7 @@
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="primary_identity_id"
                                                id="txt_primary_identity_id"
-                                               value="{{ customer_info.kyc.primary_identity.identity_id|default_if_none:'' }}"
-                                               disabled/>
+                                               value="{{ customer_info.kyc.primary_identity.identity_id|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -802,18 +838,18 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Issue Date</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded"
-                                               name="primary_identity_issue_date"
-                                               id="txt_primary_identity_issue_date"
+                                        <input type="date" class="form-control input-rounded"
+                                               onchange="VerifyDate(this)"
+                                               name="primary_identity_issue_date" id="txt_primary_identity_issue_date"
                                                value="{{ customer_info.kyc.primary_identity.issue_date|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Expiry Date</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded"
-                                               name="primary_identity_expired_date"
-                                               id="txt_primary_identity_expired_date"
+                                        <input type="date" class="form-control input-rounded"
+                                               onchange="VerifyDate(this)"
+                                               name="primary_identity_expired_date" id="txt_primary_identity_expired_date"
                                                value="{{ customer_info.kyc.primary_identity.expired_date|default_if_none:'' }}" />
                                     </div>
                                 </div>
@@ -849,14 +885,14 @@
                                         <input type="text" class="form-control input-rounded"
                                                name="secondary_identity_type"
                                                id="txt_secondary_identity_type"
-                                               value="{{ customer_info.kyc.secondary_identity.type|default_if_none:'' }}" disabled/>
+                                               value="{{ customer_info.kyc.secondary_identity.type|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Status</label>
                                     <div class="col-sm-7">
                                         <select class="form-control" id="ddl_secondary_identity_status"
-                                                name="primary_identity_status">
+                                                name="secondary_identity_status">
                                             <option value=""  {% if customer_info.kyc.secondary_identity.status is None %} selected{% endif %}>-</option>
                                             <option value="1" {% if customer_info.kyc.secondary_identity.status == True %} selected{% endif %}>Active</option>
                                             <option value="0" {% if customer_info.kyc.secondary_identity.status == False %} selected{% endif %}>Inactive</option>
@@ -883,18 +919,18 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Issue Date</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded"
-                                               name="secondary_identity_issue_date"
-                                               id="txt_secondary_identity_issue_date"
+                                        <input type="date" class="form-control input-rounded"
+                                               onchange="VerifyDate(this)"
+                                               name="secondary_identity_issue_date" id="txt_secondary_identity_issue_date"
                                                value="{{ customer_info.kyc.secondary_identity.issue_date|default_if_none:'' }}"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Expiry Date</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded"
-                                               name="secondary_identity_expired_date"
-                                               id="txt_secondary_identity_expired_date"
+                                        <input type="date" class="form-control input-rounded"
+                                               onchange="VerifyDate(this)"
+                                               name="secondary_identity_expired_date" id="txt_secondary_identity_expired_date"
                                                value="{{ customer_info.kyc.secondary_identity.expired_date|default_if_none:'' }}"/>
                                     </div>
                                 </div>
@@ -930,14 +966,14 @@
                                         <input type="text" class="form-control input-rounded"
                                                name="tertiary_identity_type"
                                                id="txt_tertiary_identity_type"
-                                               value="{{ customer_info.kyc.tertiary_identity.type|default_if_none:'' }}" disabled/>
+                                               value="{{ customer_info.kyc.tertiary_identity.type|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Status</label>
                                     <div class="col-sm-7">
                                         <select class="form-control" id="ddl_tertiary_identity_status"
-                                                name="primary_identity_status">
+                                                name="tertiary_identity_status">
                                             <option value=""  {% if customer_info.kyc.tertiary_identity.status is None %} selected{% endif %}>-</option>
                                             <option value="1" {% if customer_info.kyc.tertiary_identity.status == True %} selected{% endif %}>Active</option>
                                             <option value="0" {% if customer_info.kyc.tertiary_identity.status == False %} selected{% endif %}>Inactive</option>
@@ -964,18 +1000,18 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Issue Date</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded"
-                                               name="tertiary_identity_issue_date"
-                                               id="txt_tertiary_identity_issue_date"
+                                        <input type="date" class="form-control input-rounded"
+                                               onchange="VerifyDate(this)"
+                                               name="tertiary_identity_issue_date" id="txt_tertiary_identity_issue_date"
                                                value="{{ customer_info.kyc.tertiary_identity.issue_date|default_if_none:'' }}"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Expiry Date</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded"
-                                               name="tertiary_identity_expired_date"
-                                               id="txt_tertiary_identity_expired_date"
+                                        <input type="date" class="form-control input-rounded"
+                                               onchange="VerifyDate(this)"
+                                               name="tertiary_identity_expired_date" id="txt_tertiary_identity_expired_date"
                                                value="{{ customer_info.kyc.tertiary_identity.expired_date|default_if_none:'' }}"/>
                                     </div>
                                 </div>
@@ -1004,10 +1040,20 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">KYC Level</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded"
-                                               name="kyc_level"
-                                               id="txt_kyc_level"
-                                               value="{{ customer_info.kyc.kyc_level_name|default_if_none:'' }}" />
+                                        <select class="form-control" id="ddl_kyc_level" name="kyc_level">
+                                            {% if not customer_info.kyc.level %}
+                                                <option value="" selected>-</option>
+                                            {% else %}
+                                                <option value="">-</option>
+                                            {% endif %}
+                                            {% for item in kyc_level_list %}
+                                                {% if customer_info.kyc.level == item.id %}
+                                                    <option value="{{ item.id }}" selected>{{ item.level }}</option>
+                                                {% else %}
+                                                    <option value="{{ item.id }}">{{ item.level }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -1016,7 +1062,7 @@
                                         <input type="text" class="form-control input-rounded"
                                                name="kyc_remark"
                                                id="txt_kyc_remark"
-                                               value="{{ customer_info.kyc.remark|default_if_none:'' }}" disabled/>
+                                               value="{{ customer_info.kyc.remark|default_if_none:'' }}" readonly/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -1025,16 +1071,16 @@
                                         <input type="text" class="form-control input-rounded"
                                                name="kyc_verify_by"
                                                id="txt_kyc_verify_by"
-                                               value="{{ agent.kyc.verify_by|default_if_none:'' }}" />
+                                               value="{{ customer_info.kyc.verify_by|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Verify Date</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control input-rounded"
-                                               name="kyc_verify_date"
-                                               id="txt_kyc_verify_date"
-                                               value="{{ agent.kyc.verify_date|default_if_none:'' }}" />
+                                        <input type="date" class="form-control input-rounded"
+                                               onchange="VerifyDate(this)"
+                                               name="kyc_verify_date" id="txt_kyc_verify_date"
+                                               value="{{ customer_info.kyc.verify_date|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -1043,7 +1089,7 @@
                                         <input type="text" class="form-control input-rounded"
                                                name="kyc_updated_date"
                                                id="txt_kyc_updated_date"
-                                               value="{{ agent.kyc.last_updated_timestamp|default_if_none:'' }}" />
+                                               value="{{ customer_info.kyc.last_updated_timestamp|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -1052,7 +1098,7 @@
                                         <input type="text" class="form-control input-rounded"
                                                name="kyc_risk_level"
                                                id="txt_kyc_risk_level"
-                                               value="{{ agent.kyc.risk_level|default_if_none:'' }}"/>
+                                               value="{{ customer_info.kyc.risk_level|default_if_none:'' }}"/>
                                     </div>
                                 </div>
                             </div>

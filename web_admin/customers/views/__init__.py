@@ -28,7 +28,6 @@ class CustomerAPIService():
             data = {}
         return data
 
-
     def get_mm_card_type(self, mm_card_type_id):
         body = {}
         if mm_card_type_id:
@@ -47,7 +46,6 @@ class CustomerAPIService():
 
         return data
 
-
     def get_mm_card_level(self, mm_card_type_level_id):
         body = {}
         if mm_card_type_level_id:
@@ -65,7 +63,6 @@ class CustomerAPIService():
                                 is_getting_list=True)
 
         return data
-
 
     def get_kyc_level(self, kyc_level_id):
         body = {}
