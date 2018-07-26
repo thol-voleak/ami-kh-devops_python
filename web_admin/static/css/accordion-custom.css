@@ -1,0 +1,40 @@
+.alert,
+.alert-danger,
+.ui-accordion-content,
+.ui-corner-bottom,
+.ui-helper-reset ,
+.ui-widget-content,
+.ui-accordion-content-active{
+    margin-bottom: 10px ;
+}
+.alert-success{
+    color: #1b7943;
+}
+.ui-state-hover,
+.ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover,
+.ui-state-focus,
+.ui-widget-content .ui-state-focus,
+.ui-widget-header .ui-state-focus,
+.ui-button:hover,
+.ui-button:focus {
+	color: #1b7943;
+	font-weight: normal;
+	background-color: #77d88c;
+}
+
+.ui-button,
+.ui-state-active {
+	border: 1px solid #cccccc;
+	color: #1b7943;
+	font-weight: normal;
+	background-color: #77d88c;
+}
+.ui-state-default{
+    font-weight: bold;
+    color: #1b7943;
+}
+
+.ui-accordion .ui-accordion-header {
+    padding: 1em .5em 1em .7em;
+}
