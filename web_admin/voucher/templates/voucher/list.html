@@ -233,6 +233,34 @@
                                    id="dtp_expiration_date_to">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Voucher Status</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_voucher_status" name="voucher_status">
+                                <option value=""></option>
+                                {% for item in voucher_status_list %}
+                                    {% if item == voucher_status %}
+                                        <option value="{{ item }}" selected>{{ item }}</option>
+                                    {% else %}
+                                        <option value="{{ item }}">{{ item }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <label class="col-sm-3 control-label">Voucher Ownership</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="ddl_voucher_ownership" name="voucher_ownership">
+                                <option value=""></option>
+                                {% for item in voucher_ownership_list %}
+                                    {% if item == voucher_ownership %}
+                                        <option value="{{ item }}" selected>{{ item }}</option>
+                                    {% else %}
+                                        <option value="{{ item }}">{{ item }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group pull-right " style="margin-top: 15px;margin-right: 15px;">
                         <input id="current_page_index" name="current_page_index" style="display:none" value="1">
                         <input id="btn_search" class="btn btn-success btn-block" type="button" name="search_shown"
@@ -277,12 +305,14 @@
                             <th id="ddl_voucher_type">Voucher Type</th>
                             <th id="ddl_voucher_group">Voucher Group</th>
                             <th id="ddl_voucher_amount">Voucher Amount</th>
-                            <th id="ddl_distributed_status">Distributed Status</th>
                             <th id="ddl_voucher_fee">Voucher Fee</th>
-                            <th id="ddl_status">Claim Status</th>
-                            <th id="ddl_hold_status">Hold Status</th>
-                            <th id="ddl_cancel_status">Cancel Status</th>
-                            <th id="ddl_delete_status">Delete Status</th>
+{#                            <th id="ddl_hold_status">Hold Status</th>#}
+{#                            <th id="ddl_cancel_status">Cancel Status</th>#}
+{#                            <th id="ddl_delete_status">Delete Status</th>#}
+                            <th id="ddl_voucher_status">Voucher Status</th>
+{#                            <th id="ddl_distributed_status">Distributed Status</th>#}
+{#                            <th id="ddl_status">Claim Status</th>#}
+                            <th id="ddl_voucher_ownership">Voucher Ownership</th>
                             <th id="ddl_create_date">Create Date</th>
                             <th id="ddl_update_date">Update Date</th>
                             <th id="ddl_expiration_date">Expiration Date</th>
@@ -318,13 +348,14 @@
                                 <td id="voucher-type">{{ i.voucher_type|default_if_none:'' }}</td>
                                 <td>{{ i.voucher_group|default_if_none:'' }}</td>
                                 <td id="voucher_amount">{{ i.amount|default_if_none:'' }}</td>
-                                <td>{{ i.distributed_status|yesno:"Yes,No,''" }}</td>
                                 <td>{{ i.fee|default_if_none:'' }}</td>
-                                <td id="claim-status">{{ i.is_used|yesno:"Used,Unused,''" }}</td>
-                                <td id="hold-status">{{ i.is_on_hold|yesno:"Hold,Unhold,''" }}</td>
-                                <td id="cancel-status" cancel-status-value="{{i.is_cancelled}}">{{ i.is_cancelled|yesno:"Yes,No,''" }}</td>
-                                <td id="delete-status" delete-status-value="{{i.is_deleted}}">{{ i.is_deleted|yesno:"Deleted,None,''" }}</td>
-
+{#                                <td id="hold-status">{{ i.is_on_hold|yesno:"Yes,No,''" }}</td>#}
+{#                                <td id="cancel-status" cancel-status-value="{{i.is_cancelled}}">{{ i.is_cancelled|yesno:"Yes,No,''" }}</td>#}
+{#                                <td id="delete-status" delete-status-value="{{i.is_deleted}}">{{ i.is_deleted|yesno:"Yes,No,''" }}</td>#}
+                                <td id="voucher_status">{% if i.is_deleted %}Deleted{% elif i.is_cancelled %}Cancelled{% elif i.is_on_hold %}On Hold{% else %}Created{% endif %}</td>
+{#                                <td>{{ i.distributed_status|yesno:"Yes,No,''" }}</td>#}
+{#                                <td id="claim-status">{{ i.is_used|yesno:"Yes,No,''" }}</td>#}
+                                <td id="voucher_ownership">{% if i.is_used %}Claimed{% elif i.distributed_status %}Distributed{% else %}None{% endif %}</td>
                                 <td>{{ i.created_timestamp|default_if_none:'' }}</td>
                                 <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
                                 <td>{{ i.expire_date_timestamp|default_if_none:'' }}</td>
@@ -419,7 +450,8 @@
             var isOk = true;
 
             var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
-            firstCurrency = checkedInput.length > 0 ? $(checkedInput.get(0)).parent().parent().find("#voucher_currency").text() : "";
+            if (checkedInput.length == 0)   return;
+            firstCurrency = $(checkedInput.get(0)).parent().parent().find("#voucher_currency").text();
             $(checkedInput).each(function (index, value) {
                 currentCurrency = $(value).parent().parent().find("#voucher_currency").text();
                 if (firstCurrency != currentCurrency) {
@@ -465,8 +497,8 @@
 
             var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
             $(checkedInput).each(function (index, value) {
-                claimStatus = $(value).parent().parent().find("#claim-status").text();
-                if (claimStatus == "Used") {
+                claimStatus = $(value).parent().parent().find("#voucher_ownership").text();
+                if (claimStatus == "Claimed") {
                     swal({
                         title: 'Cannot cancel already claimed vouchers',
                         type: "error",
@@ -765,19 +797,26 @@
         var validateDeleteStatus = function () {
             var deleteStatus = false;
             var isValid = true;
+            var msg = "";
 
             var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
             $(checkedInput).each(function (index, value) {
                 deleteStatus = $(value).parent().parent().find("#delete-status").attr('delete-status-value');
-                if (deleteStatus == 'True') {
+
+                if (deleteStatus == 'Deleted') {
+                    msg = 'Cannot cancel already deleted vouchers';
                     isValid = false;
-                    return false;
+                    return;
+                } else if (deleteStatus == 'Cancelled') {
+                    msg = 'Cannot cancel already cancelled vouchers';
+                    isValid = false;
+                    return;
                 }
             });
 
             if (!isValid) {
                 swal({
-                    title: 'Cannot cancel already deleted vouchers',
+                    title: msg,
                     type: "error",
                     confirmButtonColor: "#2ECC71",
                     confirmButtonText: "Close",
@@ -787,35 +826,36 @@
             return isValid;
         };
 
-        var validateCancelStatus = function () {
-            var cancelStatus = false;
-            var isValid = true;
-
-            var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
-            $(checkedInput).each(function (index, value) {
-                cancelStatus = $(value).parent().parent().find("#cancel-status").attr('cancel-status-value');
-                if (cancelStatus == 'True') {
-                    isValid = false;
-                    return false;
-                }
-            });
-
-            if (!isValid) {
-                swal({
-                    title: 'Cannot cancel already cancelled vouchers',
-                    type: "error",
-                    confirmButtonColor: "#2ECC71",
-                    confirmButtonText: "Close",
-                    closeOnConfirm: true
-                });
-            }
-            return isValid;
-        };
+        {#var validateCancelStatus = function () {#}
+        {#    var cancelStatus = false;#}
+        {#    var isValid = true;#}
+		{##}
+        {#    var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");#}
+        {#    $(checkedInput).each(function (index, value) {#}
+        {#        cancelStatus = $(value).parent().parent().find("#cancel-status").attr('cancel-status-value');#}
+        {#        if (cancelStatus == 'True') {#}
+        {#            isValid = false;#}
+        {#            return false;#}
+        {#        }#}
+        {#    });#}
+		{##}
+        {#    if (!isValid) {#}
+        {#        swal({#}
+        {#            title: 'Cannot cancel already cancelled vouchers',#}
+        {#            type: "error",#}
+        {#            confirmButtonColor: "#2ECC71",#}
+        {#            confirmButtonText: "Close",#}
+        {#            closeOnConfirm: true#}
+        {#        });#}
+        {#    }#}
+        {#    return isValid;#}
+        {#};#}
 
         var showCancelDialog = function () {
+
             if (!validateCurrencies() ||
                 !validateDeleteStatus() ||
-                !validateCancelStatus() ||
+                {#!validateCancelStatus() ||#}
                 !validateIssuers() ||
                 !validateClaimStatus()) {
                 return false;
@@ -848,6 +888,8 @@
             dialog.find("#confirm_issuer_user_type").val(selectedIssuerUserType).change();
             dialog.find("#confirm_issuer_sof_id").val(selectedIssuerSofId);
             dialog.find("#confirm_issuer_sof_type").val(selectedIssuerSofType);
+            dialog.find("#ddl_services").find("option[currency!='']").css({'display':'none'});
+            dialog.find("#ddl_services").find("option[currency='"+selectedCurrency+"']").css({'display':''});
         }
 
         bindApproveRefundVoucher = function () {

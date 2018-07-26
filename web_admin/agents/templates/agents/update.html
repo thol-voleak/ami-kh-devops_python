@@ -71,7 +71,7 @@
 
                         <div id="div-account-basic" class="collapsible">
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Agent ID</label>
+                                <label class="col-sm-3 control-label">Agent ID *</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="agent_id"
                                            id="txt_agent_id"
@@ -79,7 +79,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Testing Account *</label>
+                                <label class="col-sm-3 control-label">Testing Account</label>
                                 <div class="col-sm-7">
                                     <input type="checkbox" style="margin: 10px;" id="chk_testing_account"
                                            name="is_testing_account"
@@ -88,7 +88,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">System Account *</label>
+                                <label class="col-sm-3 control-label">System Account</label>
                                 <div class="col-sm-7">
                                     <input type="checkbox" style="margin: 10px;" id="chk_system_account"
                                            name="is_system_account"
@@ -125,7 +125,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Referrer User ID</label>
                                 <div class="col-sm-7">
-                                    <input type="text" class="form-control input-rounded" name="referrer_user_id"
+                                    <input type="number" class="form-control input-rounded" name="referrer_user_id"
                                            id="txt_referrer_user_id"
                                            value="{{ agent_profile.referrer_user_id|default_if_none:'' }}"/>
                                 </div>
@@ -135,7 +135,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="suspend_reason"
                                            id="txt_suspend_reason"
-                                           value="{{ agent_profile.suspend_reason|default_if_none:'' }}" disabled/>
+                                           value="{{ agent_profile.active_suspend_reason|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -259,6 +259,18 @@
                                 <label class="col-sm-3 control-label">MM Card Level</label>
                                 <div class="col-sm-7">
                                     <select class="form-control" id="ddl_mm_card_levels" name="mm_card_levels">
+                                        {% if not agent_profile.mm_card_level %}
+                                            <option value="" selected>-</option>
+                                        {% else %}
+                                            <option value="">-</option>
+                                        {% endif %}
+                                        {% for item in mm_card_levels %}
+                                            {% if agent_profile.mm_card_level_id == item.id %}
+                                                <option value="{{ item.id }}" selected>{{ item.level }}</option>
+                                            {% else %}
+                                                <option value="{{ item.id }}">{{ item.level }}</option>
+                                            {% endif %}
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
@@ -282,7 +294,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Always require OTP *</label>
+                                <label class="col-sm-3 control-label">Always require OTP</label>
                                 <div class="col-sm-7">
                                     <input type="checkbox" style="margin: 10px;" id="chk_require_otp" name="is_require_otp"
                                         {% if agent_profile.is_require_otp %}checked{% endif %}>
@@ -840,7 +852,6 @@
                                 <label class="col-sm-3 control-label">Verify Status</label>
                                 <div class="col-sm-7">
                                     <select class="form-control" id="ddl_verify_status" name="bank_verify_status">
-                                        <option value=""  {% if agent_profile.bank.is_verified is None %} selected{% endif %}>-</option>
                                         <option value="1" {% if agent_profile.bank.is_verified == True %} selected{% endif %}>Yes</option>
                                         <option value="0" {% if agent_profile.bank.is_verified == False %} selected{% endif %}>No</option>
                                     </select>
@@ -1152,14 +1163,6 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Profile Accreditation Remark</label>
-                                <div class="col-sm-7">
-                                    <input type="text" class="form-control input-rounded" name="accreditation_remark"
-                                           id="txt_accreditation_remark"
-                                           value="{{ agent_profile.accreditation.remark|default_if_none:'' }}"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
                                 <label class="col-sm-3 control-label">Verify By</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="accreditation_verify_by"
@@ -1174,6 +1177,14 @@
                                            name="accreditation_verify_date"
                                            id="dtp_accreditation_verify_date"
                                            value="{{ agent_profile.accreditation_verify_date|date:'Y-m-d'|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Profile Accreditation Remark</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="accreditation_remark"
+                                           id="txt_accreditation_remark"
+                                           value="{{ agent_profile.accreditation.remark|default_if_none:'' }}"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -1477,6 +1488,7 @@
             var cardTypeId = $ele.val();
             var url = $ele.data('url');
             $('#ddl_mm_card_levels').empty();
+            $('#ddl_mm_card_levels').append('<option value="">-</option>');
             if (cardTypeId) {
                 $.ajax({
                     url: url,
@@ -1504,7 +1516,7 @@
                 });
             }
         }
-        loadMMCardLevel();
+        //loadMMCardLevel();
 
         $(document).ready(function (e) {
             $('.collapsible-button').on('click', function (e) {

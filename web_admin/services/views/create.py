@@ -52,6 +52,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         description = request.POST.get('description')
         clone_from = request.POST.get('clone_from')
         clone_service_name = request.POST.get('service_name_hidden')
+        display_name_local = request.POST.get('display_name_local')
         image_url = request.POST.get('image_url')
         display_name = request.POST.get('display_name')
 
@@ -60,6 +61,7 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'service_name': service_name,
             'currency': currency,
             'description': description,
+            'display_name_local': display_name_local
             'image_url': image_url,
             'display_name': display_name
         }

@@ -54,7 +54,10 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'voucher_type_list': self._get_voucher_type_list(),
             # 'distributed_status_list': self._get_distributed_status_list(),
             # 'delete_status_list': self._get_delete_status_list(),
+            'voucher_status_list': self._get_voucher_status_list(),
+            'voucher_ownership_list': self._get_voucher_ownership_list(),
             'sof_types': self._get_sof_types(),
+            'services': self._get_services_list(),
         }
         self.logger.info('========== Finish render Vouchers List page==========')
         return render(request, self.template_name, context)
@@ -82,6 +85,8 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         # distributed_status = request.POST.get('distributed_status')
         voucher_group = request.POST.get('voucher_group')
         # delete_status = request.POST.get('delete_status')
+        voucher_status = request.POST.get('voucher_status')
+        voucher_ownership = request.POST.get('voucher_ownership')
 
         body = {}
         body['page_index'] = int(opening_page_index)
@@ -93,6 +98,16 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             body['cash_out_user_id'] = int(cash_out_id)
         if voucher_id:
             body['voucher_id'] = voucher_id
+
+        if voucher_status:
+            body['is_deleted'] = True if voucher_status == "Deleted" else False
+            body['is_cancelled'] = True if voucher_status == "Cancelled" else False
+            body['is_on_hold'] = True if voucher_status == "On Hold" else False
+
+        if voucher_ownership:
+            body['is_used'] = True if voucher_ownership == 'Claimed' else False
+            body['distributed_status'] = True if voucher_ownership == 'Claimed' else False
+
         # if claim_status == 'True':
         #     body['is_used'] = True
         # if claim_status == 'False':
@@ -161,6 +176,10 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             'voucher_id': voucher_id,
             # 'claim_status_list': self._get_status_list(),
             # 'selected_status': claim_status,
+            'voucher_status': voucher_status,
+            'voucher_ownership': voucher_ownership,
+            'voucher_status_list': self._get_voucher_status_list(),
+            'voucher_ownership_list': self._get_voucher_ownership_list(),
             'cash_in_id': cash_in_id,
             'cash_out_id': cash_out_id,
             'create_date_from': from_date,
@@ -251,7 +270,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     #         {"name": "Yes", "value": "True"},
     #         {"name": "No", "value": "False"}
     #     ]
-    
+
     # @staticmethod
     # def _get_delete_status_list():
     #     return [
@@ -260,6 +279,13 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
     #         {"name": "None", "value": "False"}
     #     ]
 
+    @staticmethod
+    def _get_voucher_status_list():
+        return ["Created", "On Hold", "Cancelled", "Deleted"]\
+
+    @staticmethod
+    def _get_voucher_ownership_list():
+        return ["None", "Distributed", "Claimed"]
 
     def _get_sof_types(self):
         success, status_code, data  = RestFulClient.get(url=api_settings.SOF_TYPES_URL, loggers=self.logger, headers=self._get_headers())
