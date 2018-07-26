@@ -8,6 +8,10 @@
             top: 30% !important;
         }
 
+        .hideColumn{
+            display: none;
+        }
+
         #btn_add_new_voucher {
             background-color: #337ab7;
             border-color: #337ab7;
@@ -304,12 +308,12 @@
                             <th id="ddl_voucher_group">Voucher Group</th>
                             <th id="ddl_voucher_amount">Voucher Amount</th>
                             <th id="ddl_voucher_fee">Voucher Fee</th>
-{#                            <th id="ddl_hold_status">Hold Status</th>#}
-{#                            <th id="ddl_cancel_status">Cancel Status</th>#}
-{#                            <th id="ddl_delete_status">Delete Status</th>#}
+                            <th class="hideColumn" id="ddl_hold_status">Hold Status</th>
+                            <th class="hideColumn" id="ddl_cancel_status">Cancel Status</th>
+                            <th class="hideColumn" id="ddl_delete_status">Delete Status</th>
                             <th id="ddl_voucher_status">Voucher Status</th>
-{#                            <th id="ddl_distributed_status">Distributed Status</th>#}
-{#                            <th id="ddl_status">Claim Status</th>#}
+                            <th class="hideColumn" id="ddl_distributed_status">Distributed Status</th>
+                            <th class="hideColumn" id="ddl_status">Claim Status</th>
                             <th id="ddl_voucher_ownership">Voucher Ownership</th>
                             <th id="ddl_create_date">Create Date</th>
                             <th id="ddl_update_date">Update Date</th>
@@ -347,12 +351,12 @@
                                 <td>{{ i.voucher_group|default_if_none:'' }}</td>
                                 <td id="voucher_amount">{{ i.amount|default_if_none:'' }}</td>
                                 <td>{{ i.fee|default_if_none:'' }}</td>
-{#                                <td id="hold-status">{{ i.is_on_hold|yesno:"Yes,No,''" }}</td>#}
-{#                                <td id="cancel-status" cancel-status-value="{{i.is_cancelled}}">{{ i.is_cancelled|yesno:"Yes,No,''" }}</td>#}
-{#                                <td id="delete-status" delete-status-value="{{i.is_deleted}}">{{ i.is_deleted|yesno:"Yes,No,''" }}</td>#}
+                                <td class="hideColumn" id="hold-status">{{ i.is_on_hold|yesno:"Yes,No,''" }}</td>
+                                <td class="hideColumn" id="cancel-status" cancel-status-value="{{i.is_cancelled}}">{{ i.is_cancelled|yesno:"Yes,No,''" }}</td>
+                                <td class="hideColumn" id="delete-status" delete-status-value="{{i.is_deleted}}">{{ i.is_deleted|yesno:"Yes,No,''" }}</td>
                                 <td id="voucher_status">{% if i.is_deleted %}Deleted{% elif i.is_cancelled %}Cancelled{% elif i.is_on_hold %}On Hold{% else %}Created{% endif %}</td>
-{#                                <td>{{ i.distributed_status|yesno:"Yes,No,''" }}</td>#}
-{#                                <td id="claim-status">{{ i.is_used|yesno:"Yes,No,''" }}</td>#}
+                                <td class="hideColumn" >{{ i.distributed_status|yesno:"Yes,No,''" }}</td>
+                                <td class="hideColumn" id="claim-status">{{ i.is_used|yesno:"Yes,No,''" }}</td>
                                 <td id="voucher_ownership">{% if i.is_used %}Claimed{% elif i.distributed_status %}Distributed{% else %}None{% endif %}</td>
                                 <td>{{ i.created_timestamp|default_if_none:'' }}</td>
                                 <td>{{ i.last_updated_timestamp|default_if_none:'' }}</td>
@@ -542,7 +546,13 @@
                     else {
                         for (var i = 0; i < response.success_ids.length; i++) {
                             key = response.success_ids[i];
-                            $("#voucher-" + key).find('#hold-status').text('Hold');
+                            {#$("#voucher-" + key).find('#hold-status').text('Hold');#}
+                            cancel_status = $("#voucher-" + key).find('#cancel-status').attr('cancel-status-value');
+                            delete_status = $("#voucher-" + key).find('#delete-status').attr('delete-status-value');
+                            if (delete_status == 'False' && cancel_status == 'False') {
+                                $("#voucher-" + key).find('#voucher_status').text('On Hold');
+                                $("#voucher-" + key).find('#hold-status').text('Yes');
+                            }
                             $("#chk_voucher_" + key).removeClass('IsUnhold');
                             $("#chk_voucher_" + key).addClass('IsHold');
                         }
@@ -588,7 +598,13 @@
                     else {
                         for (i = 0; i < response.success_ids.length; i++) {
                             key = response.success_ids[i];
-                            $("#voucher-" + key).find('#hold-status').text('Unhold');
+                            {#$("#voucher-" + key).find('#hold-status').text('Unhold');#}
+                            cancel_status = $("#voucher-" + key).find('#cancel-status').attr('cancel-status-value');
+                            delete_status = $("#voucher-" + key).find('#delete-status').attr('delete-status-value');
+                            if (delete_status == 'False' && cancel_status == 'False') {
+                                $("#voucher-" + key).find('#voucher_status').text('Created');
+                                $("#voucher-" + key).find('#hold-status').text('No');
+                            }
                             $("#chk_voucher_" + key).removeClass('IsHold');
                             $("#chk_voucher_" + key).addClass('IsUnhold');
                         }
