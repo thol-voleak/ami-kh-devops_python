@@ -69,20 +69,49 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">KYC Status</label>
+                <label class="col-sm-2 control-label">KYC Level</label>
                 <div class="col-sm-2">
-                    <select type="text" class="form-control" name="kyc_status" id="ddl_kyc_status">
-                        <option value=''{% if kyc_status == '' %}selected="selected"{% endif %}>-</option>
-                        <option value=1 {% if kyc_status == '1' %}selected="selected"{% endif %}>True</option>
-                        <option value=0 {% if kyc_status == '0' %}selected="selected"{% endif %}>False</option>
+                    <select type="text" class="form-control" name="kyc_level" id="ddl_kyc_level">
+                        <option value='' {% if kyc_level == '' %}selected="selected"{% endif %}>-</option>
+                        {% for level in kyc_level_list %}
+                            <option value={{level.id}} {% if kyc_level == level.id %}selected="selected"{% endif %}>{{level.level}}</option>
+                        {% endfor %}
                     </select>
                 </div>
-                <label class="col-sm-2 control-label">Citizen Card ID</label>
+
+                <!--<label class="col-sm-2 control-label">Citizen Card ID</label>-->
+                <!--<div class="col-sm-2">-->
+                    <!--<input type="text" class="form-control "-->
+                           <!--name="citizen_card_id" id="txt_citizen_card_id"-->
+                           <!--value="{{ citizen_card_id | default_if_none:'' }}"/>-->
+                <!--</div>-->
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Is Tesing Account</label>
                 <div class="col-sm-2">
-                    <input type="text" class="form-control "
-                           name="citizen_card_id" id="txt_citizen_card_id"
-                           value="{{ citizen_card_id | default_if_none:'' }}"/>
+                    <input type="checkbox" id="chk_testing_account" name="is_testing_account"
+                       {% if is_testing_account %}checked{% endif %}>
                 </div>
+                <label class="col-sm-2 control-label">System Account</label>
+                <div class="col-sm-2">
+                    <input type="checkbox" id="chk_system_account" name="is_system_account"
+                           {% if is_system_account %}checked{% endif %}>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">First Name</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded"
+                           name="first_name" id="txt_first_name"
+                           value="{{ first_name | default_if_none:'' }}"/>
+                </div>
+                <label class="col-sm-2 control-label">Last Name</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control input-rounded"
+                           name="last_name" id="txt_last_name"
+                           value="{{ last_name | default_if_none:'' }}"/>
+                </div>
+
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Email</label>
@@ -143,10 +172,12 @@
                     <th id="email">Email Address</th>
                     <th id="unique_reference">Unique Reference</th>
                     <th id="device_id">Device ID</th>
-                    <th id="kyc">KYC status</th>
+                    <th id="kyc">KYC Level</th>
                     <th id="created_date">Created Date</th>
                     <th id="modified_date">Modified Date</th>
                     <th id="status">Status</th>
+                    <th id="is_testing_account">Is Testing Account</th>
+                    <th id="is_system_account">Is System Account</th>
                     <th id="is_deleted">Is deleted</th>
                     <th id="action">Action</th>
                 </tr>
@@ -162,11 +193,13 @@
                     <td class="col-sm-1" id="email_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.email|default_if_none:'' }}{% else %}<del>{{ customer.email|default_if_none:'' }}</del>{% endif %}</td>
                     <td class="col-sm-1" id="unique_reference_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.unique_reference|default_if_none:'' }}{% else %}<del>{{ customer.unique_reference|default_if_none:'' }}</del>{% endif %}</td>
                     <td class="col-sm-1" id="device_id_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.device_id|default_if_none:'' }}{% else %}<del>{{ customer.device_id|default_if_none:'' }}</del>{% endif %}</td>
-                    <td class="col-sm-1">{{ customer.kyc_status|default_if_none:'' }}</td>
+                    <td class="col-sm-1">{{ customer.kyc.level|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1" id="customer_status_{{customer.id}}">{% if not customer.is_suspended %}Active{% else %}Suspended{% endif %}</td>
                     <td class="col-sm-1" id="is_deleted_{{ customer.id }}">{% if not customer.is_deleted %}No{% else %}Yes{% endif %}</td>
+                    <td class="col-sm-1" id="is_testing_account_{{ customer.id }}">{% if not customer.is_testing_account %}No{% else %}Yes{% endif %}</td>
+                    <td class="col-sm-1" id="is_system_account_{{ customer.id }}">{% if not customer.is_system_account %}No{% else %}Yes{% endif %}</td>
                     <td class="col-sm-3">
                         <div id="action-customer-{{customer.id}}">
                     {% if customer.is_permission_detail and customer.is_deleted is not True%}

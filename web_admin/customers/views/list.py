@@ -40,17 +40,33 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         customers = {}
         is_success = False
         status_code = ''
+        kyc_level_list = {}
+        kyc_level_param = {}
         url = api_settings.MEMBER_CUSTOMER_PATH
+        kyc_level_url = api_settings.CUSTOMER_KYC_LEVEL_PATH
         context = super(ListView, self).get_context_data(**kwargs)
-
+        is_success, status_code, status_message, data = RestFulClient.post(
+            url=kyc_level_url,
+            headers=self._get_headers(),
+            loggers=self.logger,
+            params=kyc_level_param)
+        if is_success:
+            kyc_level_list = data
+            context['kyc_level_list'] = kyc_level_list
+            self.logger.info("data: {} ".format(kyc_level_list))
+        is_success = False
         #set default date
         customer_id = None
         unique_reference = None
-        kyc_status = None
+        kyc_level = None
         citizen_card_id = None
         email = None
         mobile_number = None
         mobile_device_unique_reference = None
+        is_testing_account = None
+        is_system_account = None
+        first_name = None
+        last_name = None
         opening_page_index = 1
 
         to_created_timestamp = datetime.now()
@@ -64,10 +80,14 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             email = self.request.session.pop('customer_email', None)
             mobile_number = self.request.session.pop('customer_primary_mobile_number', None)
             mobile_device_unique_reference = self.request.session.pop('customer_primary_mobile_unique_reference', None)
-            kyc_status = self.request.session.pop('customer_kyc_status', None)
+            kyc_level = self.request.session.pop('customer_kyc_level', None)
             citizen_card_id = self.request.session.pop('citizen_card_id', None)
             saved_from_created_timestamp = self.request.session.pop('customer_from', None)
             saved_to_created_timestamp = self.request.session.pop('customer_to', None)
+            is_testing_account = self.request.session.pop('is_testing_account', None)
+            is_system_account = self.request.session.pop('is_system_account', None)
+            first_name = self.request.session.pop('first_name', None)
+            last_name = self.request.session.pop('last_name', None)
 
             if saved_from_created_timestamp != '' and saved_from_created_timestamp:
                 from_created_timestamp = datetime.strptime(saved_from_created_timestamp, "%Y-%m-%dT%H:%M:%SZ")
@@ -92,13 +112,17 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             customer_id = request.GET.get('customer_id')
             unique_reference = request.GET.get('unique_reference')
             opening_page_index = request.GET.get('current_page_index')
-            kyc_status = request.GET.get('kyc_status')
+            kyc_level = request.GET.get('kyc_level')
             citizen_card_id = request.GET.get('citizen_card_id')
             email = request.GET.get('email')
             mobile_number = request.GET.get('mobile_number')
             mobile_device_unique_reference = request.GET.get('mobile_device_unique_reference')
             from_created_timestamp = request.GET.get('from_created_timestamp')
             to_created_timestamp = request.GET.get('to_created_timestamp')
+            is_testing_account = request.GET.get('is_testing_account')
+            is_system_account = request.GET.get('is_system_account')
+            first_name = request.GET.get('first_name')
+            last_name = request.GET.get('last_name')
 
             if to_created_timestamp:
                 to_created_timestamp = datetime.strptime(to_created_timestamp, "%Y-%m-%d")
@@ -136,12 +160,16 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
                 str_from_created_timestamp = from_created_timestamp.strftime("%Y-%m-%d")
                 context['from_created_timestamp'] = str_from_created_timestamp
 
-
+        is_testing_account = request.GET.get('is_testing_account')
+        is_system_account = request.GET.get('is_system_account')
+        first_name = request.GET.get('first_name')
+        last_name = request.GET.get('last_name')
 
 
         if customer_id is None and unique_reference is None \
-           and kyc_status is None and citizen_card_id is None \
-           and email is None and mobile_number is None and mobile_device_unique_reference is None:
+           and kyc_level is None and citizen_card_id is None \
+           and email is None and mobile_number is None and mobile_device_unique_reference is None \
+           and is_testing_account is None and is_system_account is None and first_name is None and last_name is None:
            customers = {}
            context['search_count'] = 0
         else:
@@ -154,10 +182,9 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             if unique_reference:
                 params['unique_reference'] = unique_reference
                 context['unique_reference'] = unique_reference
-            if kyc_status:
-                kyc_status_code = int(kyc_status)
-                params['kyc_status'] = kyc_status_code
-                context['kyc_status'] = kyc_status
+            if kyc_level:
+                params['kyc_level'] = int(kyc_level)
+                context['kyc_level'] = kyc_level
             if citizen_card_id:
                 params['citizen_card_id'] = citizen_card_id
                 context['citizen_card_id'] = citizen_card_id
@@ -170,13 +197,24 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             if mobile_device_unique_reference:
                 params['mobile_device_unique_reference'] = mobile_device_unique_reference
                 context['mobile_device_unique_reference'] = mobile_device_unique_reference
-
+            if is_testing_account:
+                params['is_testing_account'] = True
+                context['is_testing_account'] = True
+            if is_system_account:
+                params['is_system_account'] = True
+                context['is_system_account'] = True
+            if first_name:
+                params['first_name'] = first_name
+                context['first_name'] = first_name
+            if last_name:
+                params['last_name'] = last_name
+                context['last_name'] = last_name
+            self.logger.info("Params: {} ".format(params))
             is_success, status_code, status_message, data = RestFulClient.post(
                                                     url= url,
                                                     headers=self._get_headers(),
                                                     loggers=self.logger,
                                                     params=params)
-            self.logger.info("Params: {} ".format(params))
         if is_success:
             customers = data['customers']
             page = data['page']
@@ -211,7 +249,7 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         context['data'] = customers
         self.update_session(request, customer_id, unique_reference, email,
-                            mobile_number, mobile_device_unique_reference, kyc_status, citizen_card_id,
+                            mobile_number, mobile_device_unique_reference, kyc_level, citizen_card_id,
                             from_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ"),
                             to_created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ"), False)
         self.logger.info('========== Finished searching Customer ==========')
@@ -219,14 +257,19 @@ class ListView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
 
     def update_session(self, request, customer_id=None, unique_reference=None, email=None, mobile_number=None, mobile_unique_reference=None,
-                       kyc=None, citizen_card_id=None, from_created_timestamp=None, to_created_timestamp=None, redirect_from_wallet_view=False):
+                       kyc=None, citizen_card_id=None, from_created_timestamp=None, to_created_timestamp=None, redirect_from_wallet_view=False,
+                       is_testing_account=None, is_system_account=None , first_name=None, last_name=None):
         request.session['customer_id'] = customer_id
         request.session['customer_unique_reference'] = unique_reference
         request.session['customer_email'] = email
         request.session['customer_primary_mobile_number'] = mobile_number
         request.session['customer_primary_mobile_unique_reference'] = mobile_unique_reference
-        request.session['customer_kyc_status'] = kyc
+        request.session['customer_kyc_level'] = kyc
         request.session['citizen_card_id'] = citizen_card_id
         request.session['customer_from'] = from_created_timestamp
         request.session['customer_to'] = to_created_timestamp
+        request.session['is_testing_account'] = is_testing_account
+        request.session['is_system_account'] = is_system_account
+        request.session['first_name'] = first_name
+        request.session['last_name'] = last_name
         request.session['customer_redirect_from_wallet_view'] = redirect_from_wallet_view
