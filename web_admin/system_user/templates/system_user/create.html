@@ -123,7 +123,7 @@
 
         } else if (!re.test(password.value)) {
             confirm_password.setCustomValidity('');
-            password.setCustomValidity("Password should contains at least lowercase, uppercase letter, number, special character and 8 characters in length");
+            password.setCustomValidity("Password must be at least 8 characters and contains uppercase, lowercase, number, and special character");
 
         } else {
             confirm_password.setCustomValidity('');
