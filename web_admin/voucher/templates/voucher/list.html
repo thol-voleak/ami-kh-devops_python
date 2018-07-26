@@ -815,7 +815,7 @@
 
             var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
             $(checkedInput).each(function (index, value) {
-                deleteStatus = $(value).parent().parent().find("#delete-status").attr('delete-status-value');
+                deleteStatus = $(value).parent().parent().find("#voucher_status").text();
 
                 if (deleteStatus == 'Deleted') {
                     msg = 'Cannot cancel already deleted vouchers';
