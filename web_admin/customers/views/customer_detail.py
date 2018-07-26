@@ -73,6 +73,10 @@ class CustomerDetailView(TemplateView, RESTfulMethods, CustomerAPIService):
         if tertiary_expiry_date:
             context['customer_info']['kyc']['tertiary_identity']['expired_date'] = tertiary_expiry_date.split('T')[0]
 
+        kyc_verify_date = context['customer_info']['kyc']['verify_date']
+        if kyc_verify_date:
+            context['customer_info']['kyc']['verify_date'] = kyc_verify_date.split('T')[0]
+
         # get MM card type
         mm_card_type_id = context['customer_info']['mm_card_type_id']
         if mm_card_type_id:

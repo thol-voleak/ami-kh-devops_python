@@ -118,7 +118,7 @@
                                     <label class="col-sm-3 control-label">Referrer User Type</label>
                                     <div class="col-sm-7">
                                         <input type="text" id="txt_referrer_user_type" class="form-control input-rounded"
-                                               value="{% if customer_info.referrer_user_type_id.id == 1 %}Customer{% elif  customer_info.referrer_user_type_id.id == 2 %}Agent{% elif  customer_info.referrer_user_type_id.id == 3 %}System User{% else %}{% endif %}" disabled/>
+                                               value="{% if customer_info.referrer_user_type.id == 1 %}Customer{% elif  customer_info.referrer_user_type_id.id == 2 %}Agent{% elif  customer_info.referrer_user_type_id.id == 3 %}System User{% else %}{% endif %}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -645,7 +645,7 @@
                                         <input type="text" class="form-control input-rounded"
                                                name="permanent_address_district"
                                                id="txt_permanent_address_district"
-                                               value="{{ customer_info.address.permanent_address.district|default_if_none:'' }}"/>
+                                               value="{{ customer_info.address.permanent_address.district|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -1025,12 +1025,21 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="col-sm-3 control-label">KYC Remark</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="kyc_remark"
+                                               id="txt_kyc_remark"
+                                               value="{{ customer_info.kyc.remark|default_if_none:'' }}" disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="col-sm-3 control-label">Verify By</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
                                                name="kyc_verify_by"
                                                id="txt_kyc_verify_by"
-                                               value="{{ agent.kyc.verify_by|default_if_none:'' }}" disabled/>
+                                               value="{{ customer_info.kyc.verify_by|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -1039,7 +1048,7 @@
                                         <input type="text" class="form-control input-rounded"
                                                name="kyc_verify_date"
                                                id="txt_kyc_verify_date"
-                                               value="{{ agent.kyc.verify_date|default_if_none:'' }}" disabled/>
+                                               value="{{ customer_info.kyc.verify_date|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -1048,7 +1057,7 @@
                                         <input type="text" class="form-control input-rounded"
                                                name="kyc_risk_level"
                                                id="txt_kyc_risk_level"
-                                               value="{{ agent.kyc.risk_level|default_if_none:'' }}"
+                                               value="{{ customer_info.kyc.risk_level|default_if_none:'' }}"
                                                disabled/>
                                     </div>
                                 </div>
