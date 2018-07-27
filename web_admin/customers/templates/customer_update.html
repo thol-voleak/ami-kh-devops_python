@@ -118,7 +118,8 @@
                                     <label class="col-sm-3 control-label">Status *</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
-                                               id="txt_status" value="{{ customer_info.is_suspended|default_if_none:'' }}" readonly/>
+                                               id="txt_status" name="is_suspended"
+                                               value="{{ customer_info.is_suspended|default_if_none:'' }}" readonly/>
                                     </div>
                                 </div>
                                 <div class="form-group">

@@ -313,8 +313,8 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin, CustomerAPISe
                 messages.SUCCESS,
                 'Updated profile successfully'
             )
-            data = self.get_member_detail(customer_id=customer_id)
-            return render(request, self.template_name, data)
+            context = self.get_member_detail(customer_id)
+            return render(request, self.template_name, context)
         elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                     status_code == 'invalid_access_token'):
             self.logger.info("{}".format(data))
@@ -333,7 +333,19 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin, CustomerAPISe
                 message="Update customer profile fail. Please try again or contact admin."
             )
 
-        context = self.get_member_detail(customer_id)
+        customer_info = self.format_profile_data(body)
+        customer_info['id'] = request.POST.get('customer_id')
+        customer_info['is_suspended'] = request.POST.get('is_suspended')
+        customer_info['active_suspend_reason'] = request.POST.get('suspend_reason')
+        customer_info['created_timestamp'] = request.POST.get('created_date')
+        customer_info['last_updated_timestamp'] = request.POST.get('last_updated_date')
+        customer_info['kyc']['last_updated_timestamp'] = request.POST.get('kyc_updated_date')
+        context = {
+            'customer_info': customer_info,
+            'customer_id': customer_id
+        }
+        drop_down_context = self.prepare_drop_down_list_context()
+        context.update(drop_down_context)
 
         return render(request, self.template_name, context)
 
@@ -344,53 +356,63 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin, CustomerAPISe
             'id': customer_id
         }
         is_success, status_code, status_message, data = RestFulClient.post(
-                                                    url= url,
+                                                    url=url,
                                                     headers=self._get_headers(),
                                                     loggers=self.logger,
                                                     params=body)
         self.logger.info('Response_content: {}'.format(data))
 
         if is_success:
-            context = {'customer_info': data['customers'][0]}
-            is_suspended = context['customer_info'].get('is_suspended')
-            context['customer_info']['is_suspended'] = self.status[is_suspended]
-
-            # Convert date format
-            date_of_birth = context['customer_info']['date_of_birth']
-            if date_of_birth:
-                context['customer_info']['date_of_birth'] = date_of_birth.split('T')[0]
-
-            primary_issue_date = context['customer_info']['kyc']['primary_identity']['issue_date']
-            if primary_issue_date:
-                context['customer_info']['kyc']['primary_identity']['issue_date'] = primary_issue_date.split('T')[0]
-            primary_expiry_date = context['customer_info']['kyc']['primary_identity']['expired_date']
-            if primary_expiry_date:
-                context['customer_info']['kyc']['primary_identity']['expired_date'] = primary_expiry_date.split('T')[0]
-
-            secondary_issue_date = context['customer_info']['kyc']['secondary_identity']['issue_date']
-            if secondary_issue_date:
-                context['customer_info']['kyc']['secondary_identity']['issue_date'] = secondary_issue_date.split('T')[0]
-            secondary_expiry_date = context['customer_info']['kyc']['secondary_identity']['expired_date']
-            if secondary_expiry_date:
-                context['customer_info']['kyc']['secondary_identity']['expired_date'] = secondary_expiry_date.split('T')[0]
-
-            tertiary_issue_date = context['customer_info']['kyc']['tertiary_identity']['issue_date']
-            if tertiary_issue_date:
-                context['customer_info']['kyc']['tertiary_identity']['issue_date'] = tertiary_issue_date.split('T')[0]
-            tertiary_expiry_date = context['customer_info']['kyc']['tertiary_identity']['expired_date']
-            if tertiary_expiry_date:
-                context['customer_info']['kyc']['tertiary_identity']['expired_date'] = tertiary_expiry_date.split('T')[0]
-
-            kyc_verify_date = context['customer_info']['kyc']['verify_date']
-            if kyc_verify_date:
-                context['customer_info']['kyc']['verify_date'] = kyc_verify_date.split('T')[0]
-
+            data = self.format_profile_data(data['customers'][0])
+            is_suspended = data.get('is_suspended')
+            data['is_suspended'] = self.status[is_suspended]
+            context['customer_info'] = data
             context['customer_id'] = customer_id
         elif (status_code == "access_token_expire") or (status_code == 'authentication_fail') or (
                     status_code == 'invalid_access_token'):
             self.logger.info("{}".format(data))
             raise InvalidAccessToken(data)
 
+        drop_down_list_context = self.prepare_drop_down_list_context()
+        context.update(drop_down_list_context)
+
+        return context
+
+    def format_profile_data(self, data):
+        # Convert date format
+        date_of_birth = data['date_of_birth']
+        if date_of_birth:
+            data['date_of_birth'] = date_of_birth.split('T')[0]
+
+        primary_issue_date = data['kyc']['primary_identity']['issue_date']
+        if primary_issue_date:
+            data['kyc']['primary_identity']['issue_date'] = primary_issue_date.split('T')[0]
+        primary_expiry_date = data['kyc']['primary_identity']['expired_date']
+        if primary_expiry_date:
+            data['kyc']['primary_identity']['expired_date'] = primary_expiry_date.split('T')[0]
+
+        secondary_issue_date = data['kyc']['secondary_identity']['issue_date']
+        if secondary_issue_date:
+            data['kyc']['secondary_identity']['issue_date'] = secondary_issue_date.split('T')[0]
+        secondary_expiry_date = data['kyc']['secondary_identity']['expired_date']
+        if secondary_expiry_date:
+            data['kyc']['secondary_identity']['expired_date'] = secondary_expiry_date.split('T')[0]
+
+        tertiary_issue_date = data['kyc']['tertiary_identity']['issue_date']
+        if tertiary_issue_date:
+            data['kyc']['tertiary_identity']['issue_date'] = tertiary_issue_date.split('T')[0]
+        tertiary_expiry_date = data['kyc']['tertiary_identity']['expired_date']
+        if tertiary_expiry_date:
+            data['kyc']['tertiary_identity']['expired_date'] = tertiary_expiry_date.split('T')[0]
+
+        kyc_verify_date = data['kyc']['verify_date']
+        if kyc_verify_date:
+            data['kyc']['verify_date'] = kyc_verify_date.split('T')[0]
+
+        return data
+
+    def prepare_drop_down_list_context(self):
+        context = {}
         # Get Classification list
         classification_list = self.get_classification(None)
         context['classification_list'] = classification_list
