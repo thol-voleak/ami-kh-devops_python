@@ -161,7 +161,8 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin, CustomerAPISe
             'issue_date': primary_issue_date,
             'expired_date': primary_expire_date,
             'front_identity_url': request.POST.get('primary_identity_front_url'),
-            'back_identity_url': request.POST.get('primary_identity_back_url')
+            'back_identity_url': request.POST.get('primary_identity_back_url'),
+            'signature_url': request.POST.get('primary_signature_attachment_url')
         }
         # Secondary Identity
         secondary_issue_date = request.POST.get('secondary_identity_issue_date')
@@ -181,7 +182,8 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin, CustomerAPISe
             'issue_date': secondary_issue_date,
             'expired_date': secondary_expire_date,
             'front_identity_url': request.POST.get('secondary_identity_front_url'),
-            'back_identity_url': request.POST.get('secondary_identity_back_url')
+            'back_identity_url': request.POST.get('secondary_identity_back_url'),
+            'signature_url': request.POST.get('secondary_signature_attachment_url')
         }
         # Tertiary Identity
         tertiary_issue_date = request.POST.get('tertiary_identity_issue_date')
@@ -201,7 +203,8 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin, CustomerAPISe
             'issue_date': tertiary_issue_date,
             'expired_date': tertiary_expire_date,
             'front_identity_url': request.POST.get('tertiary_identity_front_url'),
-            'back_identity_url': request.POST.get('tertiary_identity_back_url')
+            'back_identity_url': request.POST.get('tertiary_identity_back_url'),
+            'signature_url': request.POST.get('tertiary_signature_attachment_url')
         }
         verify_date = request.POST.get('kyc_verify_date')
         if verify_date != '':

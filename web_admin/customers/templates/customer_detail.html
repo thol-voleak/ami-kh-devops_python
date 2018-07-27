@@ -47,14 +47,14 @@
                 <div class="col-lg-12">
                     <form id="submit-form" class="form-horizontal" role="form" method="post">
                         <div class="col-md-2">
-                            {% if customer_info.profile_picture_url %}
+                            {% if customer_info.additional.profile_picture_url %}
                             <div style="position: relative;">
                             <div style="width:170px; height:170px; border:1px solid black; text-align:center; line-height:170px;">
-                            <img src="{{ customer_info.profile_picture_url|default_if_none:'' }}" style="top: 0;left: 0; position: absolute;"
+                            <img src="{{ customer_info.additional.profile_picture_url|default_if_none:'' }}" style="top: 0;left: 0; position: absolute;"
                                  alt="No image Available" id="img_profile_picture"
-                                 value="{{ customer_info.profile_picture_url|default_if_none:'' }}"
+                                 value="{{ customer_info.additional.profile_picture_url|default_if_none:'' }}"
                                  height="170" width="170" readonly></div></div>{% endif %}
-                            {% if not customer_info.profile_picture_url %}
+                            {% if not customer_info.additional.profile_picture_url %}
                             <div style="width:170px; height:170px; border:1px solid black; text-align:center; line-height:170px;">
                                 <span id="lbl_no_image">No Image Available</span></div>
                             {% endif %}
@@ -79,7 +79,7 @@
                             </div>
                             <div class="collapsible">
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label" id="lbl_customer_id">Customer ID*</label>
+                                    <label class="col-sm-3 control-label" id="lbl_customer_id">Customer ID *</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="customer_id"
                                                id="txt_customer_id" value="{{ customer_info.id | default_if_none:'' }}" disabled/>
@@ -222,7 +222,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Always require OTP *</label>
+                                    <label class="col-sm-3 control-label">Always require OTP</label>
                                     <div class="col-sm-7">
                                         <input type="checkbox" id="chk_require_otp" name="is_require_otp"
                                                {% if customer_info.is_require_otp %}checked{% endif %} disabled/>
@@ -823,6 +823,15 @@
                                                disabled/>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Signature Attachment</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="primary_signature_attachment_url"
+                                               id="txt_primary_signature_attachment_url"
+                                               value="{{ customer_info.kyc.primary_identity.signature_url|default_if_none:'' }}" disabled />
+                                    </div>
+                                </div>
                                 <!-- [End] Primary identity -->
                                 <!-- [Start] Secondary identity -->
                                 <div class="row">
@@ -917,6 +926,15 @@
                                                disabled/>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Signature Attachment</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="secondary_signature_attachment_url"
+                                               id="txt_secondary_signature_attachment_url"
+                                               value="{{ customer_info.kyc.secondary_identity.signature_url|default_if_none:'' }}" disabled />
+                                    </div>
+                                </div>
                                 <!-- [End] Secondary identity -->
                                 <!-- [Start] Tertiary identity -->
                                 <div class="row">
@@ -1009,6 +1027,15 @@
                                                id="txt_tertiary_identity_back_url"
                                                value="{{ customer_info.kyc.tertiary_identity.back_identity_url|default_if_none:'' }}"
                                                disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Signature Attachment</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="tertiary_signature_attachment_url"
+                                               id="txt_tertiary_signature_attachment_url"
+                                               value="{{ customer_info.kyc.tertiary_identity.signature_url|default_if_none:'' }}" disabled />
                                     </div>
                                 </div>
                                 <!-- [End] Tertiary identity -->
