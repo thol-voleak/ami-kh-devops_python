@@ -74,7 +74,7 @@
                     <select type="text" class="form-control" name="kyc_level" id="ddl_kyc_level">
                         <option value='' {% if kyc_level == '' %}selected="selected"{% endif %}>-</option>
                         {% for level in kyc_level_list %}
-                            <option value={{level.id}} {% if kyc_level == level.id %}selected="selected"{% endif %}>{{level.level}}</option>
+                            <option value={{level.id}} {% if kyc_level|slugify == level.id|slugify %}selected="selected"{% endif %}>{{level.level}}</option>
                         {% endfor %}
                     </select>
                 </div>
