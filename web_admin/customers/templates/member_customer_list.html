@@ -186,10 +186,10 @@
                 {% for customer in data %}
                 <tr>
                     <td class="col-sm-1" id="id_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.id }}{% else %}<del>{{ customer.id }}</del>{% endif %}</td>
-                    <td class="col-sm-1" id="firstname_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.firstname|default_if_none:'' }}{% else %}<del>{{ customer.firstname|default_if_none:'' }}</del>{% endif %}</td>
-                    <td class="col-sm-1" id="lastname_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.lastname|default_if_none:'' }}{% else %}<del>{{ customer.lastname|default_if_none:'' }}</del>{% endif %}</td>
+                    <td class="col-sm-1" id="firstname_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.first_name|default_if_none:'' }}{% else %}<del>{{ customer.first_name|default_if_none:'' }}</del>{% endif %}</td>
+                    <td class="col-sm-1" id="lastname_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.last_name|default_if_none:'' }}{% else %}<del>{{ customer.last_name|default_if_none:'' }}</del>{% endif %}</td>
                     <td class="col-sm-1" id="citizen_card_id_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.citizen_card_id|default_if_none:'' }}{% else %}<del>{{ customer.citizen_card_id|default_if_none:'' }}</del>{% endif %}</td>
-                    <td class="col-sm-1 text-center" id="mobile_number_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.mobile_number|default_if_none:'' }}{% else %}<del>{{ customer.mobile_number|default_if_none:'' }}</del>{% endif %}</td>
+                    <td class="col-sm-1 text-center" id="mobile_number_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.primary_mobile_number|default_if_none:'' }}{% else %}<del>{{ customer.primary_mobile_number|default_if_none:'' }}</del>{% endif %}</td>
                     <td class="col-sm-1" id="email_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.email|default_if_none:'' }}{% else %}<del>{{ customer.email|default_if_none:'' }}</del>{% endif %}</td>
                     <td class="col-sm-1" id="unique_reference_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.unique_reference|default_if_none:'' }}{% else %}<del>{{ customer.unique_reference|default_if_none:'' }}</del>{% endif %}</td>
                     <td class="col-sm-1" id="device_id_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.device_id|default_if_none:'' }}{% else %}<del>{{ customer.device_id|default_if_none:'' }}</del>{% endif %}</td>
