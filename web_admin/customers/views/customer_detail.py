@@ -81,24 +81,28 @@ class CustomerDetailView(TemplateView, RESTfulMethods, CustomerAPIService):
         mm_card_type_id = context['customer_info']['mm_card_type_id']
         if mm_card_type_id:
             mm_card_type = self.get_mm_card_type(mm_card_type_id)
-            context['customer_info']['mm_card_type_name'] = mm_card_type[0]['name']
+            if mm_card_type:
+                context['customer_info']['mm_card_type_name'] = mm_card_type[0]['name']
 
         # get MM card level
         mm_card_level_id = context['customer_info']['mm_card_level_id']
         if mm_card_level_id:
             mm_card_level = self.get_mm_card_level(mm_card_level_id)
-            context['customer_info']['mm_card_level_name'] = mm_card_level[0]['level']
+            if mm_card_level:
+                context['customer_info']['mm_card_level_name'] = mm_card_level[0]['level']
 
         # get classification
         classification_id = context['customer_info']['customer_classification_id']
         if classification_id:
             classification = self.get_classification(classification_id)
-            context['customer_info']['customer_classification_name'] = classification[0]['name']
+            if classification:
+                context['customer_info']['customer_classification_name'] = classification[0]['name']
 
         # get KYC level
         kyc_level_id = context['customer_info']['kyc']['level']
         if kyc_level_id:
             kyc_level = self.get_kyc_level(kyc_level_id)
-            context['customer_info']['kyc']['level_name'] = kyc_level[0]['level']
+            if kyc_level:
+                context['customer_info']['kyc']['level_name'] = kyc_level[0]['level']
 
         return context

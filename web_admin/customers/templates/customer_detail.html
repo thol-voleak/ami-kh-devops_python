@@ -141,7 +141,7 @@
                                     <label class="col-sm-3 control-label">Beneficiary</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="beneficiary" readonly
-                                                id="txt_the_beneficiary" value="{{ customer_info.beneficiary|default_if_none:'' }}" disabled />
+                                                id="txt_beneficiary" value="{{ customer_info.beneficiary|default_if_none:'' }}" disabled />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -224,7 +224,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Always require OTP</label>
                                     <div class="col-sm-7">
-                                        <input type="checkbox" id="chk_require_otp" name="is_require_otp"
+                                        <input type="checkbox" id="chk_is_require_otp" name="is_require_otp"
                                                {% if customer_info.is_require_otp %}checked{% endif %} disabled/>
                                     </div>
                                 </div>
