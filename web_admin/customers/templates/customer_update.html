@@ -135,9 +135,9 @@
                                     <div class="col-sm-7">
                                         <select class="form-control" id="ddl_referrer_user_type" name="referrer_user_type">
                                             <option value="" {% if customer_info.referrer_user_type.id == "" %} selected{% endif %}>-</option>
-                                            <option value="3" {% if customer_info.referrer_user_type.id == 3 %} selected{% endif %}>System User</option>
-                                            <option value="2" {% if customer_info.referrer_user_type.id == 2 %} selected{% endif %}>Agent</option>
-                                            <option value="1" {% if customer_info.referrer_user_type.id == 1 %} selected{% endif %}>Customer</option>
+                                            <option value="3" {% if customer_info.referrer_user_type.id == 3 %} selected{% endif %}>system-user</option>
+                                            <option value="2" {% if customer_info.referrer_user_type.id == 2 %} selected{% endif %}>agent</option>
+                                            <option value="1" {% if customer_info.referrer_user_type.id == 1 %} selected{% endif %}>customer</option>
                                         </select>
                                     </div>
                                 </div>
