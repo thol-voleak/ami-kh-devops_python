@@ -46,12 +46,16 @@ class FPCreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
         end_date = request.POST.get('end_date')
         reason = request.POST.get('reason')
 
+        context = super(FPCreateView, self).get_context_data(**kwargs)
+
         if not start_date:
             start_date = str(date.today())
         start_date += 'T00:00:01Z'
 
         if end_date:
             end_date += 'T23:59:59Z'
+        else:
+            end_date = None
 
         params = {
             "start_active_ticket_timestamp": start_date,
@@ -60,34 +64,72 @@ class FPCreateView(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             "data": []
         }
 
-        data = []
-        data_body = {}
+        data_body = []
+        ids = key_value.split(",")
+
         if data_type == 'virtual_card':
             params['action'] = 'unstop card'
-            data_body['card_id'] = int(key_value) if key_value.isnumeric() else key_value
+            for i in ids:
+                card_id = {'card_id' : int(i) if i.isnumeric() else i}
+                data_body.append(card_id)
         elif data_type == 'device_id':
             params['action'] = 'register customer'
-            data_body['device_id'] = key_value
+            for i in ids:
+                device_id = {'device_id' : i}
+                data_body.append(device_id)
 
-        data.append(data_body)
-        params['data'] = data
+        params['data'] = data_body
+        self.logger.info(params)
 
         success, data, message = self.create_fraud_ticket(params)
-        self.logger.info('========== Finish creating Fraud Ticket ==========')
+        self.logger.info(data)
+        self.logger.info(message)
 
         if success:
-            tickets = data.get('tickets', [])
-            ticket_id = tickets[0].get('ticket_id')
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                'Fraud Ticket #{} is created'.format(ticket_id))
+            result = {}
+            result['success'] = []
+            result['already_frozen'] = []
+            result['not_exist'] = []
+            card_or_device = 'card(s)' if data_type == 'virtual_card' else 'device(s)'
+            summary_mes = ''
+
+            for res in data['tickets']:
+                level, result = self.extract_response(data_type, res, result)
+                self.logger.info("mess")
+                self.logger.info(result)
+
+            if len(result['success']) > 0:
+                summary_mes += '%d %s successfully frozen. ' % (len(result['success']), card_or_device)
+            if len(result['already_frozen']) > 0:
+                summary_mes += '%d %s is/are already frozen. ' % (len(result['already_frozen']), card_or_device)
+            if len(result['not_exist']) > 0:
+                summary_mes += '%d %s do(es) not exist.' % (len(result['not_exist']), card_or_device)
+
+            context['summary_result'] = summary_mes
+            context['result_messages'] = result
+            context['is_success'] = True
         else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                message)
-        return redirect("fraud_prevention:fraud_prevention")
+            context['result_messages'] = message
+            context['is_error'] = True
+
+        self.logger.info(context['result_messages'])
+
+        return render(request,self.template_name,context)
+
+    def extract_response(self, data_type, res, result):
+        object_type = 'Virtual Card' if data_type == 'virtual_card' else 'Device ID'
+        id_field = 'card_id' if data_type == 'virtual_card' else 'device_id'
+
+        if res['status'] != 'success':
+            level = messages.ERROR
+            if res['status'] == 'already frozen':
+                result['already_frozen'].append( 'FAIL: %s #%s is already frozen' % (object_type, res[id_field]))
+            elif res['status'] == 'does not exist':
+                result['not_exist'].append('FAIL: %s #%s does not exist' % (object_type, res[id_field]))
+        else:
+            level = messages.SUCCESS
+            result['success'].append('SUCCESS: Fraud ticket #%s successfully created for %s #%s' %(res['ticket_id'],object_type, res[id_field] ))
+        return level, result
 
     def create_fraud_ticket(self, params):
         success, status_code, message, data = RestFulClient.post(

@@ -3,8 +3,10 @@
 
 {% block body_stylesheet %}
     {{ block.super }}
-{% endblock %}
-
+    <link rel="stylesheet" href="{% static 'vendor/jquery.tagsinput/dist/jquery.tagsinput.min.css' %}?{% now "U" %}">
+    <link rel="stylesheet" href="/admin-portal/static/vendor/jquery.ui/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/admin-portal/static/css/accordion-custom.css">
+    {% endblock %}
 {% block content %}
     <div class="panel mb25">
         <div class="panel-heading border">
@@ -16,28 +18,40 @@
                 <strong id="alert-msg"></strong>
             </div>
         </div>
-        {% for message in messages %}
-            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                <div class="col-xs-12">
-                    <div class='alert alert-success alert-dismissable' id="msg_cre_fraud_success">
-                        <a class="close" data-dismiss="alert" aria-label="close">×</a>
-                        <strong>{{ message|capfirst }}</strong>
-                    </div>
-                </div>
-            {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                <div class="col-xs-12">
-                    <div class='alert alert-danger alert-dismissable' id="msg_cre_fraud_error">
-                        <a class="close" data-dismiss="alert" aria-label="close">×</a>
-                        <strong>{{ message|capfirst }}</strong>
-                    </div>
-                </div>
-            {% endif %}
-        {% endfor %}
+
+        <div id="accordion" class="col-xs-12" {{ summary_result|yesno:"'',hidden" }} >
+            <h3>{{ summary_result }}</h3>
+            <div id="msg_cre_fraud">
+                {% if result_messages.success %}
+                    {% for  message in result_messages.success %}
+                        <strong>{{ message|capfirst }}</strong><br/>
+                    {% endfor %}
+                    <br/>
+                {% endif %}
+                {% if result_messages.already_frozen %}
+                    {% for  message in result_messages.already_frozen %}
+                        <strong>{{ message|capfirst }}</strong><br/>
+                    {% endfor %}
+                    <br/>
+                {% endif %}
+                {% if result_messages.not_exist %}
+                    {% for  message in result_messages.not_exist %}
+                        <strong>{{ message|capfirst }}</strong><br/>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-xs-12" {{ is_error|yesno:"'',hidden" }}>
+            <div class='alert alert-danger alert-dismissable' id="msg_cre_fraud_success">
+                <a class="close" data-dismiss="alert" aria-label="close">×</a>
+                    <strong>{{ result_messages|capfirst }}</strong><br/>
+            </div>
+        </div>
         <div class="panel-body">
             <div class="row no-margin">
                 <div class="col-lg-12">
                     <form id="submit-form" class="form-horizontal" role="form" method="post"
-                          action="{{ request.path }}" onsubmit="return validateDate()">
+                          action="{{ request.path }}" onsubmit="return validateDate()" >
                         {% csrf_token %}
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Data Type *</label>
@@ -51,7 +65,8 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label" id="lbl_key_value">Virtual Card ID *</label>
                             <div class="col-xs-3">
-                                <input id="txt_key_value" class="form-control input-rounded" name="key_value" type="text" required>
+{#                                <input id="txt_key_value" class="form-control input-rounded" name="key_value" type="text" required>#}
+                                <input id="txt_key_value" name="key_value" type="text" class="input-rounded tags input_multiple_id form-control"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -81,7 +96,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Start Date</label>
                             <div class="col-xs-3">
-                                <input id="dtp_start_date" class="form-control input-rounded" name="start_date" type="date">
+                                <input id="dtp_start_date" class="form-control input-rounded" name="start_date" type="date"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -97,6 +112,7 @@
                                        value="Cancel"/>
                             </a>
                             <input id="btn_create_fraud_ticket" class="btn btn-success text-left mb15" type="submit"
+                                   onclick="validateId()"
                                    value="Create Fraud Ticket"/>
                         </div>
                     </form>
@@ -104,6 +120,11 @@
             </div>
         </div>
     </div>
+
+    <script src="/admin-portal/static/vendor/jquery/dist/jquery.js"></script>
+    <script src="/admin-portal/static/vendor/jquery.ui/ui/jquery-ui.js"></script>
+    <script src="/admin-portal/static/vendor/jquery.tagsinput/dist/jquery.tagsinput.min.js"></script>
+
     <script>
         function listenReason(reason) {
             if (reason === 'Others') {
@@ -159,37 +180,67 @@
             }
         }
 
-    function showErrorMessage(msg) {
-        $("#alert-msg").text(msg);
-        $("#msg-error").fadeIn();
-    }
-
-    function validateDate() {
-        $("#msg-error").fadeOut();
-        var from = document.getElementById("dtp_start_date");
-        var to = document.getElementById("dtp_end_date");
-        if (!to.value) {
-            return true;
-        } else {
-            var toDate = new Date(to.value);
+        function showErrorMessage(msg) {
+            $("#alert-msg").text(msg);
+            $("#msg-error").fadeIn();
         }
 
-        if (!from.value) {
-            var fromDate = new Date();
-        } else {
-            var fromDate = new Date(from.value);
-        }
-
-        if (fromDate >= toDate) {
-            $("#msg_cre_fraud_success").fadeOut();
-            $("#msg_cre_fraud_error").fadeOut();
-            if (!from.value) {
-                from.valueAsDate = new Date();
+        function validateId(){
+            if ($("input[name='key_value']").val() =='' ) {
+                $("#txt_key_value_tag").attr("required","required")
+            }else{
+                $("#txt_key_value_tag").removeAttr("required")
             }
-            showErrorMessage('Start date should be less than end date');
-            return false;
         }
-    }
+
+        function validateDate() {
+            $("#msg-error").fadeOut();
+            $("#accordion").fadeOut();
+            var from = document.getElementById("dtp_start_date");
+            var to = document.getElementById("dtp_end_date");
+            if (!to.value) {
+                return true;
+            } else {
+                var toDate = new Date(to.value);
+            }
+
+            if (!from.value) {
+                var fromDate = new Date();
+            } else {
+                var fromDate = new Date(from.value);
+            }
+
+            if (fromDate >= toDate) {
+                $("#msg_cre_fraud_success").fadeOut();
+                $("#msg_cre_fraud_error").fadeOut();
+                $("#msg-error").fadeOut();
+                $("#accordion").fadeOut();
+                if (!from.value) {
+                    from.valueAsDate = new Date();
+                }
+                showErrorMessage('Start date should be less than end date');
+                return false;
+            }
+        }
+        $('.input_multiple_id').tagsInput({
+            'defaultText':'',
+            'removeWithBackspace' : true
+        });
+
+        var icons = {
+              header: "ui-icon-circle-arrow-e",
+              activeHeader: "ui-icon-circle-arrow-s"
+        };
+        $( "#accordion" ).accordion({
+            icons: icons,
+            collapsible: true,
+            active: false
+        });
+
+        $(document).ready(function(){
+            $("#txt_key_value_tag").attr("required","required")
+        });
+
     </script>
 {% endblock %}
 

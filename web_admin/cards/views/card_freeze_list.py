@@ -83,7 +83,7 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
         if to_created_date is not '' and to_created_date is not None:
             new_to_created_date = datetime.strptime(to_created_date, "%Y-%m-%d")
             context['to_created_date'] = new_to_created_date.strftime("%Y-%m-%d")
-            new_to_created_date = new_to_created_date.replace(hour=23, minute=59, second=59)
+            new_to_created_date = new_to_created_date + timedelta(days=1)
             new_to_created_date = new_to_created_date.strftime('%Y-%m-%dT%H:%M:%SZ')
             body['to_created_date'] = new_to_created_date
         else:
@@ -91,20 +91,20 @@ class CardFreezeList(GetHeaderMixin, GroupRequiredMixin, TemplateView):
 
         if from_activated_date is not '' and from_activated_date is not None:
             new_from_activated_date = datetime.strptime(from_activated_date, "%Y-%m-%d")
-            context['from_activated_date'] = new_from_activated_date.strftime("%Y-%m-%d")
+            context['active_date_from'] = new_from_activated_date.strftime("%Y-%m-%d")
             new_from_activated_date = new_from_activated_date.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['from_start_active_ticket_date'] = new_from_activated_date
+            body['active_date_from'] = new_from_activated_date
         else:
-            context['from_activated_date'] = ''
+            context['active_date_from'] = ''
 
         if to_activated_date is not '' and to_created_date is not None:
             new_to_activated_date = datetime.strptime(to_activated_date, "%Y-%m-%d")
-            context['to_activated_date'] = new_to_activated_date.strftime("%Y-%m-%d")
-            new_to_activated_date = new_to_activated_date.replace(hour=23, minute=59, second=59)
+            context['active_date_to'] = new_to_activated_date.strftime("%Y-%m-%d")
+            new_to_activated_date = new_to_activated_date + timedelta(days=1)
             new_to_activated_date = new_to_activated_date.strftime('%Y-%m-%dT%H:%M:%SZ')
-            body['to_start_active_ticket_date'] = new_to_activated_date
+            body['active_date_to'] = new_to_activated_date
         else:
-            context['to_activated_date'] = ''
+            context['active_date_to'] = ''
 
         if not is_deleted:
             body['is_deleted'] = 1
