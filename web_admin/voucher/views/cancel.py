@@ -53,64 +53,86 @@ class VoucherCancelView(TemplateView, GetHeaderMixin):
             "reason_for_cancellation": reason_for_cancel,
             "vouchers": vouchers
         }
-        voucher_cancel_id = self._create_cancel_request(voucher_cancel_request)
-        is_cancel_success = self._confirm_cancel_request(voucher_cancel_id)
-        if is_cancel_success:
-            balance_adjustment_request = {
-                "product_service_id": product_service_id,
-                "amount": amount,
-                "product": {
-                    "product_ref1": product_ref1,
-                    "product_ref2": product_ref2,
-                    "product_ref3": product_ref3,
-                    "product_ref4": product_ref4,
-                    "product_ref5": product_ref5
+        response = self._create_cancel_request(voucher_cancel_request)
+        content = json.loads(response.content)
+        self.logger.info("response: " + format(content))
+        if not content['is_success']:
+            return JsonResponse({
+                "status_code": content['status_code'],
+                "status_message": content['status_message']
+            })
+        
+        voucher_cancel_id = content['data']['voucher_cancellation_id']
+        response = self._confirm_cancel_request(voucher_cancel_id)
+        content = json.loads(response.content)
+        self.logger.info("response: " + format(content))
+        if not content['is_success']:
+            return JsonResponse({
+                "status_code": content['status_code'],
+                "status_message": content['status_message']
+            })
+        
+        balance_adjustment_request = {
+            "product_service_id": product_service_id,
+            "amount": amount,
+            "product": {
+                "product_ref1": product_ref1,
+                "product_ref2": product_ref2,
+                "product_ref3": product_ref3,
+                "product_ref4": product_ref4,
+                "product_ref5": product_ref5
+            },
+            "initiator":{
+                "user_id": initiator_user_id,
+                "user_type": {
+                    "id": 2,
+                    "name": "agent"
                 },
-                "initiator":{
-                    "user_id": initiator_user_id,
-                    "user_type": {
-                        "id": 2,
-                        "name": "agent"
-                    },
-                    "sof":{
-                        "id": initiator_sof_id,
-                        "type_id": 2
-                    }
+                "sof":{
+                    "id": initiator_sof_id,
+                    "type_id": 2
+                }
+            },
+            "payer_user": {
+                "user_id": payer_user_id,
+                "user_type": {
+                    "id": payer_user_type_id,
+                    "name": payer_user_type_name
                 },
-                "payer_user": {
-                    "user_id": payer_user_id,
-                    "user_type": {
-                        "id": payer_user_type_id,
-                        "name": payer_user_type_name
-                    },
-                    "sof": {
-                        "id": payer_sof_id,
-                        "type_id": payer_sof_type_id
-                    }
+                "sof": {
+                    "id": payer_sof_id,
+                    "type_id": payer_sof_type_id
+                }
+            },
+            "payee_user": {
+                "user_id": payee_user_id,
+                "user_type": {
+                    "id": 2,
+                    "name": "agent"
                 },
-                "payee_user": {
-                    "user_id": payee_user_id,
-                    "user_type": {
-                        "id": 2,
-                        "name": "agent"
-                    },
-                    "sof": {
-                        "id": payee_sof_id,
-                        "type_id": 2
-                    }
-                },
-                "cancel_ref_id": voucher_cancel_id,
-                "reason": reason_for_cancel
-            }
-            # self.logger.info("balance_adjustment_request: " + format(balance_adjustment_request))
-            response = self._create_balance_adjustment_order(balance_adjustment_request)
-            content = json.loads(response.content)
-            self.logger.info("response: " + format(content))
-            if content['is_success']:
-                return JsonResponse({
-                    "voucher_cancel_id": voucher_cancel_id,
-                    "reference_id": content['data']['reference_id']
-                })
+                "sof": {
+                    "id": payee_sof_id,
+                    "type_id": 2
+                }
+            },
+            "cancel_ref_id": voucher_cancel_id,
+            "reason": reason_for_cancel
+        }
+        response = self._create_balance_adjustment_order(balance_adjustment_request)
+        content = json.loads(response.content)
+        self.logger.info("response: " + format(content))
+        if not content['is_success']:
+            return JsonResponse({
+                "status_code": content['status_code'],
+                "status_message": content['status_message']
+            })
+            
+        return JsonResponse({
+            "status_code": content['status_code'],
+            "status_message": content['status_message'],
+            "voucher_cancel_id": voucher_cancel_id,
+            "reference_id": content['data']['reference_id']
+        })
 
 
     def _create_cancel_request(self, voucher_cancel_request):
@@ -131,7 +153,12 @@ class VoucherCancelView(TemplateView, GetHeaderMixin):
             data = []
             
         self.logger.info('========== Finish create voucher cancel request ==========')
-        return data['voucher_cancellation_id']
+        return JsonResponse({
+            "is_success": is_success,
+            "status_code": status_code,
+            "status_message": status_message,
+            "data": data
+        })
 
 
     def _confirm_cancel_request(self, voucher_cancel_id):
@@ -146,7 +173,12 @@ class VoucherCancelView(TemplateView, GetHeaderMixin):
                                 status_code=status_code)
 
         self.logger.info('========== Finish confirm cancel request ==========')
-        return is_success
+        return JsonResponse({
+            "is_success": is_success,
+            "status_code": status_code,
+            "status_message": status_message,
+            "data": data
+        })
 
 
     def _create_balance_adjustment_order(self, balance_adjustment_request):
@@ -161,9 +193,10 @@ class VoucherCancelView(TemplateView, GetHeaderMixin):
         
         API_Logger.post_logging(loggers=self.logger, params=params, response=data,
                                 status_code=status_code)
-        self.logger.info('Response: ' + format(is_success) + ", data, " + format(data))
         self.logger.info('========== Finish create balance adjustment order ==========')
         return JsonResponse({
                     "is_success": is_success,
+                    "status_code": status_code,
+                    "status_message": status_message,
                     "data": data
                 })
