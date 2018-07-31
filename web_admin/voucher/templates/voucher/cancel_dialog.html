@@ -74,7 +74,7 @@
                                    readonly>
                         </div>
                         <div style="clear:both;">
-                            <label class="parent-label">Payer Information</label>
+                            <label class="parent-label">Issuer Information</label>
                         </div>
                         <div style="clear:both;">
                             <label class="sub-label">Issuer User ID</label>
@@ -276,7 +276,7 @@
 
             var currency = dialog.find("#confirm_currency").val();
             var total_vouchers = dialog.find("#confirm_selected_vouchers").val();
-            var total_amount = dialog.find("#confirm_total_amount").val();;
+            var total_amount = dialog.find("#confirm_total_amount").val();
 
             var vouchers = [];
             var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
@@ -285,7 +285,7 @@
                 var voucher_amount = $(value).parent().parent().find("#voucher_amount").text();
                 var voucher = {
                     "id": id,
-                    "amount": voucher_amount
+                    "amount": voucher_amount.replace(/,/g,'')
                 };
                 vouchers.push(voucher)
             });
@@ -306,7 +306,7 @@
                 "payee_user_id": payee_user_id,
                 "payee_sof_id": payee_sof_id,
                 "total_vouchers": total_vouchers,
-                "total_amount": total_amount,
+                "total_amount": total_amount.replace(/,/g,''),
                 "currency": currency,
                 "reason_for_cancel": reason_for_cancel,
                 "vouchers": JSON.stringify(vouchers)
@@ -321,11 +321,21 @@
                     xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
                 },
                 success: function (response) {
-                    $("#cancelRequestModal #voucher_cancel_id").text("#" + response.voucher_cancel_id);
-                    $("#cancelRequestModal #total_vouchers").text(total_vouchers);
-                    $("#cancelRequestModal #total_amount").text(total_amount + " " + currency);
-                    $("#cancelModal").modal('hide');
-                    $("#cancelRequestModal").modal('show');
+                    if(response.status_code == 'success'){
+                        $("#cancelRequestModal #voucher_cancel_id").text("#" + response.voucher_cancel_id);
+                        $("#cancelRequestModal #total_vouchers").text(total_vouchers);
+                        $("#cancelRequestModal #total_amount").text(total_amount + " " + currency);
+                        $("#cancelModal").modal('hide');
+                        $("#cancelRequestModal").modal('show');
+                    }else{
+                        swal({
+                            title: response.status_message,
+                            type: "error",
+                            confirmButtonColor: "#2ECC71",
+                            confirmButtonText: "Close",
+                            closeOnConfirm: true
+                        });
+                    }
                 }
             });
         }
@@ -433,6 +443,7 @@
         bindTriggerChange(payeeSelector, getProfileAndSof);
         bindTriggerChange(initiatorSelector, getProfileAndSof);
     }
+
 </script>
 
 

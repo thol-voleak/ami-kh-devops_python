@@ -11,6 +11,7 @@ from campaign.models import terms_mapping
 from django.views.generic.base import TemplateView
 from django.http import JsonResponse
 from web_admin.api_settings import GET_VOUCHER_GROUP_LIST
+from services.views.tier_levels.utils import get_label_levels
 
 import logging
 
@@ -41,6 +42,7 @@ class AddAction(TemplateView, GetHeaderMixin):
         is_login_success = {'term': 'is_login_success', 'description': ''}
         is_suspend = {'term': 'is_suspend', 'description': ''}
         detail_names.extend((username, is_login_success, is_suspend))
+        detail_names.extend(self.get_label_name())
         voucher_group_list = self.get_voucher_group_list()
 
         ops = {
@@ -402,3 +404,16 @@ class AddAction(TemplateView, GetHeaderMixin):
             )
             data = []
         return data
+
+    def get_label_name(self):
+        label_levels = self.request.session.get('tier_levels')
+        if not label_levels:
+            label_levels = get_label_levels(self.request)
+        extend = []
+        for lvl in label_levels:
+            tier_level_name = lvl.get('name')
+            if lvl.get('label'):
+                extend.append({'term': tier_level_name, 'description': tier_level_name + ": " + lvl.get('label')})
+            else:
+                extend.append({'term': tier_level_name, 'description': tier_level_name + ": [No Label Set]"})
+        return extend
