@@ -186,12 +186,19 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
         current_address_citizen_association = request.POST.get('current_address_citizen_association')
         current_address_neighbourhood_association = request.POST.get('current_address_neighbourhood_association')
         current_address_address = request.POST.get('current_address_address')
+        current_address_address_local = request.POST.get('current_address_address_local')
         current_address_commune = request.POST.get('current_address_commune')
+        current_address_commune_local = request.POST.get('current_address_commune_local')
         current_address_district = request.POST.get('current_address_district')
+        current_address_district_local = request.POST.get('current_address_district_local')
         current_address_city = request.POST.get('current_address_city')
+        current_address_city_local = request.POST.get('current_address_city_local')
         current_address_province = request.POST.get('current_address_province')
+        current_address_province_local = request.POST.get('current_address_province_local')
         current_address_postal_code = request.POST.get('current_address_postal_code')
+        current_address_postal_code_local = request.POST.get('current_address_postal_code_local')
         current_address_country = request.POST.get('current_address_country')
+        current_address_country_local = request.POST.get('current_address_country_local')
         current_address_landmark = request.POST.get('current_address_landmark')
         current_address_longitude = request.POST.get('current_address_longitude')
         current_address_latitude = request.POST.get('current_address_latitude')
@@ -202,12 +209,19 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
             permanent_address_citizen_association = current_address_citizen_association
             permanent_address_neighbourhood_association = current_address_neighbourhood_association
             permanent_address_address = current_address_address
+            permanent_address_address_local = current_address_address_local
             permanent_address_commune = current_address_commune
+            permanent_address_commune_local = current_address_commune_local
             permanent_address_district = current_address_district
+            permanent_address_district_local = current_address_district_local
             permanent_address_city = current_address_city
+            permanent_address_city_local = current_address_city_local
             permanent_address_province = current_address_province
+            permanent_address_province_local = current_address_province_local
             permanent_address_postal_code = current_address_postal_code
+            permanent_address_postal_code_local = current_address_postal_code_local
             permanent_address_country = current_address_country
+            permanent_address_country_local = current_address_country_local
             permanent_address_landmark = current_address_landmark
             permanent_address_longitude = current_address_longitude
             permanent_address_latitude = current_address_latitude
@@ -215,12 +229,19 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
             permanent_address_citizen_association = request.POST.get('permanent_address_citizen_association')
             permanent_address_neighbourhood_association = request.POST.get('permanent_address_neighbourhood_association')
             permanent_address_address = request.POST.get('permanent_address_address')
+            permanent_address_address_local = request.POST.get('permanent_address_address_local')
             permanent_address_commune = request.POST.get('permanent_address_commune')
+            permanent_address_commune_local = request.POST.get('permanent_address_commune_local')
             permanent_address_district = request.POST.get('permanent_address_district')
+            permanent_address_district_local = request.POST.get('permanent_address_district_local')
             permanent_address_city = request.POST.get('permanent_address_city')
+            permanent_address_city_local = request.POST.get('permanent_address_city_local')
             permanent_address_province = request.POST.get('permanent_address_province')
+            permanent_address_province_local = request.POST.get('permanent_address_province_local')
             permanent_address_postal_code = request.POST.get('permanent_address_postal_code')
+            permanent_address_postal_code_local = request.POST.get('permanent_address_postal_code_local')
             permanent_address_country = request.POST.get('permanent_address_country')
+            permanent_address_country_local = request.POST.get('permanent_address_country_local')
             permanent_address_landmark = request.POST.get('permanent_address_landmark')
             permanent_address_longitude = request.POST.get('permanent_address_longitude')
             permanent_address_latitude = request.POST.get('permanent_address_latitude')
@@ -231,12 +252,19 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
                 "citizen_association": current_address_citizen_association,
                 "neighbourhood_association": current_address_neighbourhood_association,
                 "address": current_address_address,
+                "address_local": current_address_address_local,
                 "commune": current_address_commune,
+                "commune_local": current_address_commune_local,
                 "district": current_address_district,
+                "district_local": current_address_district_local,
                 "city": current_address_city,
+                "city_local": current_address_city_local,
                 "province": current_address_province,
+                "province_local": current_address_province_local,
                 "postal_code": current_address_postal_code,
+                "postal_code_local": current_address_postal_code_local,
                 "country": current_address_country,
+                "country_local": current_address_country_local,
                 "landmark": current_address_landmark,
                 "longitude": current_address_longitude,
                 "latitude": current_address_latitude
@@ -245,12 +273,19 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
                 "citizen_association": permanent_address_citizen_association,
                 "neighbourhood_association": permanent_address_neighbourhood_association,
                 "address": permanent_address_address,
+                "address_local": permanent_address_address_local,
                 "commune": permanent_address_commune,
+                "commune_local": permanent_address_commune_local,
                 "district": permanent_address_district,
+                "district_local": permanent_address_district_local,
                 "city": permanent_address_city,
+                "city_local": permanent_address_city_local,
                 "province": permanent_address_province,
+                "province_local": permanent_address_province_local,
                 "postal_code": permanent_address_postal_code,
+                "postal_code_local": permanent_address_postal_code_local,
                 "country": permanent_address_country,
+                "country_local": permanent_address_country_local,
                 "landmark": permanent_address_landmark,
                 "longitude": permanent_address_longitude,
                 "latitude": permanent_address_latitude
@@ -259,11 +294,14 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
 
         # Bank Details Section
         bank_name = request.POST.get('bank_name')
+        bank_name_local = request.POST.get('bank_name_local')
         bank_account_status = int(request.POST.get('bank_account_status')) if request.POST.get("bank_account_status") else None
         bank_account_name = request.POST.get('bank_account_name')
         bank_account_number = request.POST.get('bank_account_number')
         bank_branch_area = request.POST.get('bank_branch_area')
+        bank_branch_area_local = request.POST.get('bank_branch_area_local')
         bank_branch_city = request.POST.get('bank_branch_city')
+        bank_branch_city_local = request.POST.get('bank_branch_city_local')
         bank_register_date = request.POST.get('bank_register_date')
         if bank_register_date != '':
             new_bank_register_date = datetime.strptime(bank_register_date, "%Y-%m-%d")
@@ -279,11 +317,14 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
 
         bank = {
             "name": bank_name,
+            "name_local": bank_name_local,
             "account_status": bank_account_status,
             "account_name": bank_account_name,
             "account_number": bank_account_number,
             "branch_area": bank_branch_area,
+            "branch_area_local": bank_branch_area_local,
             "branch_city": bank_branch_city,
+            "branch_city_local": bank_branch_city_local,
             "register_date": bank_register_date,
             "register_source": bank_register_source,
             "is_verified": bank_is_verified,
@@ -334,6 +375,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
         primary_identity_type = request.POST.get('primary_identity_type')
         primary_identity_status = int(request.POST.get('primary_identity_status')) if request.POST.get("primary_identity_status") else None
         primary_identity_id = request.POST.get('primary_identity_id')
+        primary_identity_id_local = request.POST.get('primary_identity_id_local')
         primary_identity_place_of_issue = request.POST.get('primary_identity_place_of_issue')
         primary_identity_issue_date = request.POST.get('primary_identity_issue_date')
         if primary_identity_issue_date != '':
@@ -353,6 +395,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
         secondary_identity_type = request.POST.get('secondary_identity_type')
         secondary_identity_status = int(request.POST.get('secondary_identity_status')) if request.POST.get("secondary_identity_status") else None
         secondary_identity_id = request.POST.get('secondary_identity_id')
+        secondary_identity_id_local = request.POST.get('secondary_identity_id_local')
         secondary_identity_place_of_issue = request.POST.get('secondary_identity_place_of_issue')
         secondary_identity_issue_date = request.POST.get('secondary_identity_issue_date')
         if secondary_identity_issue_date != '':
@@ -383,6 +426,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
                 "type": primary_identity_type,
                 "status": primary_identity_status,
                 "identity_id": primary_identity_id,
+                "identity_id_local": primary_identity_id_local,
                 "place_of_issue": primary_identity_place_of_issue,
                 "issue_date": primary_identity_issue_date,
                 "expired_date": primary_identity_expired_date,
@@ -393,6 +437,7 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
                 "type": secondary_identity_type,
                 "status": secondary_identity_status,
                 "identity_id": secondary_identity_id,
+                "identity_id_local": secondary_identity_id_local,
                 "place_of_issue": secondary_identity_place_of_issue,
                 "issue_date": secondary_identity_issue_date,
                 "expired_date": secondary_identity_expired_date,
@@ -408,11 +453,15 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
 
         # Additionals Section
         additional_acquiring_sale_executive_name = request.POST.get('additional_acquiring_sale_executive_name')
+        additional_acquiring_sale_executive_name_local = request.POST.get('additional_acquiring_sale_executive_name_local')
         additional_acquiring_sale_executive_id = request.POST.get('additional_acquiring_sale_executive_id')
         additional_relationship_manager_name = request.POST.get('additional_relationship_manager_name')
+        additional_relationship_manager_name_local = request.POST.get('additional_relationship_manager_name_local')
         additional_relationship_manager_id = request.POST.get('additional_relationship_manager_id')
         additional_sale_region = request.POST.get('additional_sale_region')
+        additional_sale_region_local = request.POST.get('additional_sale_region_local')
         additional_commercial_account_manager = request.POST.get('additional_commercial_account_manager')
+        additional_commercial_account_manager_local = request.POST.get('additional_commercial_account_manager_local')
         additional_profile_picture_url = request.POST.get('additional_profile_picture_url')
         additional_national_id_photo_url = request.POST.get('additional_national_id_photo_url')
         additional_tax_id_card_photo_url = request.POST.get('additional_tax_id_card_photo_url')
@@ -435,10 +484,14 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
         additional = {
             "acquiring_sale_executive_id": additional_acquiring_sale_executive_id,
             "acquiring_sale_executive_name": additional_acquiring_sale_executive_name,
+            "acquiring_sale_executive_name_local": additional_acquiring_sale_executive_name_local,
             "relationship_manager_id": additional_relationship_manager_id,
             "relationship_manager_name": additional_relationship_manager_name,
+            "relationship_manager_name_local": additional_relationship_manager_name_local,
             "sale_region": additional_sale_region,
+            "sale_region_local": additional_sale_region_local,
             "commercial_account_manager": additional_commercial_account_manager,
+            "commercial_account_manager_local": additional_commercial_account_manager_local,
             "profile_picture_url": additional_profile_picture_url,
             "national_id_photo_url": additional_national_id_photo_url,
             "tax_id_card_photo_url": additional_tax_id_card_photo_url,
@@ -486,26 +539,39 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
 
         # Personal Details Section
         tin_number = request.POST.get('tin_number')
+        tin_number_local = request.POST.get('tin_number_local')
         title = request.POST.get('title')
+        title_local = request.POST.get('title_local')
         first_name = request.POST.get('first_name')
+        first_name_local = request.POST.get('first_name_local')
         middle_name = request.POST.get('middle_name')
+        middle_name_local = request.POST.get('middle_name_local')
         last_name = request.POST.get('last_name')
+        last_name_local = request.POST.get('last_name_local')
         suffix = request.POST.get('suffix')
+        suffix_local = request.POST.get('suffix_local')
         date_of_birth = request.POST.get('date_of_birth')
         if date_of_birth != '':
             new_date_of_birth = datetime.strptime(date_of_birth, "%Y-%m-%d")
             date_of_birth = new_date_of_birth.strftime('%Y-%m-%dT%H:%M:%SZ')
             date_exist_on_context['date_of_birth'] = new_date_of_birth
         place_of_birth = request.POST.get('place_of_birth')
+        place_of_birth_local = request.POST.get('place_of_birth_local')
         gender = request.POST.get('gender')
+        gender_local = request.POST.get('gender_local')
         ethnicity = request.POST.get('ethnicity')
         nationality = request.POST.get('nationality')
         occupation = request.POST.get('occupation')
+        occupation_local = request.POST.get('occupation_local')
         occupation_title = request.POST.get('occupation_title')
+        occupation_title_local = request.POST.get('occupation_title_local')
         township_code = request.POST.get('township_code')
         township_name = request.POST.get('township_name')
+        township_name_local = request.POST.get('township_name_local')
         national_id_number = request.POST.get('national_id_number')
+        national_id_number_local = request.POST.get('national_id_number_local')
         mother_name = request.POST.get('mother_name')
+        mother_name_local = request.POST.get('mother_name_local')
 
         # Contact Details Section
         email = request.POST.get('email')
@@ -536,22 +602,35 @@ class AgentRegistration(GroupRequiredMixin, AgentTypeAndCurrenciesAndIdentityTyp
             "is_require_otp": is_require_otp,
             "agent_classification_id": agent_classification_id,
             "tin_number": tin_number,
+            "tin_number_local": tin_number_local,
             "title": title,
+            "title_local": title_local,
             "first_name": first_name,
+            "first_name_local": first_name_local,
             "middle_name": middle_name,
+            "middle_name_local": middle_name_local,
             "last_name": last_name,
+            "last_name_local": last_name_local,
             "suffix": suffix,
+            "suffix_local": suffix_local,
             "date_of_birth": date_of_birth,
             "place_of_birth": place_of_birth,
+            "place_of_birth_local": place_of_birth_local,
             "gender": gender,
+            "gender_local": gender_local,
             "ethnicity": ethnicity,
             "nationality": nationality,
             "occupation": occupation,
+            "occupation_local": occupation_local,
             "occupation_title": occupation_title,
+            "occupation_title_local": occupation_title_local,
             "township_code": township_code,
             "township_name": township_name,
+            "township_name_local": township_name_local,
             "national_id_number": national_id_number,
+            "national_id_number_local": national_id_number_local,
             "mother_name": mother_name,
+            "mother_name_local": mother_name_local,
             "email": email,
             "primary_mobile_number": primary_mobile_number,
             "secondary_mobile_number": secondary_mobile_number,
