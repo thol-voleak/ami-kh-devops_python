@@ -14,6 +14,7 @@ from voucher.views.voucher_adjustment.detail import VoucherAdjustmentDetailView
 from voucher.views.voucher_adjustment.approve_voucher_cancel import ApproveVoucherCancelView
 from voucher.views.voucher_adjustment.approve_voucher_refund import ApproveVoucherRefundView
 from voucher.views.voucher_adjustment.reject_voucher_refund import RejectVoucherRefundView
+from voucher.views.voucher_adjustment.reject_voucher_cancel import RejectVoucherCancelView
 
 
 app_name = 'voucher'
@@ -34,4 +35,5 @@ urlpatterns = [
     url(r'^upload_progress/$', login_required(upload_progress, login_url='authentications:login'),name="upload_progress"),
     url(r'^cancel', login_required(VoucherCancelView.as_view(), login_url='authentications:login'), name="cancel"),
     url(r'^approve_voucher_cancels$', login_required(ApproveVoucherCancelView.as_view(), login_url='authentications:login'), name="approve_voucher_cancels"),
+    url(r'^reject_voucher_cancels$', login_required(RejectVoucherCancelView.as_view(), login_url='authentications:login'), name="reject_voucher_cancels"),
 ]

@@ -496,17 +496,40 @@
             $("#approveVoucherRefundModal").modal('hide');
         })
     }
-    
+
+    buildRejectUrl = function (requestedAction) {
+        switch (requestedAction) {
+            case "Cancel":
+                return "{% url 'voucher:reject_voucher_cancels'%}";
+            case "Refund":
+            default:
+                return "{% url 'voucher:reject_voucher_refunds'%}";
+        }
+    }
+
+    buildRejectData = function (requestedAction) {
+        var rejectReason = $("#rejectVoucherRefundModal #txt_reject_refund_reason").val();
+        switch (requestedAction) {
+            case "Cancel":
+                var selectedReferenceIds = getReferenceIds();
+                return {
+                    "referenceIds": JSON.stringify(selectedReferenceIds),
+                    "reason": rejectReason
+                }
+            case "Refund":
+            default:
+                var selectedIds = getSelectedVoucherRefunds();
+                return {
+                    "refundRequestIds": JSON.stringify(selectedIds),
+                    "reason": rejectReason
+                }
+        }
+    }
     bindRejectMultiVoucherRefundsEvent = function () {
         $("#rejectVoucherRefundModal #btn_reject_voucher_refund_confirm").click(function (e) {
-            var selectedIds = getSelectedVoucherRefunds();
-            var rejectReason = $("#rejectVoucherRefundModal #txt_reject_refund_reason").val();
-            var url = "{% url 'voucher:reject_voucher_refunds'%}";
-            var data = {
-                "refundRequestIds": JSON.stringify(selectedIds),
-                "reason": rejectReason
-            }
-            
+            var requestedAction = getRequestedActions()[0];
+            var url = buildRejectUrl(requestedAction);
+            var data = buildRejectData(requestedAction);
             // Request to server
             $.ajax({
                 url: url,
