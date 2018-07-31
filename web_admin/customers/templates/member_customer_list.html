@@ -79,15 +79,15 @@
                     </select>
                 </div>
 
-                <!--<label class="col-sm-2 control-label">Citizen Card ID</label>-->
-                <!--<div class="col-sm-2">-->
-                    <!--<input type="text" class="form-control "-->
-                           <!--name="citizen_card_id" id="txt_citizen_card_id"-->
-                           <!--value="{{ citizen_card_id | default_if_none:'' }}"/>-->
-                <!--</div>-->
+                <label class="col-sm-2 control-label">Citizen Card ID</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control "
+                           name="citizen_card_id" id="txt_citizen_card_id"
+                           value="{{ citizen_card_id | default_if_none:'' }}"/>
+                </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Is Tesing Account</label>
+                <label class="col-sm-2 control-label">Testing Account</label>
                 <div class="col-sm-2">
                     <input type="checkbox" id="chk_testing_account" name="is_testing_account"
                        {% if is_testing_account %}checked{% endif %}>
@@ -165,8 +165,8 @@
                 <thead>
                 <tr>
                     <th id="customer_id">ID</th>
-                    <th id="first_name">Firstname</th>
-                    <th id="last_name">Lastname</th>
+                    <th id="first_name">First Name</th>
+                    <th id="last_name">Last Name</th>
                     <th id="citizen_card_id">Citizen Card ID</th>
                     <th id="mobile_number">Mobile Number</th>
                     <th id="email">Email Address</th>
@@ -176,8 +176,8 @@
                     <th id="created_date">Created Date</th>
                     <th id="modified_date">Modified Date</th>
                     <th id="status">Status</th>
-                    <th id="is_testing_account">Is Testing Account</th>
-                    <th id="is_system_account">Is System Account</th>
+                    <th id="is_testing_account">Testing Account</th>
+                    <th id="is_system_account">System Account</th>
                     <th id="is_deleted">Is deleted</th>
                     <th id="action">Action</th>
                 </tr>
@@ -188,18 +188,18 @@
                     <td class="col-sm-1" id="id_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.id }}{% else %}<del>{{ customer.id }}</del>{% endif %}</td>
                     <td class="col-sm-1" id="firstname_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.first_name|default_if_none:'' }}{% else %}<del>{{ customer.first_name|default_if_none:'' }}</del>{% endif %}</td>
                     <td class="col-sm-1" id="lastname_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.last_name|default_if_none:'' }}{% else %}<del>{{ customer.last_name|default_if_none:'' }}</del>{% endif %}</td>
-                    <td class="col-sm-1" id="citizen_card_id_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.citizen_card_id|default_if_none:'' }}{% else %}<del>{{ customer.citizen_card_id|default_if_none:'' }}</del>{% endif %}</td>
+                    <td class="col-sm-1" id="citizen_card_id_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.kyc.primary_identity.identity_id|default_if_none:'' }}{% else %}<del>{{ customer.kyc.primary_identity.identity_id|default_if_none:'' }}</del>{% endif %}</td>
                     <td class="col-sm-1 text-center" id="mobile_number_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.primary_mobile_number|default_if_none:'' }}{% else %}<del>{{ customer.primary_mobile_number|default_if_none:'' }}</del>{% endif %}</td>
                     <td class="col-sm-1" id="email_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.email|default_if_none:'' }}{% else %}<del>{{ customer.email|default_if_none:'' }}</del>{% endif %}</td>
                     <td class="col-sm-1" id="unique_reference_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.unique_reference|default_if_none:'' }}{% else %}<del>{{ customer.unique_reference|default_if_none:'' }}</del>{% endif %}</td>
                     <td class="col-sm-1" id="device_id_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.device_id|default_if_none:'' }}{% else %}<del>{{ customer.device_id|default_if_none:'' }}</del>{% endif %}</td>
-                    <td class="col-sm-1">{{ customer.kyc.level|default_if_none:'' }}</td>
+                    <td class="col-sm-1" id="kyc_level_{{ customer.id }}">{% if not customer.is_deleted %}{{ customer.kyc.level|default_if_none:'' }}{% else %}<del>{{ customer.kyc.level|default_if_none:'' }}</del>{% endif %}</td>
                     <td class="col-sm-1">{{ customer.created_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1">{{ customer.last_updated_timestamp|default_if_none:'' }}</td>
                     <td class="col-sm-1" id="customer_status_{{customer.id}}">{% if not customer.is_suspended %}Active{% else %}Suspended{% endif %}</td>
-                    <td class="col-sm-1" id="is_deleted_{{ customer.id }}">{% if not customer.is_deleted %}No{% else %}Yes{% endif %}</td>
                     <td class="col-sm-1" id="is_testing_account_{{ customer.id }}">{% if not customer.is_testing_account %}No{% else %}Yes{% endif %}</td>
                     <td class="col-sm-1" id="is_system_account_{{ customer.id }}">{% if not customer.is_system_account %}No{% else %}Yes{% endif %}</td>
+                    <td class="col-sm-1" id="is_deleted_{{ customer.id }}">{% if not customer.is_deleted %}No{% else %}Yes{% endif %}</td>
                     <td class="col-sm-3">
                         <div id="action-customer-{{customer.id}}">
                     {% if customer.is_permission_detail and customer.is_deleted is not True%}
@@ -330,6 +330,7 @@
                                 $('#email_'+ customer_id).css('text-decoration', 'line-through');
                                 $('#unique_reference_'+ customer_id).css('text-decoration', 'line-through');
                                 $('#device_id_'+ customer_id).css('text-decoration', 'line-through');
+                                $('#kyc_level_'+ customer_id).css('text-decoration', 'line-through');
                                 showSuccessMessage('Customer has been deleted successfully');
                             } else {
                                 // Failed
