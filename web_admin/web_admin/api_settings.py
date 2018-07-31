@@ -310,9 +310,9 @@ CONFIRM_CANCEL_REQUEST = 'api-gateway/workflow/' +API_VERSION+'/admin/voucher-ca
 GET_VOUCHER_GROUP_LIST = 'api-gateway/voucher/'+API_VERSION+'/admin/vouchers/voucher-groups'
 
 #Report Configuration
-GET_WHITELIST_REPORT = 'api-gateway/report/' + API_VERSION + '/admin/payments/summaries/transactions/agents/services'
-ADD_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/summaries/transactions/agents/services'
-DELETE_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/summaries/transactions/agents/services'
+GET_WHITELIST_REPORT = 'api-gateway/report/' + API_VERSION + '/admin/payments/reports/{report_type_id}/services'
+ADD_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/reports/{report_type_id}/services'
+DELETE_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/reports/{report_type_id}/services'
 
 # Balance
 GET_CUSTOMER_BALANCE=     'api-gateway/report/' + API_VERSION + '/customers/summaries/sofs/cash'

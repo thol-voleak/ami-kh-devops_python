@@ -25,9 +25,8 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
     def get(self, request, *args, **kwargs):
         self.logger.info('========== Start getting report configurations ==========')
 
-
         self.logger.info('========== Start get service whitelist list ==========')
-        whitelist_services = self.get_whitelist_services()
+        whitelist_services = self.get_whitelist_services(1)
         self.logger.info('========== Finish get service whitelist list ==========')
 
         self.logger.info('========== Start get service group list ==========')
@@ -92,9 +91,9 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
             if new_service not in checked_service_arr:
                 added_service_arr.append(int(new_service))
 
-        is_add_success = self.add_service(added_service_arr)
+        is_add_success = self.add_service(1, added_service_arr)
         if is_add_success:
-            is_delete_success = self.delete_service(deleted_service_arr)
+            is_delete_success = self.delete_service(1, deleted_service_arr)
             if is_delete_success:
                 messages.add_message(request, messages.SUCCESS, 'Change has been saved')
                 return redirect('report_configuration:report_configuration')
@@ -105,8 +104,9 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
             messages.add_message(request, messages.ERROR, 'There was an error occurred, please try submitting again')
             return redirect('report_configuration:report_configuration')
 
-    def get_whitelist_services(self):
-        is_success, status_code, data = RestFulClient.get(url=api_settings.GET_WHITELIST_REPORT, headers=self._get_headers(), loggers=self.logger)
+    def get_whitelist_services(self, report_type_id):
+        url = api_settings.GET_WHITELIST_REPORT.format(report_type_id=report_type_id)
+        is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
         if is_success:
             if data is None or data == "":
                 data = []
@@ -152,9 +152,9 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
         self.logger.info('Response_content_count: {}'.format(len(data)))
         return data
 
-    def add_service(self, service_id_list):
+    def add_service(self, report_type_id, service_id_list):
         self.logger.info('========== Start add service to whitelist ==========')
-        url = api_settings.ADD_SERVICE
+        url = api_settings.ADD_SERVICE.format(report_type_id=report_type_id)
         params = {'service_ids': service_id_list}
 
         is_success, status_code, status_message, data = RestFulClient.post(url, 
@@ -165,9 +165,9 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
         self.logger.info('========== Finish add service to whitelist  ==========')
         return is_success
 
-    def delete_service(self, service_id_list):
+    def delete_service(self, report_type_id, service_id_list):
         self.logger.info('========== Start delete service from whitelist ==========')
-        url = api_settings.DELETE_SERVICE
+        url = api_settings.DELETE_SERVICE.format(report_type_id=report_type_id)
         params = {'service_ids': service_id_list}
 
         is_success, status_code, data = RestFulClient.delete(url, 
