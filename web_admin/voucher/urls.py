@@ -9,11 +9,11 @@ from .views.list import VoucherList
 from .views.detail import VoucherDetail
 from .views.transit import Transit
 from .views.hold import HoldVoucher, UnholdVoucher
-from .views.approve_voucher_refund import ApproveVoucherRefundView
-from .views.reject_voucher_refund import RejectVoucherRefundView
 from voucher.views.adjustment import VoucherAdjustmentList
 from voucher.views.voucher_adjustment.detail import VoucherAdjustmentDetailView
 from voucher.views.voucher_adjustment.approve_voucher_cancel import ApproveVoucherCancelView
+from voucher.views.voucher_adjustment.approve_voucher_refund import ApproveVoucherRefundView
+from voucher.views.voucher_adjustment.reject_voucher_refund import RejectVoucherRefundView
 
 
 app_name = 'voucher'

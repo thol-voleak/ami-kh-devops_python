@@ -27,19 +27,19 @@ class RejectVoucherRefundView(TemplateView, GetHeaderMixin):
         refundRequestIds = json.loads(data.get("refundRequestIds"))
         reason = data.get("reason")
         url = api_settings.VOUCHER_REFUND_APPROVE_PATH
-        
+
         data = {
             "refund_request_ids": refundRequestIds,
             "reason": reason
         }
-    
+
         is_success, status_code, status_message, data = RestFulClient.delete_return_data(
             url,
             headers=self._get_headers(),
             loggers=self.logger,
             params=data
         )
-        
+
         self.logger.info('========== Finish reject voucher refunds ==========')
         if is_success:
             messages.add_message(
