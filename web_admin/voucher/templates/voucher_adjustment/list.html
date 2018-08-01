@@ -404,7 +404,7 @@
         var isOk = true;
 
         var checkedInput = $("#tbl_voucher_adjustment").find("input[type='Checkbox'][name='voucher_adjustment_checkbox']:checked");
-        firstCurrency = checkedInput.length > 0 ? $(checkedInput.get(0)).parent().parent().find("#voucher_adjustment_requested-action").text() : "";
+        firstAction = checkedInput.length > 0 ? $(checkedInput.get(0)).parent().parent().find("#voucher_adjustment_requested-action").text() : "";
         $(checkedInput).each(function (index, value) {
             currentAction = $(value).parent().parent().find("#voucher_adjustment_requested-action").text();
             if (firstAction != currentAction) {
