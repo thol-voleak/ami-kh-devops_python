@@ -279,6 +279,7 @@
     bindSelectApproveAction = function () {
         $("#ddl_select_action").find("#approve_multi_voucher_refund").click(function (e) {
             if (!validateCurrencies()) return false;
+            if (!validateActions("approve")) return false;
             $("#approveVoucherRefundModal #txt_approve_refund_reason").val('');
             $("#approveVoucherRefundModal").modal('show');
         });
@@ -286,6 +287,7 @@
     bindSelectRejectAction = function () {
         $("#ddl_select_action").find("#reject_multi_voucher_refund").click(function (e) {
             if (!validateCurrencies()) return false;
+            if (!validateActions("reject")) return false;
             $("#rejectVoucherRefundModal #txt_reject_refund_reason").val('');
             $("#rejectVoucherRefundModal").modal('show');
         });
@@ -389,6 +391,35 @@
         return isOk;
     };
 
+    var validateActions = function (actionType) {
+        var msg = "";
+        if(actionType == "approve"){
+            msg = "Cannot approve Cancel and Refund at the same time"
+        }
+        if(actionType == "reject"){
+            msg = "Cannot reject Cancel and Refund at the same time"
+        }
+        var firstAction = "";
+        var currentAction = "";
+        var isOk = true;
+
+        var checkedInput = $("#tbl_voucher_adjustment").find("input[type='Checkbox'][name='voucher_adjustment_checkbox']:checked");
+        firstCurrency = checkedInput.length > 0 ? $(checkedInput.get(0)).parent().parent().find("#voucher_adjustment_requested-action").text() : "";
+        $(checkedInput).each(function (index, value) {
+            currentAction = $(value).parent().parent().find("#voucher_adjustment_requested-action").text();
+            if (firstAction != currentAction) {
+                swal({
+                    title: msg,
+                    type: "error",
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true
+                });
+                isOk = false;
+            }
+        });
+        return isOk;
+    };
 
     getReferenceIds = function () {
         var referenceIds = [];
