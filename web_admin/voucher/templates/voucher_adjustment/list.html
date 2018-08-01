@@ -207,9 +207,9 @@
                     <tbody>
                     {% for i in data %}
                         <tr class="checkboxlist" id="adjustment-{{ i.id|default_if_none:'' }}">
-                            <td><input type="checkbox" name="voucher_adjustment_checkbox" value="{{ i.id }}" id="chk_voucher_adjustment_{{ i.id|default_if_none:'' }}"/></td>
+                            <td id="voucher_adjustment_id" reference-id="{{i.reference_id}}"><input type="checkbox" name="voucher_adjustment_checkbox" value="{{ i.id }}" id="chk_voucher_adjustment_{{ i.id|default_if_none:'' }}"/></td>
                             <td>{{ i.id|default_if_none:'' }}</td>
-                            <td>{{ i.action|default_if_none:'' }}</td>
+                            <td id="voucher_adjustment_requested-action" requested-action-value="{{i.action}}">{{ i.action|default_if_none:'' }}</td>
                             <td>{{ i.affected_vouchers|default_if_none:'' }}</td>
                             <td>{{ i.amount|default_if_none:'' }}</td>
                             <td id="voucher_adjustment_currency">{{ i.currency|default_if_none:'' }}</td>
@@ -389,16 +389,74 @@
         return isOk;
     };
 
+
+    getReferenceIds = function () {
+        var referenceIds = [];
+        var referenceIdAsMap = {};
+        $("#tbl_voucher_adjustment").find("input[type='Checkbox'][name='voucher_adjustment_checkbox']:checked")
+            .each(function (index, ckElement) {
+                var row = $(ckElement).closest("tr");
+                var referenceId = $(row).find("#voucher_adjustment_id").attr("reference-id");
+                if (referenceIdAsMap[referenceId] == undefined) {
+                    referenceIdAsMap[referenceId] = referenceId;
+                    referenceIds.push(referenceId);
+                }
+            });
+
+        return referenceIds;
+    }
+
+   getRequestedActions = function () {
+        var requestedActions = [];
+        var requestedActionAsMap = {};
+        $("#tbl_voucher_adjustment").find("input[type='Checkbox'][name='voucher_adjustment_checkbox']:checked")
+            .each(function (index, ckElement) {
+                var row = $(ckElement).closest("tr");
+                var requestedAction = $(row).find("#voucher_adjustment_requested-action").attr("requested-action-value");
+                if (requestedActionAsMap[requestedAction] == undefined) {
+                    requestedActionAsMap[requestedAction] = requestedAction;
+                    requestedActions.push(requestedAction);
+                }
+            });
+        return requestedActions;
+    }
+
+    buildApproveUrl = function (requestedAction) {
+        switch (requestedAction) {
+            case "Cancel":
+                return "{% url 'voucher:approve_voucher_cancels'%}";
+            case "Refund":
+            default:
+                return "{% url 'voucher:approve_voucher_refunds'%}";
+        }
+    }
+
+    buildApproveData = function (requestedAction) {
+        var approveReason = $("#approveVoucherRefundModal #txt_approve_refund_reason").val();
+        switch (requestedAction) {
+            case "Cancel":
+                var selectedReferenceIds = getReferenceIds();
+                return {
+                    "referenceIds": JSON.stringify(selectedReferenceIds),
+                    "reason": approveReason
+                }
+            case "Refund":
+            default:
+                var selectedIds = getSelectedVoucherRefunds();
+                return {
+                    "refundRequestIds": JSON.stringify(selectedIds),
+                    "reason": approveReason
+                }
+        }
+
+    }
+
+
     bindApproveMultiVoucherRefundsEvent = function () {
         $("#approveVoucherRefundModal #btn_approve_voucher_refund_confirm").click(function (e) {
-            var selectedIds = getSelectedVoucherRefunds();
-            var approveReason = $("#approveVoucherRefundModal #txt_approve_refund_reason").val();
-            var url = "{% url 'voucher:approve_voucher_refunds'%}";
-            var data = {
-                "refundRequestIds": JSON.stringify(selectedIds),
-                "reason": approveReason
-            }
-
+            var requestedAction = getRequestedActions()[0];
+            var url = buildApproveUrl(requestedAction);
+            var data = buildApproveData(requestedAction);
             // Request to server
             $.ajax({
                 url: url,
@@ -438,17 +496,40 @@
             $("#approveVoucherRefundModal").modal('hide');
         })
     }
-    
+
+    buildRejectUrl = function (requestedAction) {
+        switch (requestedAction) {
+            case "Cancel":
+                return "{% url 'voucher:reject_voucher_cancels'%}";
+            case "Refund":
+            default:
+                return "{% url 'voucher:reject_voucher_refunds'%}";
+        }
+    }
+
+    buildRejectData = function (requestedAction) {
+        var rejectReason = $("#rejectVoucherRefundModal #txt_reject_refund_reason").val();
+        switch (requestedAction) {
+            case "Cancel":
+                var selectedReferenceIds = getReferenceIds();
+                return {
+                    "referenceIds": JSON.stringify(selectedReferenceIds),
+                    "reason": rejectReason
+                }
+            case "Refund":
+            default:
+                var selectedIds = getSelectedVoucherRefunds();
+                return {
+                    "refundRequestIds": JSON.stringify(selectedIds),
+                    "reason": rejectReason
+                }
+        }
+    }
     bindRejectMultiVoucherRefundsEvent = function () {
         $("#rejectVoucherRefundModal #btn_reject_voucher_refund_confirm").click(function (e) {
-            var selectedIds = getSelectedVoucherRefunds();
-            var rejectReason = $("#rejectVoucherRefundModal #txt_reject_refund_reason").val();
-            var url = "{% url 'voucher:reject_voucher_refunds'%}";
-            var data = {
-                "refundRequestIds": JSON.stringify(selectedIds),
-                "reason": rejectReason
-            }
-            
+            var requestedAction = getRequestedActions()[0];
+            var url = buildRejectUrl(requestedAction);
+            var data = buildRejectData(requestedAction);
             // Request to server
             $.ajax({
                 url: url,

@@ -451,7 +451,7 @@ class AddCondition(TemplateView, GetHeaderMixin):
         for lvl in label_levels:
             tier_level_name = lvl.get('name')
             if lvl.get('label'):
-                extend.append({'term': tier_level_name, 'description': tier_level_name + ": " + lvl.get('label')})
+                extend.append({'term': str(tier_level_name).lower(), 'description': tier_level_name + ": " + lvl.get('label')})
             else:
-                extend.append({'term': tier_level_name, 'description': tier_level_name + ": [No Label Set]"})
+                extend.append({'term': str(tier_level_name).lower(), 'description': tier_level_name + ": [No Label Set]"})
         return extend
