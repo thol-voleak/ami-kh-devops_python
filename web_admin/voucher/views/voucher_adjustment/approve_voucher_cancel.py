@@ -25,8 +25,8 @@ class ApproveVoucherCancelView(TemplateView, GetHeaderMixin):
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start approve voucher cancels ==========')
         data = request.POST.copy()
-        referenceIds = json.loads(data.get("referenceIds"))
-        reason = data.get("reason")
+        referenceIds = json.loads(data.get("referenceIds", None))
+        reason = data.get("reason", None)
         url = api_settings.ORDER_BAL_ADJUST_PATH
 
         data = {

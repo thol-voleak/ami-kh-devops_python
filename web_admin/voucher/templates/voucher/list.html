@@ -941,6 +941,52 @@
             })
         }
 
+        function addErrorMessage(message) {
+            $("#ajax-messages").empty().append(
+                '<div class="col-xs-12">' +
+                '<div class="alert alert-danger alert-dismissable" id="msg-add-service">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
+                '<strong>' + message + '</strong>' +
+                '</div>' +
+                '</div>')
+        }
+
+        bindApproveVoucherCancellation = function () {
+            var cancelRequestDialog = $("#cancelRequestModal");
+            $(cancelRequestDialog).find("#btn_dialog_approve_cancelation_request").click(function (event) {
+                var referenceId = $(cancelRequestDialog).find("#reference_id_value").val();
+                var ids = [];
+                ids.push(referenceId);
+                var url = "{% url 'voucher:approve_voucher_cancels'%}";
+                var data = {
+                    "referenceIds": JSON.stringify(ids),
+                    "reason": ""
+                }
+                // Request to server
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: data,
+                    dataType: "json",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    },
+                    success: function (response) {
+                        if (response.is_success) {
+                            location.reload();
+                        } else {
+                            addErrorMessage(response.status_message);
+                        }
+                    },
+                    error: function (err) {
+                        var json = JSON.stringify(err);
+                        addErrorMessage("approve error!");
+                    }
+                });
+                $(cancelRequestDialog).modal('hide');
+            })
+        }
+
         validateUploadFileSize = function (popupContainer) {
             var uploadFileInput = $(popupContainer).find("input[name='file_data']");
             //8MB = 1024 * 1024 * 8 = 8388608
@@ -1098,6 +1144,7 @@
 
         $(document).ready(function () {
             bindApproveRefundVoucher();
+            bindApproveVoucherCancellation();
             initUploadPopup();
             initCancelDialog()
         })
