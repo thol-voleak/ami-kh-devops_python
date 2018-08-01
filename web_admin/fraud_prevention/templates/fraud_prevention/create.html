@@ -10,7 +10,7 @@
 {% block content %}
     <div class="panel mb25">
         <div class="panel-heading border">
-            <h3>Create Fraud Ticket</h3>
+            <h3>Create Fraud Ticket(s)</h3>
         </div>
         <div class="col-xs-12">
             <div class='alert alert-danger alert-dismissable' id="msg-error" hidden>
@@ -63,7 +63,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label" id="lbl_key_value">Virtual Card ID *</label>
+                            <label class="col-sm-3 control-label" id="lbl_key_value">Virtual Card ID(s) *</label>
                             <div class="col-xs-3">
 {#                                <input id="txt_key_value" class="form-control input-rounded" name="key_value" type="text" required>#}
                                 <input id="txt_key_value" name="key_value" type="text" class="input-rounded tags input_multiple_id form-control"/>
@@ -113,7 +113,7 @@
                             </a>
                             <input id="btn_create_fraud_ticket" class="btn btn-success text-left mb15" type="submit"
                                    onclick="validateId()"
-                                   value="Create Fraud Ticket"/>
+                                   value="Create Fraud Ticket(s)"/>
                         </div>
                     </form>
                 </div>
@@ -163,7 +163,7 @@
                     .val("Others")
                 )
             }   else if (type === 'device_id') {
-                lbl_kv.text('Device ID *');
+                lbl_kv.text('Device ID(s) *');
                 ddl_action.empty();
                 ddl_action.append($("<option>")
                     .html("Block Registration")
