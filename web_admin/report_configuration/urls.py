@@ -5,6 +5,7 @@ from .views.list import ReportConfigurationList
 app_name = 'report_configuration'
 
 urlpatterns = [
-    url(r'^$', login_required(ReportConfigurationList.as_view(),
-                                                login_url='authentications:login'), name="report_configuration"),
+    url(r'^$', login_required(ReportConfigurationList.as_view(),login_url='authentications:login'), name="report_configuration"),
+    url(r'^(?P<report_type_id>[0-9A-Za-z]+)/$',login_required(ReportConfigurationList.as_view(), login_url='authentications:login'),
+        name="report_configuration_update"),
 ]
