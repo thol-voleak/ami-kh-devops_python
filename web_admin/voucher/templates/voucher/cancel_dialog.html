@@ -117,24 +117,13 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <label class="parent-label">Input Initiator Information</label>
+                    <label class="parent-label">Initiator Information</label>
                     <div style="clear:both;">
-                        <label class="sub-label">User ID *</label>
-                        <input type="number" class="form-control input-rounded sub-input" name="initiator_user_id"
-                               id="txt_initiator_user_id" required>
-                    </div>
-                    <div style="clear:both;">
-                        <label class="sub-label">Display Initiator Name</label>
+                        <label class="sub-label">Initiator Name</label>
                         <input type="text" class="form-control input-rounded sub-input" name="initiator_user_name"
-                               id="txt_initiator_user_name" disabled>
+                               id="txt_initiator_user_name" disabled value={{ user.username }}>
                     </div>
-                    <div style="clear:both;">
-                        <label class="sub-label">Cash SOF ID *</label>
-                        <select class="form-control input-rounded sub-input" id="ddl_initiator_sof_id"
-                                name="initiator_sof_id" required>
-                            <option value="">-</option>
-                        </select>
-                    </div>
+                    <div style="clear:both;"></div>
                     <label class="parent-label">Input prod references</label>
                     <div style="clear:both;">
                         <label class="sub-label">Prod_ref1</label>

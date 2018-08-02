@@ -1,5 +1,6 @@
 import json
 
+from authentications.models import Authentications
 from authentications.utils import get_correlation_id_from_username
 from web_admin import settings
 from web_admin import setup_logger, RestFulClient
@@ -32,10 +33,7 @@ class VoucherCancelView(TemplateView, GetHeaderMixin):
         product_ref5 = request.POST.get('product_ref5')
         reason_for_cancel = request.POST.get('reason_for_cancel')
         vouchers = json.loads(request.POST.get('vouchers'))
-        
-        initiator_user_id = request.POST.get('initiator_user_id')
-        initiator_sof_id = request.POST.get('initiator_sof_id')
-        
+        initiator_user_id = Authentications.objects.get(user = self.request.user).system_user_id
         payer_user_id = request.POST.get('issuer_user_id')
         payer_user_type_id = request.POST.get('issuer_user_type_id')
         payer_user_type_name = request.POST.get('issuer_user_type_name')
@@ -53,6 +51,7 @@ class VoucherCancelView(TemplateView, GetHeaderMixin):
             "reason_for_cancellation": reason_for_cancel,
             "vouchers": vouchers
         }
+        self.logger.info("+++++++ request cancel voucher: " + format(voucher_cancel_request))
         response = self._create_cancel_request(voucher_cancel_request)
         content = json.loads(response.content)
         self.logger.info("response: " + format(content))
@@ -85,12 +84,7 @@ class VoucherCancelView(TemplateView, GetHeaderMixin):
             "initiator":{
                 "user_id": initiator_user_id,
                 "user_type": {
-                    "id": 2,
-                    "name": "agent"
-                },
-                "sof":{
-                    "id": initiator_sof_id,
-                    "type_id": 2
+                    "id": 3
                 }
             },
             "payer_user": {
@@ -118,6 +112,8 @@ class VoucherCancelView(TemplateView, GetHeaderMixin):
             "cancel_ref_id": voucher_cancel_id,
             "reason": reason_for_cancel
         }
+
+        self.logger.info("+++++++ request balance adjustment: " + format(balance_adjustment_request))
         response = self._create_balance_adjustment_order(balance_adjustment_request)
         content = json.loads(response.content)
         self.logger.info("response: " + format(content))
