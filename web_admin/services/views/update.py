@@ -8,6 +8,7 @@ from django.contrib import messages
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 from braces.views import GroupRequiredMixin
 import logging
+from web_admin.restful_helper import RestfulHelper
 
 logger = logging.getLogger(__name__)
 
@@ -37,12 +38,14 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         currencies, status1 = self._get_currency_choices()
         service_groups, status2 = self._get_service_group_choices()
         service_detail, status3 = self._get_service_detail(service_id)
-        if status1 and status2 and status3:
+        agents, status4 = self._get_agent_types_list()
+        if status1 and status2 and status3 and status4:
             context = {
                 'currencies': currencies,
                 'service_groups': service_groups,
                 'service_detail': service_detail,
-                'service_id': service_id
+                'service_id': service_id,
+                'agent_types': agents
             }
 
             return render(request, self.template_name, context)
@@ -60,6 +63,9 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         display_name_local = request.POST.get('display_name_local')
         image_url = request.POST.get('image_url')
         display_name = request.POST.get('display_name')
+        allow_all_agent_types = request.POST.get('allow_all_specific_agent_types')
+        cbo_agent_types = request.POST.getlist('cbo_allow_specific_agent_type')
+        cbo_agent_types = list(map(int, cbo_agent_types))  # convert list string to list int
 
         body = {
             'service_group_id': service_group_id,
@@ -69,7 +75,9 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'display_name_local': display_name_local,
             'image_url': image_url,
             'display_name': display_name,
-            'status': status
+            'status': status,
+            'apply_to_all_agent_type': True if allow_all_agent_types == 'All' else False,
+            'service_agent_type': [] if allow_all_agent_types == 'All' else [{'agent_type_id': x} for x in cbo_agent_types]
         }
 
         url = api_settings.SERVICE_UPDATE_URL.format(service_id)
@@ -92,14 +100,16 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
 
             currencies, status1 = self._get_currency_choices()
             service_groups, status2 = self._get_service_group_choices()
+            agents, status4 = self._get_agent_types_list()
 
-            if status1 and status2:
+            if status1 and status2 and status4:
                 body['service_group_id'] = int(body['service_group_id'])
                 context = {
                     'currencies': currencies,
                     'service_groups': service_groups,
                     'service_detail': body,
-                    'service_id': service_id
+                    'service_id': service_id,
+                    'agent_types': agents
                 }
                 return render(request, self.template_name, context)
 
@@ -109,6 +119,11 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             self._headers = get_auth_header(self.request.user)
 
         return self._headers
+
+    def _get_agent_types_list(self):
+        return self._post_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
+                                 func_description="get agent types list",
+                                 logger=logger, params={})
 
     def _get_currency_choices(self):
         url = api_settings.GET_ALL_CURRENCY_URL

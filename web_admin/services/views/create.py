@@ -41,7 +41,17 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 'Something wrong happened!'
             )
             return redirect('services:services_list')
-        return render(request, self.template_name, {'choices': choices})
+
+        agents, success = self._get_agent_types_list()
+        if not success:
+            messages.add_message(
+                request,
+                messages.INFO,
+                'Error when getting agent types!'
+            )
+            return redirect('services:services_list')
+
+        return render(request, self.template_name, {'choices': choices, 'agent_types': agents})
 
     def post(self, request, *args, **kwargs):
         self.logger.info('========== Start creating service ==========')
@@ -55,6 +65,9 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         display_name_local = request.POST.get('display_name_local')
         image_url = request.POST.get('image_url')
         display_name = request.POST.get('display_name')
+        allow_all_agent_types = request.POST.get('allow_all_specific_agent_types')
+        cbo_agent_types = request.POST.getlist('cbo_allow_specific_agent_type')
+        cbo_agent_types = list(map(int, cbo_agent_types))  # convert list string to list int
 
         body = {
             'service_group_id': service_group_id,
@@ -63,7 +76,9 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             'description': description,
             'display_name_local': display_name_local,
             'image_url': image_url,
-            'display_name': display_name
+            'display_name': display_name,
+            'apply_to_all_agent_type': True if allow_all_agent_types == 'All' else False,
+            'service_agent_type': [] if allow_all_agent_types == 'All' else [{'agent_type_id': x} for x in cbo_agent_types] 
         }
 
         if clone_from.isdigit():
@@ -88,8 +103,8 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
                 messages.ERROR,
                 message=data
             )
-            choices, success = self._get_service_group_and_currency_choices()
-            context = {'choices': choices, 'body': body, 'clone_service_name': clone_service_name}
+            choices, success = self._get_service_group_and_currency_choice()
+            context = {'choices': choices, 'body': body, 'clone_service_name': clone_service_name, 'cbo_allow_specific_agent_type': cbo_agent_types}
             return render(request, self.template_name, context)
 
     def _create_service(self, data):
@@ -117,6 +132,11 @@ class CreateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         url = api_settings.SERVICE_GROUP_LIST_URL
         return self._get_method(url, "services group list", logger, True)
 
+    def _get_agent_types_list(self):
+        return self._post_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
+                                 func_description="get agent types list",
+                                 logger=logger, params={})
+ 
     def _get_service_group_and_currency_choices(self):
         pool = ThreadPool(processes=1)
         async_result = pool.apply_async(self._get_currency_choices)

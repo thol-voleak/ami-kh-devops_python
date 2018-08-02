@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'vendor/chosen_v1.4.0/chosen.min.css' %}?{% now "U" %}">
 <div class="panel mb25">
     <div class="panel-heading border">
         <h3>Edit Service</h3>
@@ -111,6 +112,23 @@
                            <img src="{{ service_detail.image_url }}" onerror="this.src='{% static 'img/no-image.png' %}'" style="width: 150px; height: 150px; border: 1px solid #c0c0c0;" />
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Allow to Agent Type</label>
+                        <div class="col-sm-8">
+                            <div class="col-sm-3">
+                                <input type="radio" name="allow_all_specific_agent_types" value="All" id="allow_all_agent_types" {% if allow_all_specific_agent_types != 'Specific' %}checked{% endif %} />All<br>
+                                <input type="radio" name="allow_all_specific_agent_types" value="Specific" {% if allow_all_specific_agent_types == 'Specific' %}checked{% endif %} id="allow_specific_agent_types">Specific<br>
+
+                            </div>
+                            <div class="col-sm-7">
+                                 <select data-placeholder="-" multiple class="chosen" id="ddl_allow_specific_agent_type" name="cbo_allow_specific_agent_type">
+                                {% for item in agent_types %}
+                                    <option value="{{ item.id }}" {% if item.id in cbo_allow_specific_agent_type %}selected{% endif %}>{{ item.name }}</option>
+                                {% endfor %}
+                                 </select>
+                            </div>
+                        </div>
+                    </div>
                     <input id="txt_status" hidden type="text" name="status"  value= "{{service_detail.status}}" />
                     <div class="pull-right">
                         <a href="{% url 'services:services_list' %}">
@@ -129,4 +147,23 @@
     </div>
 </div>
 {% endblock %}
-
+{% block body_js %}
+<script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'vendor/perfect-scrollbar/js/perfect-scrollbar.jquery.js' %}"></script>
+<script src="{% static 'scripts/ui/toggle.min.js' %}"></script>
+<script src="{% static 'vendor/chosen_v1.4.0/chosen.jquery.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'scripts/pages/form-custom.js' %}"></script>
+<script>
+    $("#allow_all_agent_types").click(function () {
+        $("#ddl_allow_specific_agent_type_chosen").hide();
+    });
+    $("#allow_specific_agent_types").click(function () {
+        $("#ddl_allow_specific_agent_type_chosen").show();
+    });
+    if ('{{ allow_all_specific_agent_types}}' != 'Specific') {
+        $("#ddl_allow_specific_agent_type_chosen").hide();
+    }
+</script>
+{% endblock %}
