@@ -143,7 +143,7 @@
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="created_date"
                                            onchange="VerifyDate(this)"
-                                           id="dtp_created_date"
+                                           id="txt_created_date"
                                            value="{{ agent_profile.created_date|date:'Y-m-d'|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
@@ -152,7 +152,7 @@
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="last_updated_date"
                                            onchange="VerifyDate(this)"
-                                           id="dtp_last_updated_date"
+                                           id="txt_last_updated_date"
                                            value="{{ agent_profile.last_updated_date|date:'Y-m-d'|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
@@ -192,9 +192,9 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Currency *</label>
                                 <div class="col-sm-7">
-                                    <select class="form-control" id="ddl_currency" name="currency" disabled>
-                                        <option value="{{ currencies }}" selected>{{ currencies }}</option>
-                                    </select>
+                                    <input type="text" class="form-control input-rounded" name="currency"
+                                           id="txt_currency"
+                                           value="{{ currencies|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -574,7 +574,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Primary Mobile Number</label>
+                                <label class="col-sm-3 control-label">Primary Phone Number</label>
                                 <div class="col-sm-7">
                                     <input type="number" class="form-control input-rounded" name="primary_mobile_number"
                                            id="txt_primary_mobile_number"
@@ -582,7 +582,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Secondary Mobile Number</label>
+                                <label class="col-sm-3 control-label">Secondary Phone Number</label>
                                 <div class="col-sm-7">
                                     <input type="number" class="form-control input-rounded"
                                            name="secondary_mobile_number"
@@ -591,7 +591,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Tertiary Mobile Number</label>
+                                <label class="col-sm-3 control-label">Tertiary Phone Number</label>
                                 <div class="col-sm-7">
                                     <input type="number" class="form-control input-rounded"
                                            name="tertiary_mobile_number"
