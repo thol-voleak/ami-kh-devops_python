@@ -274,7 +274,7 @@
                 {% include "voucher/cancel_dialog.html" %}
 
                 <div class="no-more-tables" style="position: absolute;">
-                    {% if permissions.CAN_HOLD_VOUCHER_ACTION or permissions.CAN_UNHOLD_VOUCHER_ACTION or request|has_any_permission:"CAN_UPLOAD_VOUCHERS" %}
+                    {% if permissions.CAN_HOLD_VOUCHER_ACTION or permissions.CAN_UNHOLD_VOUCHER_ACTION or request|has_any_permission:"CAN_UPLOAD_VOUCHERS" or request|has_any_permission:"CAN_CANCEL_VOUCHER" %}
                         <div class="dropdown " id="ddl_select_action" style="margin-top: +50px;">
                             <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Select
                                 Action <span class="caret"></span></button>
