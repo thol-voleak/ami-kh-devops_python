@@ -103,7 +103,7 @@
                                     <label class="col-sm-3 control-label">Status *</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
-                                                id="txt_status" value="{{ customer_info.is_suspended|default_if_none:'' }}" readonly/>
+                                                id="txt_status" value="{{ customer_info.is_suspended|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -194,7 +194,7 @@
                                     <label class="col-sm-3 control-label">Unique Reference</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
-                                                id="txt_unique_reference" value="{{ customer_info.unique_reference|default_if_none:'' }}" readonly/>
+                                                id="txt_unique_reference" value="{{ customer_info.unique_reference|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -314,14 +314,14 @@
                                     <label class="col-sm-3 control-label">Last Name</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="last_name"
-                                                id="txt_last_name" value="{{ customer_info.last_name|default_if_none:'' }}" readonly />
+                                                id="txt_last_name" value="{{ customer_info.last_name|default_if_none:'' }}" disabled />
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Last Name [Local]</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="last_name_local"
-                                                id="txt_last_name_local" value="{{ customer_info.last_name_local|default_if_none:'' }}" readonly />
+                                                id="txt_last_name_local" value="{{ customer_info.last_name_local|default_if_none:'' }}" disabled />
                                     </div>
                                 </div>
                                 <div class="form-group">
