@@ -222,6 +222,20 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         township_name = request.POST.get('township_name')
         national_id_number = request.POST.get('national_id_number')
         mother_name = request.POST.get('mother_name')
+        # local languages fields
+        tin_number_local = request.POST.get('tin_number_local')
+        title_local = request.POST.get('title_local')
+        first_name_local = request.POST.get('first_name_local')
+        last_name_local = request.POST.get('last_name_local')
+        middle_name_local = request.POST.get('middle_name_local')
+        suffix_local = request.POST.get('suffix_local')
+        place_of_birth_local = request.POST.get('place_of_birth_local')
+        gender_local = request.POST.get('gender_local')
+        occupation_local = request.POST.get('occupation_local')
+        occupation_title_local = request.POST.get('occupation_title_local')
+        township_name_local = request.POST.get('township_name_local')
+        national_id_number_local = request.POST.get('national_id_number_local')
+        mother_name_local = request.POST.get('mother_name_local')
 
         # Contract Details
         email = request.POST.get('email')
@@ -243,7 +257,15 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             'postal_code': request.POST.get('current_postal_code'),
             'landmark': request.POST.get('current_landmark'),
             'longitude': request.POST.get('current_longitude'),
-            'latitude': request.POST.get('current_latitude')
+            'latitude': request.POST.get('current_latitude'),
+            # local languages fields
+            'address_local': request.POST.get('current_address_local'),
+            'commune_local': request.POST.get('current_commune_local'),
+            'district_local': request.POST.get('current_district_local'),
+            'city_local': request.POST.get('current_city_local'),
+            'country_local': request.POST.get('current_country_local'),
+            'province_local': request.POST.get('current_province_local'),
+            'postal_code_local': request.POST.get('current_postal_code_local')
         }
 
         # Permanent Address
@@ -263,7 +285,15 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
                 'postal_code': request.POST.get('permanent_postal_code'),
                 'landmark': request.POST.get('permanent_landmark'),
                 'longitude': request.POST.get('permanent_longitude'),
-                'latitude': request.POST.get('permanent_latitude')
+                'latitude': request.POST.get('permanent_latitude'),
+                # local languages fields
+                'address_local': request.POST.get('permanent_address_local'),
+                'commune_local': request.POST.get('permanent_commune_local'),
+                'district_local': request.POST.get('permanent_district_local'),
+                'city_local': request.POST.get('permanent_city_local'),
+                'country_local': request.POST.get('permanent_country_local'),
+                'province_local': request.POST.get('permanent_province_local'),
+                'postal_code_local': request.POST.get('permanent_postal_code_local')
             }
         address = {
             'current_address': current_address,
@@ -290,6 +320,10 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             'register_source': request.POST.get('bank_register_source'),
             'is_verified': bool(request.POST.get('bank_verify_status')),
             'end_date': bank_end_date,
+            # local language fields
+            'name_local': request.POST.get('bank_name_local'),
+            'branch_area_local': request.POST.get('bank_branch_area_local'),
+            'branch_city_local': request.POST.get('bank_branch_city_local')
         }
 
         # Contract Details
@@ -320,7 +354,7 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
         }
 
         # Profile Accreditation Details
-        # Primary Identify
+        # Primary Identity
         primary_issue_date = request.POST.get('primary_issue_date')
         if primary_issue_date != '':
             primary_issue_date = datetime.strptime(primary_issue_date, "%Y-%m-%d")
@@ -330,14 +364,16 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             primary_expire_date = datetime.strptime(primary_expire_date, "%Y-%m-%d")
             primary_expire_date = primary_expire_date.strftime('%Y-%m-%dT%H:%M:%SZ')
         primary_identity = {
-            'type': request.POST.get('primary_identify_type'),
-            'identity_id': request.POST.get('primary_identify_id'),
+            'type': request.POST.get('primary_identity_type'),
+            'identity_id': request.POST.get('primary_identity_id'),
             'status': int(request.POST.get('primary_identity_status')) if request.POST.get("primary_identity_status") else None,
             'place_of_issue': request.POST.get('primary_place_of_issue'),
             'issue_date': primary_issue_date,
             'expired_date': primary_expire_date,
             'front_identity_url': request.POST.get('primary_front_identity_attachment'),
-            'back_identity_url': request.POST.get('primary_back_identity_attachment')
+            'back_identity_url': request.POST.get('primary_back_identity_attachment'),
+            # local language fields
+            'identity_id_local': request.POST.get('primary_identity_id_local')
         }
         # Secondary Section
         secondary_issue_date = request.POST.get('secondary_issue_date')
@@ -349,14 +385,16 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             secondary_expire_date = datetime.strptime(secondary_expire_date, "%Y-%m-%d")
             secondary_expire_date = secondary_expire_date.strftime('%Y-%m-%dT%H:%M:%SZ')
         secondary_identity = {
-            'type': request.POST.get('secondary_identify_type'),
-            'identity_id': request.POST.get('secondary_identify_id'),
+            'type': request.POST.get('secondary_identity_type'),
+            'identity_id': request.POST.get('secondary_identity_id'),
             'status': int(request.POST.get('secondary_identity_status')) if request.POST.get("secondary_identity_status") else None,
             'place_of_issue': request.POST.get('secondary_place_of_issue'),
             'issue_date': secondary_issue_date,
             'expired_date': secondary_expire_date,
             'front_identity_url': request.POST.get('secondary_front_identity_attachment'),
-            'back_identity_url': request.POST.get('secondary_back_identity_attachment')
+            'back_identity_url': request.POST.get('secondary_back_identity_attachment'),
+            # local language fields
+            'identity_id_local': request.POST.get('secondary_identity_id_local')
         }
         verify_date = request.POST.get('accreditation_verify_date')
         if verify_date != '':
@@ -398,6 +436,11 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             'supporting_file_3_url': request.POST.get('supporting_file_3'),
             'supporting_file_4_url': request.POST.get('supporting_file_4'),
             'supporting_file_5_url': request.POST.get('supporting_file_5'),
+            # local language fields
+            'acquiring_sale_executive_name_local': request.POST.get('acquiring_sale_executive_name_local'),
+            'relationship_manager_name_local': request.POST.get('relationship_manager_name_local'),
+            'sale_region_local': request.POST.get('sale_region_local'),
+            'commercial_account_manager_local': request.POST.get('commercial_account_manager_local')
         }
 
         referrer_user_type = None
@@ -444,6 +487,20 @@ class AgentUpdate(GroupRequiredMixin, TemplateView, AgentAPIService):
             'primary_mobile_number': primary_mobile_number,
             'secondary_mobile_number': secondary_mobile_number,
             'tertiary_mobile_number': tertiary_mobile_number,
+            # local language fields
+            'tin_number_local': tin_number_local,
+            'title_local': title_local,
+            'first_name_local': first_name_local,
+            'last_name_local': last_name_local,
+            'middle_name_local': middle_name_local,
+            'suffix_local': suffix_local,
+            'place_of_birth_local': place_of_birth_local,
+            'gender_local': gender_local,
+            'occupation_local': occupation_local,
+            'occupation_title_local': occupation_title_local,
+            'township_name_local': township_name_local,
+            'national_id_number_local': national_id_number_local,
+            'mother_name_local': mother_name_local,
             'address': address,
             'bank': bank,
             'contract': contract,

@@ -106,7 +106,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
 
         if voucher_ownership != "All":
             body['is_used'] = True if voucher_ownership == 'Claimed' else False
-            body['distributed_status'] = True if voucher_ownership == 'Claimed' else False
+            body['distributed_status'] = True if voucher_ownership == 'Distributed' else False
 
         # if claim_status == 'True':
         #     body['is_used'] = True
@@ -306,7 +306,7 @@ class VoucherList(GroupRequiredMixin, TemplateView, GetHeaderMixin):
             self.logger.info("{}".format(data))
             raise InvalidAccessToken(data)
         self.logger.info('========== Finish Get services list ==========')
-        self.logger.info(data)
+        # self.logger.info(data)
 
         return data
 

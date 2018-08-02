@@ -183,6 +183,7 @@ SERVICE_COMMAND_DELETE_PATH = 'api-gateway/payment/'+API_VERSION+'/admin/service
 
 # Member Customer
 MEMBER_CUSTOMER_PATH = 'api-gateway/report/'+API_VERSION+'/customers'
+CUSTOMER_KYC_LEVEL_PATH = 'api-gateway/report/'+API_VERSION+'/customers/kyc-levels'
 BLOCKED_DEVICES_LIST = 'api-gateway/report/'+API_VERSION+'/blocked-devices'
 CARD_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/cards'
 BALANCE_MOVEMENT_LIST_PATH = 'api-gateway/report/'+API_VERSION+'/payments/orders/balance-movements'
@@ -210,6 +211,10 @@ CUSTOMER_CHANNEL_REVOKE_URL = 'api-gateway/ami-device-management/' + API_VERSION
 CUSTOMER_CHANNEL_PERMISSION_LIST_URL = 'api-gateway/report/' + API_VERSION + '/channels/permissions'
 CUSTOMER_DEVICE_DETAIL_URL = 'api-gateway/customer/'+API_VERSION+'/admin/devices/{}'
 CUSTOMER_UPDATE_DEVICE_URL = 'api-gateway/customer/'+API_VERSION+'/admin/devices/{}'
+GET_CUSTOMER_CLASSIFICATION_URL = 'api-gateway/report/'+API_VERSION+'/customers/classifications'
+GET_CUSTOMER_MM_CARD_TYPE_URL = 'api-gateway/report/'+API_VERSION+'/customers/mm-card-types'
+GET_CUSTOMER_MM_CARD_LEVEL_URL = 'api-gateway/report/'+API_VERSION+'/customers/mm-card-type-levels'
+GET_CUSTOMER_KYC_LEVEL_URL = 'api-gateway/report/'+API_VERSION+'/customers/kyc-levels'
 
 # Reconcile
 SEARCH_RECONCILE_PARTNER_FILE_LIST = 'api-gateway/report/'+API_VERSION+'/reconciled/partners'
@@ -310,9 +315,10 @@ CONFIRM_CANCEL_REQUEST = 'api-gateway/workflow/' +API_VERSION+'/admin/voucher-ca
 GET_VOUCHER_GROUP_LIST = 'api-gateway/voucher/'+API_VERSION+'/admin/vouchers/voucher-groups'
 
 #Report Configuration
-GET_WHITELIST_REPORT = 'api-gateway/report/' + API_VERSION + '/admin/payments/summaries/transactions/agents/services'
-ADD_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/summaries/transactions/agents/services'
-DELETE_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/summaries/transactions/agents/services'
+GET_WHITELIST_REPORT = 'api-gateway/report/' + API_VERSION + '/admin/payments/reports/{report_type_id}/services'
+ADD_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/reports/{report_type_id}/services'
+DELETE_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/reports/{report_type_id}/services'
+GET_REPORT_TYPE_LIST = 'api-gateway/report/' + API_VERSION + '/admin/reports'
 
 # Balance
 GET_CUSTOMER_BALANCE=     'api-gateway/report/' + API_VERSION + '/customers/summaries/sofs/cash'

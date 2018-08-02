@@ -11,6 +11,7 @@ from datetime import datetime
 from campaign.models import terms_mapping
 from django.views.generic.base import TemplateView
 from django.http import JsonResponse
+from services.views.tier_levels.utils import get_label_levels
 
 import logging
 
@@ -65,25 +66,27 @@ class AddCondition(TemplateView, GetHeaderMixin):
         profile_details_freetext_ops = ["Equal to", "Not Equal to", "Is Part of", "Is blank", "Is not blank", "Contains"]
         profile_details_numeric_ops = ["Equal to", "Not Equal to", "Is Part of", "Less Than", "More Than", "Is blank", "Is not blank",
                                        "Less than or Equal to", "More than or Equal to"]
-        sum_key_name = [{
-                'value': 'amount',
-                'text': 'Amount'
-            }, {
-                'value': 'fee',
-                'text': 'Fee'
-            },{
-                'value': 'bonus',
-                'text': 'Bonus'
-            },{
-                'value': 'settlement_amount',
-                'text': 'Settlement Amount'
-            }]
+        # sum_key_name = [{
+        #         'value': 'amount',
+        #         'text': 'Amount'
+        #     }, {
+        #         'value': 'fee',
+        #         'text': 'Fee'
+        #     },{
+        #         'value': 'bonus',
+        #         'text': 'Bonus'
+        #     },{
+        #         'value': 'settlement_amount',
+        #         'text': 'Settlement Amount'
+        #     }]
+        sum_key_name = self.get_label_name()
         all_terms = list(terms_mapping.objects.all())
         detail_names = self._filter_detail_names(all_terms)
         username = {'term': 'username', 'description': ''}
         is_login_success = {'term': 'is_login_success', 'description': ''}
         is_suspend = {'term': 'is_suspend', 'description': ''}
         detail_names.extend((username, is_login_success, is_suspend))
+        detail_names.extend(sum_key_name)
         trigger = self._filter_trigger(all_terms)
 
         campaign_id = context['campaign_id']
@@ -439,3 +442,16 @@ class AddCondition(TemplateView, GetHeaderMixin):
         if not self._is_blank_operator(request, operator_name):
             params["key_value"] = key_value
         return params
+
+    def get_label_name(self):
+        label_levels = self.request.session.get('tier_levels')
+        if not label_levels:
+            label_levels = get_label_levels(self.request)
+        extend = []
+        for lvl in label_levels:
+            tier_level_name = lvl.get('name')
+            if lvl.get('label'):
+                extend.append({'term': str(tier_level_name).lower(), 'description': tier_level_name + ": " + lvl.get('label')})
+            else:
+                extend.append({'term': str(tier_level_name).lower(), 'description': tier_level_name + ": [No Label Set]"})
+        return extend

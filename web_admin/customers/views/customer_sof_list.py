@@ -20,7 +20,7 @@ class CustomerSOFListView(GroupRequiredMixin, TemplateView, RESTfulMethods):
     group_required = "CAN_VIEW_BANK_SOF_CUSTOMER_PROFILE"
     login_url = 'web:permission_denied'
     raise_exception = False
-    searchcustomerbanksofurl = settings.DOMAIN_NAMES + "report/" + api_settings.API_VERSION + "/banks/sofs"
+    searchcustomerbanksofurl = settings.DOMAIN_NAMES + "api-gateway/report/" + api_settings.API_VERSION + "/banks/sofs"
 
     def check_membership(self, permission):
         self.logger.info(

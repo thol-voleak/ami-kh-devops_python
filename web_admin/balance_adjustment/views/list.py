@@ -94,6 +94,7 @@ class BalanceAdjustmentListView(GroupRequiredMixin, TemplateView, GetHeaderMixin
         currency_list = self._get_preload_currencies_dropdown()
 
         body = {}
+        body['is_for_voucher_cancellation'] = False
         body['page_index'] = int(opening_page_index)
         if order_id:
             body['order_id'] = order_id

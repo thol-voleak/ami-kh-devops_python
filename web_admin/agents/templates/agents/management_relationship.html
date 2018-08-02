@@ -174,12 +174,14 @@
                                                 </div>
                                             </div>
                                         {% endfor %}
-                                        <div class="col-xs-12 delete-message message-alert">
-                                            <div class="alert alert-dismissable" id="alert-relationship">
-                                                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                                                <strong id="alert-msg">{{msg}}</strong>
+                                        {% if msg %}
+                                            <div class="col-xs-12 delete-message message-alert">
+                                                <div class="alert alert-dismissable" id="alert-relationship">
+                                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                                                    <strong id="alert-msg">{{msg}}</strong>
+                                                </div>
                                             </div>
-                                        </div>
+                                        {% endif %}
                                         <div class="col-xs-10">
                                             <h3>Relationships View</h3>
                                         </div>

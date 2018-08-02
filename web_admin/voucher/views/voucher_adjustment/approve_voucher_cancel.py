@@ -12,35 +12,36 @@ from web_admin.utils import check_permissions
 
 logger = logging.getLogger(__name__)
 
-class RejectVoucherRefundView(TemplateView, GetHeaderMixin):
+
+class ApproveVoucherCancelView(TemplateView, GetHeaderMixin):
     logger = logger
 
     def dispatch(self, request, *args, **kwargs):
-        check_permissions(request, 'CAN_APPROVE_VOUCHER_ADJUSTMENT')
+        check_permissions(request, "CAN_APPROVE_VOUCHER_ADJUSTMENT")
         correlation_id = get_correlation_id_from_username(self.request.user)
         self.logger = setup_logger(self.request, logger, correlation_id)
-        return super(RejectVoucherRefundView, self).dispatch(request, *args, **kwargs)
+        return super(ApproveVoucherCancelView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        self.logger.info('========== Start reject voucher refunds ==========')
+        self.logger.info('========== Start approve voucher cancels ==========')
         data = request.POST.copy()
-        refundRequestIds = json.loads(data.get("refundRequestIds"))
-        reason = data.get("reason")
-        url = api_settings.VOUCHER_REFUND_APPROVE_PATH
-        
+        referenceIds = json.loads(data.get("referenceIds", None))
+        reason = data.get("reason", None)
+        url = api_settings.ORDER_BAL_ADJUST_PATH
+
         data = {
-            "refund_request_ids": refundRequestIds,
+            "reference_ids": referenceIds,
             "reason": reason
         }
-    
-        is_success, status_code, status_message, data = RestFulClient.delete_return_data(
+
+        is_success, status_code, status_message, data = RestFulClient.put(
             url,
             headers=self._get_headers(),
             loggers=self.logger,
             params=data
         )
-        
-        self.logger.info('========== Finish reject voucher refunds ==========')
+
+        self.logger.info('========== Finish approve voucher cancels ==========')
         if is_success:
             messages.add_message(
                 self.request,

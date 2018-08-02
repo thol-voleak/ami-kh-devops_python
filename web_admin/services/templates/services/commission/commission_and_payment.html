@@ -1,19 +1,46 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% block body_stylesheet %}
+    {{ block.super }}
+{% endblock %}
 {% block content %}
+
     <style>
-    .btn-arrow-down  {
-        background-color: white;
-        position: absolute;
-        width: 33px;
-        height: 30px;
-        border-radius: 15px;
-        right: 0;
-    }
-    .collapsible {
-        margin-bottom: 10px;
-    }
+        .btn-arrow-down  {
+            background-color: white;
+            position: absolute;
+            width: 33px;
+            height: 30px;
+            border-radius: 15px;
+            right: 0;
+        }
+
+        .collapsible {
+            margin-bottom: 10px;
+        }
+
+        .info-tooltip {
+            white-space: nowrap;
+        }
+
+        .info-tooltip i {
+            position: relative;
+            color: #a29e9e;
+            cursor: pointer;
+            top: 5px;
+        }
+        .popover {
+                max-width: 100%;
+        }
+
+        .role-des {
+            margin-bottom: 15px;
+        }
+
+        .custom-popover {
+            text-align: center;
+        }
+
     </style>
     <div class="panel mb25">
         <div class="panel-heading border">
@@ -157,7 +184,12 @@
             {% endif %}
 
             <div class="panel-heading row col-sm-12">
-                <h4 class="not_in_review">Balance Movement Configuration</h4>
+                <span class="info-tooltip"><h4 class="not_in_review">Balance Movement Configuration
+                                                        <i class="fa fa-info pop" data-container="body"
+                                                           data-toggle="popover" data-placement="right"
+                                                           data-content="<div class='custom-popover'><div class='role-des'>Balance Movement will proceed using the shown order</div></div>"
+                                                           data-original-title="" title=""></i>
+                </h4></span></span></div>
                 <h4 style="display: none" class="in_review">Setting Payment, Fee & Bonus Structure</h4>
                 <input type="text" id="data-specific-sof-list-url" data-specific-sof-list-url="{% url 'services:setting_bonus' service_id command_id service_command_id fee_tier_id %}" class="form-control" style="display:none"/>
                 <input type="text" id="data-specific-actor-name-url" data-specific-actor-name-url="{% url 'agents:agent-list'  %}" class="form-control" style="display:none"/>
@@ -444,6 +476,7 @@
 {% endblock %}
 {% block body_js %}
 {{ block.super }}
+
 <script src="{% static 'js/services/commission_and_payment.js' %}"></script>
 {#    <script src="{% static 'js/services/AgentHierarchyDistribution.js' %}"></script>#}
     <script>
@@ -1088,6 +1121,23 @@
                     $("#ajax-messages").empty();
                 }
             );
+
+            $(".pop").popover({trigger: "manual", html: true, animation: false})
+                .on("mouseenter", function () {
+                    var _this = this;
+                    $(this).popover("show");
+                    $(".popover").on("mouseleave", function () {
+                        $(_this).popover('hide');
+                    });
+                }).on("mouseleave", function () {
+                var _this = this;
+                setTimeout(function () {
+                    if (!$(".popover:hover").length) {
+                        $(_this).popover("hide");
+                    }
+                }, 300);
+            })
+
         });
     </script>
 {%  endblock %}

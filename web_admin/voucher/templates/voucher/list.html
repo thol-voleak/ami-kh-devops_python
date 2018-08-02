@@ -274,7 +274,7 @@
                 {% include "voucher/cancel_dialog.html" %}
 
                 <div class="no-more-tables" style="position: absolute;">
-                    {% if permissions.CAN_HOLD_VOUCHER_ACTION or permissions.CAN_UNHOLD_VOUCHER_ACTION or request|has_any_permission:"CAN_UPLOAD_VOUCHERS" %}
+                    {% if permissions.CAN_HOLD_VOUCHER_ACTION or permissions.CAN_UNHOLD_VOUCHER_ACTION or request|has_any_permission:"CAN_UPLOAD_VOUCHERS" or request|has_any_permission:"CAN_CANCEL_VOUCHER" %}
                         <div class="dropdown " id="ddl_select_action" style="margin-top: +50px;">
                             <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Select
                                 Action <span class="caret"></span></button>
@@ -347,7 +347,7 @@
                                     <input type="number" id="hidden_issuer_sof_type_id" style="display: none"
                                            value="{{ i.issuer_sof_type_id|default_if_none:'' }}" disabled/>
                                 </td>
-                                <td id="voucher-type">{{ i.voucher_type|default_if_none:'' }}</td>
+                                <td id="voucher-type" voucher-type-value="{{i.voucher_type}}">{{ i.voucher_type|default_if_none:'' }}</td>
                                 <td>{{ i.voucher_group|default_if_none:'' }}</td>
                                 <td id="voucher_amount">{{ i.amount|default_if_none:'' }}</td>
                                 <td>{{ i.fee|default_if_none:'' }}</td>
@@ -815,7 +815,7 @@
 
             var checkedInput = $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked");
             $(checkedInput).each(function (index, value) {
-                deleteStatus = $(value).parent().parent().find("#delete-status").attr('delete-status-value');
+                deleteStatus = $(value).parent().parent().find("#voucher_status").text();
 
                 if (deleteStatus == 'Deleted') {
                     msg = 'Cannot cancel already deleted vouchers';
@@ -865,6 +865,41 @@
         {#    return isValid;#}
         {#};#}
 
+        getVoucherTypes = function () {
+            var voucherTypes = [];
+            var voucherTypeAsMap = {};
+            $("#tbl_voucher").find("input[type='Checkbox'][name='voucher_checkbox']:checked").each(function (index, ckElement) {
+                var row = $(ckElement).closest("tr");
+                var voucherType = $(row).find("#voucher-type").attr("voucher-type-value");
+                if (voucherTypeAsMap[voucherType] == undefined) {
+                    voucherTypeAsMap[voucherType] = voucherType;
+                    voucherTypes.push(voucherType);
+                }
+            });
+
+            return voucherTypes;
+        }
+
+        validateVoucherTypeForCancel = function () {
+            var voucherTypes = getVoucherTypes();
+            var thirdPartyVoucherTypes = $.grep(voucherTypes, function (voucherType, index) {
+                return voucherType == "3rd Party Vouchers";
+            });
+
+            if (thirdPartyVoucherTypes.length > 0) {
+                swal({
+                    title: 'This voucher type cannot be cancelled',
+                    type: "error",
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true
+                });
+
+                return false;
+            }
+            return true;
+        }
+
         var showCancelDialog = function () {
 
             if (!validateCurrencies() ||
@@ -872,6 +907,10 @@
                 {#!validateCancelStatus() ||#}
                 !validateIssuers() ||
                 !validateClaimStatus()) {
+                return false;
+            }
+
+            if(!validateVoucherTypeForCancel()) {
                 return false;
             }
             var selectedCurrency = getSelectedCurrency();
@@ -938,6 +977,52 @@
                         showErrorMessage("approve error!");
                     }
                 });
+            })
+        }
+
+        function addErrorMessage(message) {
+            $("#ajax-messages").empty().append(
+                '<div class="col-xs-12">' +
+                '<div class="alert alert-danger alert-dismissable" id="msg-add-service">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>' +
+                '<strong>' + message + '</strong>' +
+                '</div>' +
+                '</div>')
+        }
+
+        bindApproveVoucherCancellation = function () {
+            var cancelRequestDialog = $("#cancelRequestModal");
+            $(cancelRequestDialog).find("#btn_dialog_approve_cancelation_request").click(function (event) {
+                var referenceId = $(cancelRequestDialog).find("#reference_id_value").val();
+                var ids = [];
+                ids.push(referenceId);
+                var url = "{% url 'voucher:approve_voucher_cancels'%}";
+                var data = {
+                    "referenceIds": JSON.stringify(ids),
+                    "reason": ""
+                }
+                // Request to server
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: data,
+                    dataType: "json",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    },
+                    success: function (response) {
+                        if (response.is_success) {
+                            location.reload();
+                        } else {
+                            addErrorMessage(response.status_message);
+                        }
+                    },
+                    error: function (err) {
+                        var json = JSON.stringify(err);
+                        addErrorMessage("approve error!");
+                    }
+                });
+                $(cancelRequestDialog).modal('hide');
             })
         }
 
@@ -1098,6 +1183,7 @@
 
         $(document).ready(function () {
             bindApproveRefundVoucher();
+            bindApproveVoucherCancellation();
             initUploadPopup();
             initCancelDialog()
         })

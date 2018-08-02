@@ -5,17 +5,29 @@
     <div class="panel mb25">
         <div class="panel-heading border">
             <h3>Report Configurations</h3>
-            <div class="form row" style="margin-top: 40px">
-                <label class="col-sm-2 col-form-label" id="lab_report_type">Report Type</label>
-                <div class="col-sm-4">
-                     <select class="form-control" id="ddl_report_type" onchange="reportTypeChange(this.value)">
-                        <option value="agent_summary">Agent - My Summary TPV, Commission, Fee</option>
-                    </select>
+            <form class="form-horizontal" role="form" method="post" action="" id="form_report">
+                 {% csrf_token %}
+                 <div class="form row" style="margin-top: 40px">
+                    <label class="col-sm-2 col-form-label" id="lab_report_type">Report Type</label>
+                    <div class="col-sm-4">
+                         <select class="form-control" id="ddl_report_type" name="report_type" onchange="reportTypeChange(this.value)">
+                            {% for report_type in report_types %}
+                                <option value="{{ report_type.id }}" {% if selected_report_type == report_type.id %}selected="selected"{% endif %}>{{ report_type.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                 </div>
+
+                <div class="row" hidden>
+                    <a>
+                        <input id="btn_change_report" type="submit"/>
+                    </a>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
-    {% for message in messages %}
+
+     {% for message in messages %}
         {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
             <div class="col-xs-12">
                 <div class="alert alert-success alert-dismissable" id="msg-success">
@@ -34,46 +46,54 @@
             </div>
         {% endif %}
     {% endfor %}
+
     <div class="panel-body">
         <div class="row">
             <form class="form-horizontal" role="form" method="post" action="">
                     {% csrf_token %}
-             <div class="col-md-2" style="font-size: 15px;font-weight: bold; margin-top: -19px;">Service White List</div>
-             <div class="col-md-10" style="border: 1px solid #f7f3f3;">
-                <div style="max-height: 400px; overflow-y: scroll" id="service-whitelist-content-area">
-                    {% for service_group in service_group_list %}
-                        <div style="position: relative;">
-                            <span style="cursor: pointer; position: absolute; top: 9px;" class="glyphicon glyphicon-plus" data-toggle="collapse" data-target="#collapse-{{ service_group.service_group_id }}" id="toggle-sign-{{ service_group.service_group_id }}"></span>
-                            <div class="checkbox" style="margin-left: 20px;" id="group-checkbox-{{ service_group.service_group_id }}">
-                                <label>
-                                    <input type="checkbox" id="chk_service_group_id" {% if service_group.is_indeterminate %}class="indeterminate"{% endif %} name="service-group" {% if service_group.is_checked %}checked{% endif %} onchange="checkServiceGroup(this, {{ service_group.service_group_id }})" /><span {% if service_group.is_deleted %}style="color: #a7a0a0;"{% endif %}>{{ service_group.service_group_name }} ({{ service_group.service_group_id }} - {{ service_group.description }} ) {% if service_group.is_deleted %}(deleted){% endif %}</span></label>
+                <div class="col-md-2" style="font-size: 15px;font-weight: bold; margin-top: -19px;">Service White List</div>
+                <div class="col-md-10" style="border: 1px solid #f7f3f3;">
+                    <div style="max-height: 400px; overflow-y: scroll" id="service-whitelist-content-area">
+                        {% for service_group in service_group_list %}
+                            <div style="position: relative;">
+                                <span style="cursor: pointer; position: absolute; top: 9px;" class="glyphicon glyphicon-plus" data-toggle="collapse" data-target="#collapse-{{ service_group.service_group_id }}" id="toggle-sign-{{ service_group.service_group_id }}"></span>
+                                <div class="checkbox" style="margin-left: 20px;" id="group-checkbox-{{ service_group.service_group_id }}">
+                                    <label>
+                                        <input type="checkbox" id="chk_service_group_id" {% if service_group.is_indeterminate %}class="indeterminate"{% endif %} name="service-group" {% if service_group.is_checked %}checked{% endif %} onchange="checkServiceGroup(this, {{ service_group.service_group_id }})" /><span {% if service_group.is_deleted %}style="color: #a7a0a0;"{% endif %}>{{ service_group.service_group_name }} ({{ service_group.service_group_id }} - {{ service_group.description }} ) {% if service_group.is_deleted %}(deleted){% endif %}</span></label>
+                                </div>
                             </div>
-                        </div>
-                        <div id="collapse-{{ service_group.service_group_id }}" group-id="{{ service_group.service_group_id }}" class="collapse" style="margin-left: 20px;">
-                            {% for service in  service_group.service_list %}
-                             <div class="checkbox" style="margin-left: 20px;" id='item-checkbox-{{ service.service_id }}'>
-                                <label>
-                                    <input type="checkbox" onchange="checkServiceItem(this, {{ service_group.service_group_id }}, {{ service.service_id }})" id="chk_service_id" name="service" {% if service.is_checked %}checked{% endif %} value="{{ service.service_id }}"><span {% if service.is_deleted %}style="color: #a7a0a0;"{% endif %}>{{ service.service_name }} ({{ service.service_id }} - {{ service.description }} ){% if service.is_deleted %}(deleted){% endif %}</span></label>
+                            <div id="collapse-{{ service_group.service_group_id }}" group-id="{{ service_group.service_group_id }}" class="collapse" style="margin-left: 20px;">
+                                {% for service in  service_group.service_list %}
+                                 <div class="checkbox" style="margin-left: 20px;" id='item-checkbox-{{ service.service_id }}'>
+                                    <label>
+                                        <input type="checkbox" onchange="checkServiceItem(this, {{ service_group.service_group_id }}, {{ service.service_id }})" id="chk_service_id" name="service" {% if service.is_checked %}checked{% endif %} value="{{ service.service_id }}"><span {% if service.is_deleted %}style="color: #a7a0a0;"{% endif %}>{{ service.service_name }} ({{ service.service_id }} - {{ service.description }} ){% if service.is_deleted %}(deleted){% endif %}</span></label>
+                                </div>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
+
+                <div hidden>
+                    <a>
+                        <input id="report_type_id" name="report_type_id" value={{selected_report_type}}>
+                    </a>
+                </div>
+
                 <select name="checked_list" multiple hidden >
                     {% for checked_service in checked_service_arr %}
                         <option value="{{ checked_service }}" selected>{{ checked_service }}</option>
                     {% endfor %}
                 </select>
-             <select name="checked_list_1" multiple hidden >
+                <select name="checked_list_1" multiple hidden >
 
                 </select>
-        <div class="row pull-right" style="margin-top: 20px;">
-            <a>
-                <input id="btn_save" class="btn btn-success text-left mb15" type="submit" value="Save"/>
-            </a>
-        </div>
-        </form>
+                <div class="row pull-right" style="margin-top: 20px;">
+                    <a>
+                        <input id="btn_save" class="btn btn-success text-left mb15" type="submit" value="Save"/>
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 {% endblock %}
@@ -152,10 +172,10 @@
             }
         };
 
-        var reportTypeChange = function(reportType) {
-            if (reportType == 'agent_summary') {
-                $('<div id="service-whitelist-cont"></div>ent-area').removeAttr("hidden");
-            }
+        var reportTypeChange = function(id) {
+            $("#report_type_id").val(id);
+            $("#btn_change_report").click();
+            window.location = "{% url 'report_configuration:report_configuration' %}"+ "?report_type_id="+id;
         }
     </script>
 {% endblock %}

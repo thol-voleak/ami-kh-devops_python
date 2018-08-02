@@ -143,7 +143,7 @@
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="created_date"
                                            onchange="VerifyDate(this)"
-                                           id="dtp_created_date"
+                                           id="txt_created_date"
                                            value="{{ agent_profile.created_date|date:'Y-m-d'|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
@@ -152,7 +152,7 @@
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="last_updated_date"
                                            onchange="VerifyDate(this)"
-                                           id="dtp_last_updated_date"
+                                           id="txt_last_updated_date"
                                            value="{{ agent_profile.last_updated_date|date:'Y-m-d'|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
@@ -190,42 +190,11 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">User Name Type *</label>
-                                <div class="col-sm-7">
-                                    <input type="text" class="form-control input-rounded" name="identity_type"
-                                           id="txt_identity_type"
-                                           value="{{ status_get_agent_identity.identity_type.name|default_if_none:'' }}"
-                                           disabled/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">User Name *</label>
-                                <div class="col-sm-7">
-                                    <input type="text" class="form-control input-rounded" name="user_name"
-                                           id="txt_user_name" value="{{ status_get_agent_identity.username }}"
-                                           disabled/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Password *</label>
-                                <div class="col-sm-7">
-                                    <input type="password" class="form-control input-rounded" name="password"
-                                           id="txt_password" value="******" disabled/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Re-password *</label>
-                                <div class="col-sm-7">
-                                    <input type="password" class="form-control input-rounded" name="re_password"
-                                           id="txt_re_password" value="******" disabled/>
-                                </div>
-                            </div>
-                            <div class="form-group">
                                 <label class="col-sm-3 control-label">Currency *</label>
                                 <div class="col-sm-7">
-                                    <select class="form-control" id="ddl_currency" name="currency" disabled>
-                                        <option value="{{ currencies }}" selected>{{ currencies }}</option>
-                                    </select>
+                                    <input type="text" class="form-control input-rounded" name="currency"
+                                           id="txt_currency"
+                                           value="{{ currencies|default_if_none:'' }}" disabled/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -347,11 +316,26 @@
                                            value="{{ agent_profile.tin_number|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Personal TIN Number [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="tin_number_local"
+                                           id="txt_tin_number_local"
+                                           value="{{ agent_profile.tin_number_local|default_if_none:'' }}" />
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Title</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="title"
                                            id="txt_title" value="{{ agent_profile.title|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Title [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="title_local"
+                                           id="txt_title_local" value="{{ agent_profile.title_local|default_if_none:'' }}" />
                                 </div>
                             </div>
                             <div class="form-group">
@@ -362,12 +346,27 @@
                                            required/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">First Name [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="firstname_local"
+                                           id="txt_first_name_local" value="{{ agent_profile.first_name_local | default_if_none:'' }}"/>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Middle Name</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="middle_name"
                                            id="txt_middle_name"
                                            value="{{ agent_profile.middle_name|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Middle Name [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="middle_name_local"
+                                           id="txt_middle_name_local"
+                                           value="{{ agent_profile.middle_name_local|default_if_none:'' }}" />
                                 </div>
                             </div>
                             <div class="form-group">
@@ -378,11 +377,25 @@
                                            required/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Last Name [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="last_name_local"
+                                           id="txt_last_name_local" value="{{ agent_profile.last_name_local|default_if_none:'' }}"/>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Suffix</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="suffix"
                                            id="txt_suffix" value="{{ agent_profile.suffix|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Suffix [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="suffix_local"
+                                           id="txt_suffix_local" value="{{ agent_profile.suffix_local|default_if_none:'' }}" />
                                 </div>
                             </div>
                             <div class="form-group">
@@ -402,11 +415,26 @@
                                            value="{{ agent_profile.place_of_birth|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Place Of Birth [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="place_of_birth_local"
+                                           id="txt_place_of_birth_local"
+                                           value="{{ agent_profile.place_of_birth_local|default_if_none:'' }}" />
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Gender</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="gender"
                                            id="txt_gender" value="{{ agent_profile.gender|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Gender [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="gender_local"
+                                           id="txt_gender_local" value="{{ agent_profile.gender_local|default_if_none:'' }}" />
                                 </div>
                             </div>
                             <div class="form-group">
@@ -439,12 +467,28 @@
                                            value="{{ agent_profile.occupation|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Occupation [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="occupation_local"
+                                           id="txt_occupation_local"
+                                           value="{{ agent_profile.occupation_local|default_if_none:'' }}" />
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Occupation Title</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="occupation_title"
                                            id="txt_occupation_title"
                                            value="{{ agent_profile.occupation_title|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Occupation Title [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="occupation_title_local"
+                                           id="txt_occupation_title_local"
+                                           value="{{ agent_profile.occupation_title_local|default_if_none:'' }}" />
                                 </div>
                             </div>
                             <div class="form-group">
@@ -463,6 +507,14 @@
                                            value="{{ agent_profile.township_name|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Township Name [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="township_name_local"
+                                           id="txt_township_name_local"
+                                           value="{{ agent_profile.township_name_local|default_if_none:'' }}" />
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">National ID Number</label>
                                 <div class="col-sm-7">
@@ -471,12 +523,28 @@
                                            value="{{ agent_profile.national_id_number|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">National ID Number [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="national_id_number_local"
+                                           id="txt_national_id_number_local"
+                                           value="{{ agent_profile.national_id_number_local|default_if_none:'' }}" />
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Mother's Name</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="mother_name"
                                            id="txt_mother_name"
                                            value="{{ agent_profile.mother_name|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Mother's Name [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="mother_name_local"
+                                           id="txt_mother_name_local"
+                                           value="{{ agent_profile.mother_name_local|default_if_none:'' }}" />
                                 </div>
                             </div>
                         </div>
@@ -506,7 +574,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Primary Mobile Number</label>
+                                <label class="col-sm-3 control-label">Primary Phone Number</label>
                                 <div class="col-sm-7">
                                     <input type="number" class="form-control input-rounded" name="primary_mobile_number"
                                            id="txt_primary_mobile_number"
@@ -514,7 +582,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Secondary Mobile Number</label>
+                                <label class="col-sm-3 control-label">Secondary Phone Number</label>
                                 <div class="col-sm-7">
                                     <input type="number" class="form-control input-rounded"
                                            name="secondary_mobile_number"
@@ -523,7 +591,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Tertiary Mobile Number</label>
+                                <label class="col-sm-3 control-label">Tertiary Phone Number</label>
                                 <div class="col-sm-7">
                                     <input type="number" class="form-control input-rounded"
                                            name="tertiary_mobile_number"
@@ -573,12 +641,30 @@
                                            value="{{ agent_profile.address.current_address.address|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Address [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="current_address_local"
+                                           id="txt_current_address_address_local"
+                                           value="{{ agent_profile.address.current_address.address_local|default_if_none:'' }}"/>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Commune</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="current_commune"
                                            id="txt_current_address_commune"
                                            value="{{ agent_profile.address.current_address.commune|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Commune [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="current_commune_local"
+                                           id="txt_current_address_commune_local"
+                                           value="{{ agent_profile.address.current_address.commune_local|default_if_none:'' }}"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -589,11 +675,29 @@
                                            value="{{ agent_profile.address.current_address.district|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">District [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="current_district_local"
+                                           id="txt_current_address_district_local"
+                                           value="{{ agent_profile.address.current_address.district_local|default_if_none:'' }}"/>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">City</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="current_city"
                                            id="txt_city" value="{{ agent_profile.address.current_address.city|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">City [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="current_city_local"
+                                           id="txt_current_address_city_local"
+                                           value="{{ agent_profile.address.current_address.city_local|default_if_none:'' }}"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -604,6 +708,15 @@
                                            value="{{ agent_profile.address.current_address.province|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Province [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="current_province_local"
+                                           id="txt_current_address_province_local"
+                                           value="{{ agent_profile.address.current_address.province_local|default_if_none:'' }}"/>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Postal Code</label>
                                 <div class="col-sm-7">
@@ -612,12 +725,30 @@
                                            value="{{ agent_profile.address.current_address.postal_code|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Postal Code [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="current_postal_code_local"
+                                           id="txt_current_address_postal_code_local"
+                                           value="{{ agent_profile.address.current_address.postal_code_local|default_if_none:'' }}"/>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Country</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="current_country"
                                            id="txt_current_address_country"
                                            value="{{ agent_profile.address.current_address.country|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Country [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="current_country_local"
+                                           id="txt_current_address_country_local"
+                                           value="{{ agent_profile.address.current_address.country_local|default_if_none:'' }}"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -680,7 +811,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="permanent_neighbourhood_association"
-                                           id="txt_ppermanent_address_neighbourhood_association"
+                                           id="txt_permanent_address_neighbourhood_association"
                                            value="{{ agent_profile.address.permanent_address.neighbourhood_association|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -692,12 +823,30 @@
                                            value="{{ agent_profile.address.permanent_address.address|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Address [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="permanent_address_local"
+                                           id="txt_permanent_address_address_local"
+                                           value="{{ agent_profile.address.permanent_address.address_local|default_if_none:'' }}"/>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Commune</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="permanent_commune"
                                            id="txt_permanent_address_commune"
                                            value="{{ agent_profile.address.permanent_address.commune|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Commune [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="permanent_commune_local"
+                                           id="txt_permanent_address_commune_local"
+                                           value="{{ agent_profile.address.permanent_address.commune_local|default_if_none:'' }}"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -708,6 +857,15 @@
                                            value="{{ agent_profile.address.permanent_address.district|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">District [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="permanent_district_local"
+                                           id="txt_permanent_address_district_local"
+                                           value="{{ agent_profile.address.permanent_address.district_local|default_if_none:'' }}"/>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">City</label>
                                 <div class="col-sm-7">
@@ -716,12 +874,30 @@
                                            value="{{ agent_profile.address.permanent_address.city|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">City [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="permanent_city_local"
+                                           id="txt_permanent_address_city_local"
+                                           value="{{ agent_profile.address.permanent_address.city_local|default_if_none:'' }}"/>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Province</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="permanent_province"
                                            id="txt_permanent_address_province"
                                            value="{{ agent_profile.address.permanent_address.province|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Province [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="permanent_province_local"
+                                           id="txt_permanent_address_province_local"
+                                           value="{{ agent_profile.address.permanent_address.province_local|default_if_none:'' }}"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -733,12 +909,30 @@
                                            value="{{ agent_profile.address.permanent_address.postal_code|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Postal Code [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="permanent_postal_code_local"
+                                           id="txt_permanent_address_postal_code_local"
+                                           value="{{ agent_profile.address.permanent_address.postal_code_local|default_if_none:'' }}"/>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Country</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="permanent_country"
                                            id="txt_permanent_address_country"
                                            value="{{ agent_profile.address.permanent_address.country|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Country [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="permanent_country_local"
+                                           id="txt_permanent_address_country_local"
+                                           value="{{ agent_profile.address.permanent_address.country_local|default_if_none:'' }}"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -789,6 +983,13 @@
                                            id="txt_bank_name" value="{{ agent_profile.bank.name|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Bank Name [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="bank_name_local"
+                                           id="txt_bank_name_local" value="{{ agent_profile.bank.name_local|default_if_none:'' }}"/>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Bank Account Status</label>
                                 <div class="col-sm-7">
@@ -823,12 +1024,28 @@
                                            value="{{ agent_profile.bank.branch_area|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Bank Branch Area [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="bank_branch_area_local"
+                                           id="txt_bank_branch_area_local"
+                                           value="{{ agent_profile.bank.branch_area_local|default_if_none:'' }}" />
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Bank Branch City</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="bank_branch_city"
                                            id="txt_bank_branch_city"
                                            value="{{ agent_profile.bank.branch_city|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Bank Branch City [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="bank_branch_city_local"
+                                           id="txt_bank_branch_city_local"
+                                           value="{{ agent_profile.bank.branch_city_local|default_if_none:'' }}" />
                                 </div>
                             </div>
                             <div class="form-group">
@@ -999,7 +1216,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Identity Type</label>
                                 <div class="col-sm-7">
-                                    <input type="text" class="form-control input-rounded" name="primary_identify_type"
+                                    <input type="text" class="form-control input-rounded" name="primary_identity_type"
                                            id="txt_primary_identity_type"
                                            value="{{ agent_profile.accreditation.primary_identity.type|default_if_none:'' }}"/>
                                 </div>
@@ -1018,9 +1235,17 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Identity ID</label>
                                 <div class="col-sm-7">
-                                    <input type="text" class="form-control input-rounded" name="primary_identify_id"
+                                    <input type="text" class="form-control input-rounded" name="primary_identity_id"
                                            id="txt_primary_identity_id"
                                            value="{{ agent_profile.accreditation.primary_identity.identity_id|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Identity ID [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded" name="primary_identity_id_local"
+                                           id="txt_primary_identity_id_local"
+                                           value="{{ agent_profile.accreditation.primary_identity.identity_id_local|default_if_none:'' }}"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -1074,7 +1299,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Identity Type</label>
                                 <div class="col-sm-7">
-                                    <input type="text" class="form-control input-rounded" name="secondary_identify_type"
+                                    <input type="text" class="form-control input-rounded" name="secondary_identity_type"
                                            id="txt_secondary_identity_type"
                                            value="{{ agent_profile.accreditation.secondary_identity.type|default_if_none:'' }}"/>
                                 </div>
@@ -1093,9 +1318,18 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Identity ID</label>
                                 <div class="col-sm-7">
-                                    <input type="text" class="form-control input-rounded" name="secondary_identify_id"
+                                    <input type="text" class="form-control input-rounded" name="secondary_identity_id"
                                            id="txt_secondary_identity_id"
                                            value="{{ agent_profile.accreditation.secondary_identity.identity_id|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Identity ID [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="secondary_identity_id_local"
+                                           id="txt_secondary_identity_id_local"
+                                           value="{{ agent_profile.accreditation.secondary_identity.identity_id_local|default_if_none:'' }}"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -1226,6 +1460,15 @@
                                            value="{{ agent_profile.additional.acquiring_sale_executive_name|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Acquiring Sales Executive Name [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="acquiring_sale_executive_name_local"
+                                           id="txt_acquiring_sale_executive_name_local"
+                                           value="{{ agent_profile.additional.acquiring_sale_executive_name_local|default_if_none:'' }}"/>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Acquiring Sales Executive ID</label>
                                 <div class="col-sm-7">
@@ -1244,6 +1487,15 @@
                                            value="{{ agent_profile.additional.relationship_manager_name|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Relationship Manager Name [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="relationship_manager_name_local"
+                                           id="txt_relationship_manager_name_local"
+                                           value="{{ agent_profile.additional.relationship_manager_name_local|default_if_none:'' }}"/>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Relationship Manager ID</label>
                                 <div class="col-sm-7">
@@ -1260,6 +1512,15 @@
                                            value="{{ agent_profile.additional.sale_region|default_if_none:'' }}"/>
                                 </div>
                             </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Sales Region [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="sale_region_local"
+                                           id="txt_sale_region_local"
+                                           value="{{ agent_profile.additional.sale_region_local|default_if_none:'' }}" />
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Commercial Account Manager</label>
                                 <div class="col-sm-7">
@@ -1267,6 +1528,15 @@
                                            name="commercial_account_manager"
                                            id="txt_commercial_account_manager"
                                            value="{{ agent_profile.additional.commercial_account_manager|default_if_none:'' }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">Commercial Account Manager [Local]</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control input-rounded"
+                                           name="commercial_account_manager_local"
+                                           id="txt_commercial_account_manager_local"
+                                           value="{{ agent_profile.additional.commercial_account_manager_local|default_if_none:'' }}"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -1442,12 +1712,13 @@
                             {% if request.user|has_permission_name:"CAN_DELETE_AGENT" %}
                                 <a href="{% url 'agents:agent_delete' agent_profile.id %}">
                                     <input id="btn_delete"
-                                           class="btn btn-danger text-left mb15 {{ agent.is_deleted|yesno:"hidden,no-hidden" }}"
+                                           class="btn btn-danger text-left mb15 {{ agent_profile.is_deleted|yesno:"hidden,no-hidden" }}"
                                            type="button" value="Delete"/>
                                 </a>
                             {% endif %}
                             <a>
-                                <input id="btn_save" class="btn btn-success text-left mb15" type="submit" value="Save"/>
+                                <input id="btn_save" class="btn btn-success text-left mb15 {{ agent_profile.is_deleted|yesno:"hidden,no-hidden" }}"
+                                       type="submit" value="Save"/>
                             </a>
                         </div>
                     </form>
