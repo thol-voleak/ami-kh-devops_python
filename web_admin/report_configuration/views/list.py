@@ -9,6 +9,7 @@ from django.shortcuts import render, redirect
 from web_admin.api_logger import API_Logger
 from web_admin import api_settings, setup_logger
 from datetime import datetime
+from web_admin.utils import convert_string_to_date_time
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 
 logger = logging.getLogger(__name__)
@@ -16,8 +17,9 @@ logger = logging.getLogger(__name__)
 class ReportConfigurationList(TemplateView, GetHeaderMixin):
     template_name = "report-configuration/list.html"
     logger = logger
-    OPERAND_VALUES = ['default', 'fee', 'amount', 'bonus', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'];
-    OPERAND_KEYS = ['tpv','fee','commission'];
+
+    OPERAND_VALUES = ['default', 'fee', 'amount', 'bonus', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o']
+    OPERAND_KEYS = ['tpv','fee','commission']
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
@@ -108,6 +110,17 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
         report_type_id = request.POST.get('report_type_id')
         checked_service_arr = request.POST.getlist('checked_list')
         new_checked_list = request.POST.getlist('service')
+        effective_date = request.POST.get('effective_date')
+        tpv = request.POST.get('tpv')
+        fee = request.POST.get('fee')
+        commission = request.POST.get('commission')
+        effective_timestamp = convert_string_to_date_time(effective_date, "00:00:00")
+
+        params = {'tpv': tpv,
+                  'fee': fee,
+                  'commission': commission,
+                  'effective_timestamp': effective_timestamp }
+
         deleted_service_arr = []
         added_service_arr = []
 
@@ -119,15 +132,13 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
                 added_service_arr.append(int(new_service))
 
         is_add_success = self.add_service(report_type_id, added_service_arr)
-        if is_add_success:
-            is_delete_success = self.delete_service(report_type_id, deleted_service_arr)
-            if is_delete_success:
-                messages.add_message(request, messages.SUCCESS, 'Change has been saved')
-            else:
-                messages.add_message(request, messages.ERROR, 'There was an error occurred, please try submitting again')
+        is_delete_success = self.delete_service(report_type_id, deleted_service_arr)
+        is_update_formula_success = self.update_formula(report_type_id, params)
+
+        if is_add_success and is_delete_success and is_update_formula_success:
+            messages.add_message(request, messages.SUCCESS, 'Change has been saved')
         else:
             messages.add_message(request, messages.ERROR, 'There was an error occurred, please try submitting again')
-
         return redirect('report_configuration:report_configuration')
 
     def get_whitelist_services(self, report_type_id):
@@ -228,7 +239,17 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
         self.logger.info("Params: {} ".format(params))
         API_Logger.delete_logging(loggers=self.logger, status_code=status_code)
         self.logger.info('========== Finish delete service from whitelist ==========')
+        return is_success
 
+    def update_formula(self, report_type_id, params):
+        self.logger.info('========== Start update payment report formula ==========')
+        url = api_settings.UPDATE_REPORT_FORMULA.format(report_type_id=report_type_id)
+        is_success, status_code, status_message, data = RestFulClient.put(url,
+                                                                           headers=self._get_headers(),
+                                                                           params=params, loggers=self.logger)
+        API_Logger.put_logging(loggers=self.logger, params=params, response=data,
+                                status_code=status_code)
+        self.logger.info('========== Finish update payment report formula  ==========')
         return is_success
 
 
