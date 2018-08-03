@@ -85,7 +85,10 @@ class AddCondition(TemplateView, GetHeaderMixin):
         username = {'term': 'username', 'description': ''}
         is_login_success = {'term': 'is_login_success', 'description': ''}
         is_suspend = {'term': 'is_suspend', 'description': ''}
+        referrer_user_id_term = {'term': 'referrer_user_id', 'description': ''}
+        referrer_user_type_term = {'term': 'referrer_user_type', 'description': ''}
         detail_names.extend((username, is_login_success, is_suspend))
+        detail_names.extend((referrer_user_id_term, referrer_user_type_term))
         detail_names.extend(sum_key_name)
         trigger = self._filter_trigger(all_terms)
 
