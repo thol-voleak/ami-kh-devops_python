@@ -316,9 +316,11 @@ GET_VOUCHER_GROUP_LIST = 'api-gateway/voucher/'+API_VERSION+'/admin/vouchers/vou
 
 #Report Configuration
 GET_WHITELIST_REPORT = 'api-gateway/report/' + API_VERSION + '/admin/payments/reports/{report_type_id}/services'
+GET_FORMULA_REPORT = 'api-gateway/report/' + API_VERSION + '/admin/payments/reports/{report_type_id}/formulas'
 ADD_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/reports/{report_type_id}/services'
 DELETE_SERVICE = 'api-gateway/report/'+API_VERSION+'/admin/payments/reports/{report_type_id}/services'
 GET_REPORT_TYPE_LIST = 'api-gateway/report/' + API_VERSION + '/admin/reports'
+UPDATE_REPORT_FORMULA = 'api-gateway/report/'+API_VERSION+'/admin/payments/reports/{report_type_id}/formulas'
 
 # Balance
 GET_CUSTOMER_BALANCE=     'api-gateway/report/' + API_VERSION + '/customers/summaries/sofs/cash'

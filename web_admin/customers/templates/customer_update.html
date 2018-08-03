@@ -97,7 +97,7 @@
                                     <label class="col-sm-3 control-label" id="lbl_customer_id">Customer ID *</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="customer_id"
-                                               id="txt_customer_id" value="{{ customer_info.id | default_if_none:'' }}" readonly/>
+                                               id="txt_customer_id" value="{{ customer_info.id | default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -314,10 +314,25 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="col-sm-3 control-label">Personal TIN Number [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="tin_number_local"
+                                               id="txt_tin_number_local"
+                                               value="{{ customer_info.tin_number_local|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="col-sm-3 control-label">Title</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="title"
                                                id="txt_title" value="{{ customer_info.title|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                 <div class="form-group">
+                                    <label class="col-sm-3 control-label">Title [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="title_local"
+                                               id="txt_title_local" value="{{ customer_info.title_local|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -328,10 +343,24 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="col-sm-3 control-label">First Name [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="first_name_local"
+                                               id="txt_first_name_local" value="{{ customer_info.first_name_local|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="col-sm-3 control-label">Middle Name</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="middle_name"
                                                id="txt_middle_name" value="{{ customer_info.middle_name | default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                 <div class="form-group">
+                                    <label class="col-sm-3 control-label">Middle Name [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="middle_name_local"
+                                               id="txt_middle_name_local" value="{{ customer_info.middle_name_local | default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -341,6 +370,13 @@
                                                id="txt_last_name" value="{{ customer_info.last_name|default_if_none:'' }}" required />
                                     </div>
                                 </div>
+                                 <div class="form-group">
+                                    <label class="col-sm-3 control-label">Last Name [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="last_name_local"
+                                               id="txt_last_name_local" value="{{ customer_info.last_name_local|default_if_none:'' }}" required />
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Suffix</label>
                                     <div class="col-sm-7">
@@ -348,12 +384,19 @@
                                                id="txt_suffix" value="{{ customer_info.suffix|default_if_none:'' }}" />
                                     </div>
                                 </div>
+                                  <div class="form-group">
+                                    <label class="col-sm-3 control-label">Suffix [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="suffix_local"
+                                               id="txt_suffix_local" value="{{ customer_info.suffix_local|default_if_none:'' }}" />
+                                    </div>
+                                </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Date of Birth *</label>
+                                    <label class="col-sm-3 control-label">Date of Birth</label>
                                     <div class="col-sm-7">
                                         <input type="date" class="form-control input-rounded" name="date_of_birth"
                                                onchange="VerifyDate(this)"
-                                               id="txt_birth_date" value="{{ customer_info.date_of_birth|default_if_none:'' }}" required />
+                                               id="dtp_birth_date" value="{{ customer_info.date_of_birth|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -364,10 +407,24 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="col-sm-3 control-label">Place of Birth [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="place_of_birth_local"
+                                               id="txt_place_of_birth_local" value="{{ customer_info.place_of_birth_local|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="col-sm-3 control-label">Gender</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="gender"
                                                id="txt_gender" value="{{ customer_info.gender|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Gender [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="gender_local"
+                                               id="txt_gender_local" value="{{ customer_info.gender_local|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -402,11 +459,27 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="col-sm-3 control-label">Occupation [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="occupation_local"
+                                               id="txt_occupation_local"
+                                               value="{{ customer_info.occupation_local|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="col-sm-3 control-label">Occupation Title</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="occupation_title"
                                                id="txt_occupation_title"
                                                value="{{ customer_info.occupation_title|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Occupation Title [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="occupation_title_local"
+                                               id="txt_occupation_title_local"
+                                               value="{{ customer_info.occupation_title_local|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -426,6 +499,14 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="col-sm-3 control-label">Township Name [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="township_name_local"
+                                               id="txt_township_name_local"
+                                               value="{{ customer_info.township_name_local|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="col-sm-3 control-label">Mother's Name</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="mother_name"
@@ -434,11 +515,27 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="col-sm-3 control-label">Mother's Name [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="mother_name_local"
+                                               id="txt_mother_name_local"
+                                               value="{{ customer_info.mother_name_local|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="col-sm-3 control-label">Mother's Maiden Name</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="mother_maiden_name"
                                                id="txt_mother_maiden_name"
                                                value="{{ customer_info.mother_maiden_name|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Mother's Maiden Name [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="mother_maiden_name_local"
+                                               id="txt_mother_maiden_name_local"
+                                               value="{{ customer_info.mother_maiden_name_local|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -476,11 +573,11 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Primary Phone Number *</label>
+                                    <label class="col-sm-3 control-label">Primary Phone Number</label>
                                     <div class="col-sm-7">
                                         <input type="number" class="form-control input-rounded" name="primary_mobile_number"
                                                id="txt_primary_mobile_number"
-                                               value="{{ customer_info.primary_mobile_number|default_if_none:'' }}" required />
+                                               value="{{ customer_info.primary_mobile_number|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -549,12 +646,21 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Address *</label>
+                                    <label class="col-sm-3 control-label">Address</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
                                                name="current_address_address"
                                                id="txt_current_address_address"
-                                               value="{{ customer_info.address.current_address.address|default_if_none:'' }}" required />
+                                               value="{{ customer_info.address.current_address.address|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Address [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_address_local"
+                                               id="txt_current_address_address_local"
+                                               value="{{ customer_info.address.current_address.address_local|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -567,6 +673,15 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="col-sm-3 control-label">Commune [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_commune_local"
+                                               id="txt_current_address_commune_local"
+                                               value="{{ customer_info.address.current_address.commune_local|default_if_none:'' }}"  />
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="col-sm-3 control-label">District</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
@@ -576,12 +691,30 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">City *</label>
+                                    <label class="col-sm-3 control-label">District [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_district_local"
+                                               id="txt_current_address_district_local"
+                                               value="{{ customer_info.address.current_address.district_local|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">City</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
                                                name="current_address_city"
                                                id="txt_current_address_city"
-                                               value="{{ customer_info.address.current_address.city|default_if_none:'' }}" required />
+                                               value="{{ customer_info.address.current_address.city|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">City [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_city_local"
+                                               id="txt_current_address_city_local"
+                                               value="{{ customer_info.address.current_address.city_local|default_if_none:'' }}"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -594,12 +727,30 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Postal Code *</label>
+                                    <label class="col-sm-3 control-label">Province [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_province_local"
+                                               id="txt_current_address_province_local"
+                                               value="{{ customer_info.address.current_address.province_local|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Postal Code</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
                                                name="current_address_postal_code"
                                                id="txt_current_address_postal_code"
                                                value="{{ customer_info.address.current_address.postal_code|default_if_none:'' }}" required />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Postal Code [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_postal_code_local"
+                                               id="txt_current_address_postal_code_local"
+                                               value="{{ customer_info.address.current_address.postal_code_local|default_if_none:'' }}" required />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -609,6 +760,15 @@
                                                name="current_address_country"
                                                id="txt_current_address_country"
                                                value="{{ customer_info.address.current_address.country|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Country [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded"
+                                               name="current_address_country_local"
+                                               id="txt_current_address_country_local"
+                                               value="{{ customer_info.address.current_address.country_local|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -684,12 +844,21 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">Address *</label>
+                                        <label class="col-sm-3 control-label">Address</label>
                                         <div class="col-sm-7">
                                             <input type="text" class="form-control input-rounded"
                                                    name="permanent_address_address"
                                                    id="txt_permanent_address_address"
-                                                   value="{{ customer_info.address.permanent_address.address|default_if_none:'' }}" required />
+                                                   value="{{ customer_info.address.permanent_address.address|default_if_none:'' }}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Address [Local]</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control input-rounded"
+                                                   name="permanent_address_address_local"
+                                                   id="txt_permanent_address_address_local"
+                                                   value="{{ customer_info.address.permanent_address.address_local|default_if_none:'' }}" />
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -702,6 +871,15 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
+                                        <label class="col-sm-3 control-label">Commune [Local]</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control input-rounded"
+                                                   name="permanent_address_commune_local"
+                                                   id="txt_permanent_address_commune_local"
+                                                   value="{{ customer_info.address.permanent_address.commune_local|default_if_none:'' }}"  />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
                                         <label class="col-sm-3 control-label">District</label>
                                         <div class="col-sm-7">
                                             <input type="text" class="form-control input-rounded"
@@ -711,12 +889,30 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">City *</label>
+                                        <label class="col-sm-3 control-label">District [Local]</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control input-rounded"
+                                                   name="permanent_address_district_local"
+                                                   id="txt_permanent_address_district_local"
+                                                   value="{{ customer_info.address.permanent_address.district_local|default_if_none:'' }}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">City</label>
                                         <div class="col-sm-7">
                                             <input type="text" class="form-control input-rounded"
                                                    name="permanent_address_city"
                                                    id="txt_permanent_address_city"
-                                                   value="{{ customer_info.address.permanent_address.city|default_if_none:'' }}" required />
+                                                   value="{{ customer_info.address.permanent_address.city|default_if_none:'' }}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">City [Local]</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control input-rounded"
+                                                   name="permanent_address_city_local"
+                                                   id="txt_permanent_address_city_local"
+                                                   value="{{ customer_info.address.permanent_address.city_local|default_if_none:'' }}" />
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -729,12 +925,30 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">Postal Code *</label>
+                                        <label class="col-sm-3 control-label">Province [Local]</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control input-rounded"
+                                                   name="permanent_address_province_local"
+                                                   id="txt_permanent_address_province_local"
+                                                   value="{{ customer_info.address.permanent_address.province_local|default_if_none:'' }}"  />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Postal Code</label>
                                         <div class="col-sm-7">
                                             <input type="text" class="form-control input-rounded"
                                                    name="permanent_address_postal_code"
                                                    id="txt_permanent_address_postal_code"
-                                                   value="{{ customer_info.address.permanent_address.postal_code|default_if_none:'' }}" required />
+                                                   value="{{ customer_info.address.permanent_address.postal_code|default_if_none:'' }}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Postal Code [Local]</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control input-rounded"
+                                                   name="permanent_address_postal_code_local"
+                                                   id="txt_permanent_address_postal_code_local"
+                                                   value="{{ customer_info.address.permanent_address.postal_code_local|default_if_none:'' }}" />
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -744,6 +958,15 @@
                                                    name="permanent_address_country"
                                                    id="txt_permanent_address_country"
                                                    value="{{ customer_info.address.permanent_address.country|default_if_none:'' }}"  />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Country [Local]</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control input-rounded"
+                                                   name="permanent_address_country_local"
+                                                   id="txt_permanent_address_country_local"
+                                                   value="{{ customer_info.address.permanent_address.country_local|default_if_none:'' }}"  />
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -806,7 +1029,7 @@
                                         <input type="text" class="form-control input-rounded"
                                                name="primary_identity_type"
                                                id="txt_primary_identity_type"
-                                               value="{{ customer_info.kyc.primary_identity.type|default_if_none:'' }}" readonly />
+                                               value="{{ customer_info.kyc.primary_identity.type|default_if_none:'' }}" disabled />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -821,11 +1044,19 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Identity ID *</label>
+                                    <label class="col-sm-3 control-label">Identity ID</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded" name="primary_identity_id"
                                                id="txt_primary_identity_id"
-                                               value="{{ customer_info.kyc.primary_identity.identity_id|default_if_none:'' }}" required />
+                                               value="{{ customer_info.kyc.primary_identity.identity_id|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Identity ID [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="primary_identity_id_local"
+                                               id="txt_primary_identity_id_local"
+                                               value="{{ customer_info.kyc.primary_identity.identity_id_local|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -919,6 +1150,14 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="col-sm-3 control-label">Identity ID [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="secondary_identity_id_local"
+                                               id="txt_secondary_identity_id_local"
+                                               value="{{ customer_info.kyc.secondary_identity.identity_id_local|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="col-sm-3 control-label">Place of Issue</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
@@ -1009,6 +1248,14 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="col-sm-3 control-label">Identity ID [Local]</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control input-rounded" name="tertiary_identity_id_local"
+                                               id="txt_tertiary_identity_id_local"
+                                               value="{{ customer_info.kyc.tertiary_identity.identity_id_local|default_if_none:'' }}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="col-sm-3 control-label">Place of Issue</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control input-rounded"
@@ -1091,7 +1338,7 @@
                                         <input type="text" class="form-control input-rounded"
                                                name="kyc_remark"
                                                id="txt_kyc_remark"
-                                               value="{{ customer_info.kyc.remark|default_if_none:'' }}" readonly/>
+                                               value="{{ customer_info.kyc.remark|default_if_none:'' }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -1108,7 +1355,7 @@
                                     <div class="col-sm-7">
                                         <input type="date" class="form-control input-rounded"
                                                onchange="VerifyDate(this)"
-                                               name="kyc_verify_date" id="txt_kyc_verify_date"
+                                               name="kyc_verify_date" id="dtp_kyc_verify_date"
                                                value="{{ customer_info.kyc.verify_date|default_if_none:'' }}" />
                                     </div>
                                 </div>

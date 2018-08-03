@@ -569,7 +569,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Email</label>
                                 <div class="col-sm-7">
-                                    <input type="text" class="form-control input-rounded" name="email"
+                                    <input type="email" class="form-control input-rounded" name="email"
                                            id="txt_email" value="{{ agent_profile.email|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1053,7 +1053,7 @@
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="bank_register_date"
                                            onchange="VerifyDate(this)"
-                                           id="dtp_register_date"
+                                           id="dtp_bank_register_date"
                                            value="{{ agent_profile.bank_register_date|date:'Y-m-d'|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1079,7 +1079,7 @@
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="bank_end_date"
                                            onchange="VerifyDate(this)"
-                                           id="dtp_end_date"
+                                           id="dtp_bank_end_date"
                                            value="{{ agent_profile.bank_end_date|date:'Y-m-d'|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1136,7 +1136,7 @@
                                 <label class="col-sm-3 control-label">Contract Sign Date</label>
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="contract_sign_date"
-                                           id="txt_contract_sign_date"
+                                           id="dtp_contract_sign_date"
                                            value="{{ agent_profile.contract_sign_date|date:'Y-m-d'|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1144,7 +1144,7 @@
                                 <label class="col-sm-3 control-label">Contract Issue Date</label>
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="contract_issue_date"
-                                           id="txt_contract_issue_date"
+                                           id="dtp_contract_issue_date"
                                            value="{{ agent_profile.contract_issue_date|date:'Y-m-d'|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1152,7 +1152,7 @@
                                 <label class="col-sm-3 control-label">Contract Expiry Date</label>
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="contract_expiry_date"
-                                           id="txt_contract_expired_date"
+                                           id="dtp_contract_expired_date"
                                            value="{{ agent_profile.contract_expired_date|date:'Y-m-d'|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1169,7 +1169,7 @@
                                 <div class="col-sm-7">
                                     <input type="number" class="form-control input-rounded"
                                            name="reconciliation_period_days"
-                                           id="txt_contract_reconciliation_period_days"
+                                           id="txt_contract_day_of_period_reconciliation"
                                            value="{{ agent_profile.contract.day_of_period_reconciliation|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1268,7 +1268,7 @@
                                 <label class="col-sm-3 control-label">Expire Date</label>
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="primary_expire_date"
-                                           id="dtp_primary_identity_expire_date"
+                                           id="dtp_primary_identity_expired_date"
                                            value="{{ agent_profile.primary_expire_date|date:'Y-m-d'|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1353,7 +1353,7 @@
                                 <label class="col-sm-3 control-label">Expire Date</label>
                                 <div class="col-sm-7">
                                     <input type="date" class="form-control input-rounded" name="secondary_expire_date"
-                                           id="dtp_secondary_identity_expire_date"
+                                           id="dtp_secondary_identity_expired_date"
                                            value="{{ agent_profile.secondary_expire_date|date:'Y-m-d'|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1424,7 +1424,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Risk Level</label>
                                 <div class="col-sm-7">
-                                    <select class="form-control" id="ddl_risk_level"
+                                    <select class="form-control" id="ddl_accreditation_risk_level"
                                             name="accreditation_risk_level">
                                         <option value="" {% if agent_profile.accreditation.risk_level is None %} selected{% endif %}>-</option>
                                         <option value="Low" {% if agent_profile.accreditation.risk_level == "Low" %} selected{% endif %}>Low</option>
@@ -1465,7 +1465,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="acquiring_sale_executive_name_local"
-                                           id="txt_acquiring_sale_executive_name_local"
+                                           id="txt_additional_acquiring_sale_executive_name_local"
                                            value="{{ agent_profile.additional.acquiring_sale_executive_name_local|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1474,7 +1474,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="acquiring_sales_executive_id"
-                                           id="txt_acquiring_sales_executive_id"
+                                           id="txt_additional_acquiring_sales_executive_id"
                                            value="{{ agent_profile.additional.acquiring_sale_executive_id|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1483,7 +1483,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="relationship_manager_name"
-                                           id="txt_relationship_manager_name"
+                                           id="txt_additional_relationship_manager_name"
                                            value="{{ agent_profile.additional.relationship_manager_name|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1492,7 +1492,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="relationship_manager_name_local"
-                                           id="txt_relationship_manager_name_local"
+                                           id="txt_additional_relationship_manager_name_local"
                                            value="{{ agent_profile.additional.relationship_manager_name_local|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1500,7 +1500,7 @@
                                 <label class="col-sm-3 control-label">Relationship Manager ID</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="relationship_manager_id"
-                                           id="txt_relationship_manager_id"
+                                           id="txt_additional_relationship_manager_id"
                                            value="{{ agent_profile.additional.relationship_manager_id|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1508,7 +1508,7 @@
                                 <label class="col-sm-3 control-label">Sales Region</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="sales_region"
-                                           id="txt_sales_region"
+                                           id="txt_additional_sales_region"
                                            value="{{ agent_profile.additional.sale_region|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1517,7 +1517,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="sale_region_local"
-                                           id="txt_sale_region_local"
+                                           id="txt_additional_sale_region_local"
                                            value="{{ agent_profile.additional.sale_region_local|default_if_none:'' }}" />
                                 </div>
                             </div>
@@ -1526,7 +1526,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="commercial_account_manager"
-                                           id="txt_commercial_account_manager"
+                                           id="txt_additional_commercial_account_manager"
                                            value="{{ agent_profile.additional.commercial_account_manager|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1535,7 +1535,7 @@
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded"
                                            name="commercial_account_manager_local"
-                                           id="txt_commercial_account_manager_local"
+                                           id="txt_additional_commercial_account_manager_local"
                                            value="{{ agent_profile.additional.commercial_account_manager_local|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1543,7 +1543,7 @@
                                 <label class="col-sm-3 control-label">Profile Picture</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="profile_picture"
-                                           id="txt_profile_picture"
+                                           id="txt_additional_profile_picture"
                                            value="{{ agent_profile.additional.profile_picture_url|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1551,7 +1551,7 @@
                                 <label class="col-sm-3 control-label">National ID Photo</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="national_id_photo"
-                                           id="txt_national_id_photo"
+                                           id="txt_additional_national_id_photo"
                                            value="{{ agent_profile.additional.national_id_photo_url|default_if_none:'' }}"/>
                                 </div>
                             </div>
@@ -1559,7 +1559,7 @@
                                 <label class="col-sm-3 control-label">Tax ID Card Photo</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control input-rounded" name="tax_id_card_photo"
-                                           id="txt_tax_id_card_photo"
+                                           id="txt_additional_tax_id_card_photo"
                                            value="{{ agent_profile.additional.tax_id_card_photo_url|default_if_none:'' }}"/>
                                 </div>
                             </div>
