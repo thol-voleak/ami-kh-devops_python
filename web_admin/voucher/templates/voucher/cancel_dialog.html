@@ -334,6 +334,9 @@
                             case "Invalid payer information":
                                 errorMessage = "Invalid issuer information";
                                 break;
+                            case "Payment with inactive payer is not allowed":
+                                errorMessage = "Payment with inactive issuer is not allowed";
+                                break;
                             default:
                                 errorMessage = response.status_message
                         }
