@@ -325,17 +325,11 @@
                     }else{
                         var errorMessage;
                         switch (response.status_message) {
-                            case "Payment with non-existing payer is not allowed":
-                                errorMessage = "Payment with non-existing issuer is not allowed";
-                                break;
                             case "Payment with non-existing SOF of Payer is not allowed":
                                 errorMessage = "Payment with non-existing SOF of Issuer is not allowed";
                                 break;
                             case "Invalid payer information":
                                 errorMessage = "Invalid issuer information";
-                                break;
-                            case "Payment with inactive payer is not allowed":
-                                errorMessage = "Payment with inactive issuer is not allowed";
                                 break;
                             default:
                                 errorMessage = response.status_message
