@@ -111,9 +111,9 @@
                         <label class="col-sm-2 control-label">Agent types:</label>
                         <div class="col-sm-8">
                               <ul>
-                              {% for agent in service_info.service_agent_type %}
-                                    <li>{{ agent.agent_type_id }}</li>
-                              {% end if %}
+                              {% for agent in agent_types %}
+                                    <li>{{ agent }}</li>
+                              {% endfor %}
                               </ul>
                         </div>
                     </div>

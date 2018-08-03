@@ -39,16 +39,27 @@ class ServiceDetailForm(GroupRequiredMixin, TemplateView, RESTfulMethods):
         context = self._get_service_detail(service_id)
         return JsonResponse({"service": context.get('service_info')})
 
+    def _build_agent_types_list(self, allAgents, serviceResponse):
+        agents = [] 
+        for agentRes in serviceResponse:
+            for agent in allAgents:
+                if agentRes['agent_type_id'] == agent['id']:
+                    agents.append(agent['description'])
+            
+        return agents
     def _get_service_detail(self, service_id):
-
         url = api_settings.SERVICE_DETAIL_URL.format(service_id)
         data, success = self._get_method(url, "service detail", logger)
-        if success:
+        agents, success2 = self._post_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
+                                 func_description="get agent types list",
+                                 logger=logger, params={})
+        if success and success2:
             service_group_id = data['service_group_id']
             service_group_name = self._get_service_group_name(service_group_id)
             data['service_group_name'] = service_group_name
 
         context = {'service_info': data,
+                   'agent_types': self._build_agent_types_list(agents, data['service_agent_type']),
                    'can_edit_service': self.check_membership(['CAN_EDIT_SERVICE']),
                    'add_service_msg': self.request.session.pop('add_service_msg', None),
                    'update_service_msg': self.request.session.pop('update_service_msg', None)}

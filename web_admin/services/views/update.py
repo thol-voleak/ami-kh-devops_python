@@ -39,13 +39,15 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
         service_groups, status2 = self._get_service_group_choices()
         service_detail, status3 = self._get_service_detail(service_id)
         agents, status4 = self._get_agent_types_list()
+        selected_agent_types = self._get_selected_agent_types(service_detail['service_agent_type'])
         if status1 and status2 and status3 and status4:
             context = {
                 'currencies': currencies,
                 'service_groups': service_groups,
                 'service_detail': service_detail,
                 'service_id': service_id,
-                'agent_types': agents
+                'agent_types': agents,
+                'selected_agent_types': selected_agent_types
             }
 
             return render(request, self.template_name, context)
@@ -119,6 +121,14 @@ class UpdateView(GroupRequiredMixin, TemplateView, RESTfulMethods):
             self._headers = get_auth_header(self.request.user)
 
         return self._headers
+
+    def _get_selected_agent_types(self, agent_types):
+        result = []
+        for type in agent_types:
+           result.append(type['agent_type_id'])
+
+        return result
+           
 
     def _get_agent_types_list(self):
         return self._post_method(api_path=api_settings.AGENT_TYPES_LIST_URL,
