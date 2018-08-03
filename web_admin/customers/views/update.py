@@ -73,26 +73,39 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin, CustomerAPISe
 
         # Personal Details
         tin_number = request.POST.get('tin_number')
+        tin_number_local = request.POST.get('tin_number_local')
         title = request.POST.get('title')
+        title_local = request.POST.get('title_local')
         first_name = request.POST.get('first_name')
+        first_name_local = request.POST.get('first_name_local')
         middle_name = request.POST.get('middle_name')
+        middle_name_local = request.POST.get('middle_name_local')
         last_name = request.POST.get('last_name')
+        last_name_local = request.POST.get('last_name_local')
         suffix = request.POST.get('suffix')
+        suffix_local = request.POST.get('suffix_local')
         date_of_birth = request.POST.get('date_of_birth')
         if date_of_birth != '':
             date_of_birth = datetime.strptime(date_of_birth, "%Y-%m-%d")
             date_of_birth = date_of_birth.strftime('%Y-%m-%dT%H:%M:%SZ')
         place_of_birth = request.POST.get('place_of_birth')
+        place_of_birth_local = request.POST.get('place_of_birth_local')
         gender = request.POST.get('gender')
+        gender_local = request.POST.get('gender_local')
         ethnicity = request.POST.get('ethnicity')
         nationality = request.POST.get('nationality')
         employer = request.POST.get('employer')
         occupation = request.POST.get('occupation')
+        occupation_local = request.POST.get('occupation_local')
         occupation_title = request.POST.get('occupation_title')
+        occupation_title_local = request.POST.get('occupation_title_local')
         township_code = request.POST.get('township_code')
         township_name = request.POST.get('township_name')
+        township_name_local = request.POST.get('township_name_local')
         mother_name = request.POST.get('mother_name')
+        mother_name_local = request.POST.get('mother_name_local')
         mother_maiden_name = request.POST.get('mother_maiden_name')
+        mother_maiden_name_local = request.POST.get('mother_maiden_name_local')
         civil_status = request.POST.get('civil_status')
 
         # Contract Details
@@ -108,12 +121,19 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin, CustomerAPISe
             'citizen_association': request.POST.get('current_address_citizen_association'),
             'neighbourhood_association': request.POST.get('current_address_neighbourhood_association'),
             'address': request.POST.get('current_address_address'),
+            'address_local': request.POST.get('current_address_address_local'),
             'commune': request.POST.get('current_address_commune'),
+            'commune_local': request.POST.get('current_address_commune_local'),
             'district': request.POST.get('current_address_district'),
+            'district_local': request.POST.get('current_address_district_local'),
             'city': request.POST.get('current_address_city'),
+            'city_local': request.POST.get('current_address_city_local'),
             'province': request.POST.get('current_address_province'),
+            'province_local': request.POST.get('current_address_province_local'),
             'postal_code': request.POST.get('current_address_postal_code'),
+            'postal_code_local': request.POST.get('current_address_postal_code_local'),
             'country': request.POST.get('current_address_country'),
+            'country_local': request.POST.get('current_address_country_local'),
             'landmark': request.POST.get('current_address_landmark'),
             'longitude': request.POST.get('current_address_longitude'),
             'latitude': request.POST.get('current_address_latitude')
@@ -127,12 +147,19 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin, CustomerAPISe
                 'citizen_association': request.POST.get('permanent_address_citizen_association'),
                 'neighbourhood_association': request.POST.get('permanent_address_neighbourhood_association'),
                 'address': request.POST.get('permanent_address_address'),
+                'address_local': request.POST.get('permanent_address_address_local'),
                 'commune': request.POST.get('permanent_address_commune'),
+                'commune_local': request.POST.get('permanent_address_commune_local'),
                 'district': request.POST.get('permanent_address_district'),
+                'district_local': request.POST.get('permanent_address_district_local'),
                 'city': request.POST.get('permanent_address_city'),
+                'city_local': request.POST.get('permanent_address_city_local'),
                 'province': request.POST.get('permanent_address_province'),
+                'province_local': request.POST.get('permanent_address_province_local'),
                 'postal_code': request.POST.get('permanent_address_postal_code'),
+                'postal_code_local': request.POST.get('permanent_address_postal_code_local'),
                 'country': request.POST.get('permanent_address_country'),
+                'country_local': request.POST.get('permanent_address_country_local'),
                 'landmark': request.POST.get('permanent_address_landmark'),
                 'longitude': request.POST.get('permanent_address_longitude'),
                 'latitude': request.POST.get('permanent_address_latitude')
@@ -155,8 +182,8 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin, CustomerAPISe
         primary_identity = {
             'type': request.POST.get('primary_identity_type'),
             'identity_id': request.POST.get('primary_identity_id'),
-            'status': int(request.POST.get('primary_identity_status')) if request.POST.get(
-                "primary_identity_status") else None,
+            'identity_id_local': request.POST.get('primary_identity_id_local'),
+            'status': int(request.POST.get('primary_identity_status')) if request.POST.get( "primary_identity_status") else None,
             'place_of_issue': request.POST.get('primary_identity_place_of_issue'),
             'issue_date': primary_issue_date,
             'expired_date': primary_expire_date,
@@ -176,8 +203,8 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin, CustomerAPISe
         secondary_identity = {
             'type': request.POST.get('secondary_identity_type'),
             'identity_id': request.POST.get('secondary_identity_id'),
-            'status': int(request.POST.get('secondary_identity_status')) if request.POST.get(
-                "secondary_identity_status") else None,
+            'identity_id_local': request.POST.get('secondary_identity_id_local'),
+            'status': int(request.POST.get('secondary_identity_status')) if request.POST.get("secondary_identity_status") else None,
             'place_of_issue': request.POST.get('secondary_identity_place_of_issue'),
             'issue_date': secondary_issue_date,
             'expired_date': secondary_expire_date,
@@ -197,8 +224,8 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin, CustomerAPISe
         tertiary_identity = {
             'type': request.POST.get('tertiary_identity_type'),
             'identity_id': request.POST.get('tertiary_identity_id'),
-            'status': int(request.POST.get('tertiary_identity_status')) if request.POST.get(
-                "tertiary_identity_status") else None,
+            'identity_id_local': request.POST.get('tertiary_identity_id_local'),
+            'status': int(request.POST.get('tertiary_identity_status')) if request.POST.get("tertiary_identity_status") else None,
             'place_of_issue': request.POST.get('tertiary_identity_place_of_issue'),
             'issue_date': tertiary_issue_date,
             'expired_date': tertiary_expire_date,
@@ -268,23 +295,36 @@ class UpdateView(GroupRequiredMixin, TemplateView, GetHeaderMixin, CustomerAPISe
             'customer_classification_id': customer_classification_id,
 
             'tin_number': tin_number,
+            'tin_number_local': tin_number_local,
             'title': title,
+            'title_local': title_local,
             'first_name': first_name,
+            'first_name_local': first_name_local,
             'last_name': last_name,
+            'last_name_local': last_name_local,
             'middle_name': middle_name,
+            'middle_name_local': middle_name_local,
             'suffix': suffix,
+            'suffix_local': suffix_local,
             'date_of_birth': date_of_birth,
             'place_of_birth': place_of_birth,
+            'place_of_birth_local': place_of_birth_local,
             'gender': gender,
+            'gender_local': gender_local,
             'ethnicity': ethnicity,
             'nationality': nationality,
             'employer': employer,
             'occupation': occupation,
+            'occupation_local': occupation_local,
             'occupation_title': occupation_title,
+            'occupation_title_local': occupation_title_local,
             'township_code': township_code,
             'township_name': township_name,
+            'township_name_local': township_name_local,
             'mother_name': mother_name,
+            'mother_name_local': mother_name_local,
             'mother_maiden_name': mother_maiden_name,
+            'mother_maiden_name_local': mother_maiden_name_local,
             'civil_status': civil_status,
             'email': email,
             'primary_mobile_number': primary_mobile_number,
