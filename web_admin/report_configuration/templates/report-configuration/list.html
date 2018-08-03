@@ -73,6 +73,37 @@
                         {% endfor %}
                     </div>
                 </div>
+                <div class="col-md-12 mb15" style="font-size: 15px;font-weight: bold; margin-top: 30px;">
+                    <label id="lbl_formula">Formula for this Report Type</label>
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-10">
+                    {% for operand, value in formula.operands.items %}
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                Total {%if operand == 'tpv' %} TPV {% else %} {{ operand.title }} {% endif %} from sum of
+                            </div>
+                            <div class="col-md-5">
+                                <select class="form-control" id="ddl_report_{{ operand }}" name="{{operand}}">
+                                       {% for val in operand_values %}
+                                           <option value="{{ val }}" {% if val == value %}selected="selected"{% endif %}>{{ val.title }}</option>
+                                        {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="form-group">
+                        <div class="col-md-3" >
+                            Effective date from
+                        </div>
+                        <div class="col-md-5">
+                            <input type="date" class="form-control input-rounded required"
+                                   name="effective_timestamp"
+                                   value="{{formula.effective_date|default_if_none:''}}"
+                                   id="dtp_effective_timestamp"/>
+                        </div>
+                    </div>
+                </div>
 
                 <div hidden>
                     <a>

@@ -8,6 +8,7 @@ from web_admin.get_header_mixins import GetHeaderMixin
 from django.shortcuts import render, redirect
 from web_admin.api_logger import API_Logger
 from web_admin import api_settings, setup_logger
+from datetime import datetime
 from authentications.utils import get_correlation_id_from_username, check_permissions_by_user
 
 logger = logging.getLogger(__name__)
@@ -15,7 +16,8 @@ logger = logging.getLogger(__name__)
 class ReportConfigurationList(TemplateView, GetHeaderMixin):
     template_name = "report-configuration/list.html"
     logger = logger
-
+    OPERAND_VALUES = ['default', 'fee', 'amount', 'bonus', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'];
+    OPERAND_KEYS = ['tpv','fee','commission'];
 
     def dispatch(self, request, *args, **kwargs):
         correlation_id = get_correlation_id_from_username(self.request.user)
@@ -43,7 +45,8 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
             if selected_report_type:
                 self.logger.info('========== Start get service whitelist list ==========')
                 whitelist_services = self.get_whitelist_services(selected_report_type)
-            self.logger.info('========== Finish get service whitelist list ==========')
+                self.logger.info('========== Finish get service whitelist list ==========')
+                formula = self.get_formula(selected_report_type)
             self.logger.info('========== Start get service group list ==========')
             service_group_list = self.get_service_group_list()
             self.logger.info('========== Finish get service group list ==========')
@@ -89,9 +92,15 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
                     service_group['is_indeterminate'] = True
                 shown_service_group_list.append(service_group)
 
+            formula_operands = {}
+            for key in formula.keys():
+                if key in self.OPERAND_KEYS and formula[key] is not None:
+                    formula_operands[key] = formula[key]
+            formula['effective_date'] = datetime.strptime(formula['effective_timestamp'],'%Y-%m-%dT%H:%M:%SZ').strftime("%Y-%m-%d");
+            formula['operands'] = formula_operands;
             context.update({'service_group_list': shown_service_group_list, 'checked_service_arr' : checked_service_arr,
                                                 'report_types': report_types,
-                                                'selected_report_type': int(selected_report_type)})
+                                                'selected_report_type': int(selected_report_type),'formula':formula,'operand_values':self.OPERAND_VALUES})
 
         return render(request, self.template_name, context)
 
@@ -137,6 +146,18 @@ class ReportConfigurationList(TemplateView, GetHeaderMixin):
                 raise InvalidAccessToken(data)
             data = []
         self.logger.info('Response_content_count: {}'.format(len(data)))
+        return data
+
+    def get_formula(self, report_type_id):
+        self.logger.info('========== Start get formula list of Report type Id {} =========='.format(report_type_id));
+        url = api_settings.GET_FORMULA_REPORT.format(report_type_id=report_type_id)
+        is_success, status_code, data = RestFulClient.get(url=url, headers=self._get_headers(), loggers=self.logger)
+        if  not is_success:
+            if status_code in ["access_token_expire", 'authentication_fail', 'invalid_access_token']:
+                self.logger.info("{}".format(data))
+                raise InvalidAccessToken(data)
+            data = {}
+        self.logger.info('========== Finish get formula ==========');
         return data
 
     def get_report_type_list(self):
