@@ -123,8 +123,8 @@
                         <label class="col-sm-2 control-label">Allow to Agent Type</label>
                         <div class="col-sm-8">
                             <div class="col-sm-3">
-                                <input type="radio" name="allow_all_specific_agent_types" value="All" id="allow_all_agent_types" {% if allow_all_specific_agent_types != 'Specific' %}checked{% endif %} />All<br>
-                                <input type="radio" name="allow_all_specific_agent_types" value="Specific" {% if allow_all_specific_agent_types == 'Specific' %}checked{% endif %} id="allow_specific_agent_types">Specific<br>
+                                <input type="radio" name="allow_all_specific_agent_types" value="All" id="allow_all_agent_types" {% if allow_all_specific_agent_types == 'All' %}checked{% endif %} />All<br>
+                                <input type="radio" name="allow_all_specific_agent_types" value="Specific" {% if allow_all_specific_agent_types != 'All' %}checked{% endif %} id="allow_specific_agent_types">Specific<br>
 
                             </div>
                             <div class="col-sm-7">
@@ -175,7 +175,7 @@
     $("#allow_specific_agent_types").click(function () {
         $("#ddl_allow_specific_agent_type_chosen").show();
     });
-    if ('{{ allow_all_specific_agent_types}}' != 'Specific') {
+    if ('{{ allow_all_specific_agent_types}}' == 'All') {
         $("#ddl_allow_specific_agent_type_chosen").hide(); 
     }
 
