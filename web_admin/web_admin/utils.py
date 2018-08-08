@@ -9,8 +9,8 @@ import urllib
 import cgi
 from datetime import datetime
 from django.http import HttpResponse
-from web_admin.restful_client import RestFulClient
-from web_admin.exceptions import PermissionDeniedException
+from web_admin.web_admin.restful_client import RestFulClient
+from web_admin.web_admin.exceptions import PermissionDeniedException
 
 def check_permissions(request, permissions):
     logger = build_logger(request, __name__)
